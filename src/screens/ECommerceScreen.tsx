@@ -1,0 +1,335 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
+import Carousel from '../components/Carousel';
+import { addToCart } from '../api/cart-api';
+import FeatureStats from '../components/FeatureStats';
+import { getCarousels } from '../api/carousel-api';
+import { getAllProducts } from '../api/product-api';
+import ProductCard from '../components/ProductCard';
+import {
+  addToFavorite,
+  getFavorites,
+  removeFavoriteItem,
+} from '../api/fav-api';
+import { useFocusEffect } from '@react-navigation/native';
+import { CarouselItem } from './Home';
+import BANNER_1 from '../../assets/static_assets/BANNER_1.png';
+import AD_BANNER from '../../assets/static_assets/AD_BANNER.png';
+import BANNER_3 from '../../assets/static_assets/BANNER_3.png';
+
+const ad1 = BANNER_1;
+const ad2 = AD_BANNER;
+const ad3 = BANNER_3;
+export default function EComScreen({ navigation }: any) {
+  const [topCarousel, setTopCarousel] = useState<CarouselItem[]>([]);
+  const [middleCarousel, setMiddleCarousel] = useState<CarouselItem[]>([]);
+  const [bottomCarousel, setBottomCarousel] = useState<CarouselItem[]>([]);
+
+  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
+
+  const bestSellers = categories.filter((p) => p.bestSeller);
+  const combos = categories.filter((p) => p.combos);
+  const recommended = categories.filter((p) => p.recommended);
+
+  const scrollRef = useRef<ScrollView>(null);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // 👇 Scroll to top on tab focus
+      scrollRef.current?.scrollTo({ y: 0, animated: false });
+    }, []),
+  );
+
+  const sections = [
+    {
+      title: 'Best Selling',
+      data: bestSellers,
+      ad: ad1,
+    },
+    {
+      title: 'Save Big With Combos',
+      data: combos,
+      ad: ad2,
+    },
+    {
+      title: 'Recommended For You',
+      data: recommended,
+      ad: ad3,
+    },
+  ].filter((section) => section.data.length > 0); // Avoid empty sections
+
+  useEffect(() => {
+    const fetchCarousels = async () => {
+      try {
+        const res = await getCarousels();
+        setTopCarousel(
+          res.data.shop.topCarousel.map((img: any) => ({
+            uri: img.imageUrl,
+            type: img.type,
+            group: 'shop',
+            tab: img.tabName || 'Home',
+            navigateTo: img.screenName || 'DefaultScreen',
+          })),
+        );
+
+        setMiddleCarousel(
+          res.data.shop.middleCarousel.map((img: any) => ({
+            uri: img.imageUrl,
+            type: img.type,
+            group: 'shop',
+            tab: img.tabName || 'Home',
+            navigateTo: img.screenName || 'DefaultScreen',
+          })),
+        );
+        setBottomCarousel(
+          res.data.shop.bottomCarousel.map((img: any) => ({
+            uri: img.imageUrl,
+            type: img.type,
+            group: 'shop',
+            tab: img.tabName || 'Home',
+            navigateTo: img.screenName || 'DefaultScreen',
+          })),
+        );
+      } catch (error) {
+        console.error('Failed to load carousels:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchProducts = async () => {
+      try {
+        const products = await getAllProducts();
+        setCategories(products);
+      } catch (error) {
+        console.error('Failed to load products:', error);
+      }
+    };
+
+    const fetchFavorites = async () => {
+      try {
+        const favRes = await getFavorites();
+        setFavorites(favRes.data.map((item: any) => item.productId));
+      } catch (error) {
+        console.error('Failed to fetch favorites:', error);
+      }
+    };
+
+    fetchCarousels();
+    fetchProducts();
+    fetchFavorites();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
+  }
+
+  const handleToggleFavorite = async (productId: string, newState: boolean) => {
+    try {
+      if (newState) {
+        await addToFavorite(productId);
+        setFavorites((prev) => [...prev, productId]);
+      } else {
+        await removeFavoriteItem(productId);
+        setFavorites((prev) => prev.filter((id) => id !== productId));
+      }
+    } catch (error) {
+      console.error('Failed to update favorite:', error);
+    }
+  };
+
+  const handleAddToCart = async (product: any, quantity: number) => {
+    try {
+      if (!product || !product._id) {
+        Alert.alert('Error', 'Product ID is missing');
+        return;
+      }
+      await addToCart(product._id, quantity);
+      Alert.alert('Success', `${product.title} added to cart`);
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to add product to cart');
+    }
+  };
+
+  return (
+    <ScrollView style={styles.container} ref={scrollRef}>
+      <Text style={styles.header}>Oral Care Categories</Text>
+
+      {/* CATEGORIES GRID */}
+      <FlatList
+        data={categories}
+        numColumns={4}
+        keyExtractor={(item) => item._id}
+        scrollEnabled={false}
+        renderItem={({ item }) => {
+          // 1. Safely extract the specific image asset (handle Array vs Single value)
+          const rawImage = Array.isArray(item.images) && item.images.length > 0
+            ? item.images[0]
+            : item.images;
+
+          // 2. Determine the correct source format for React Native Image
+          const imageSource = typeof rawImage === 'string'
+            ? { uri: rawImage } // Remote URL -> Needs { uri: ... }
+            : rawImage;         // Local Asset (Number) -> Pass directly
+
+          return (
+            <TouchableOpacity
+              style={styles.item}
+              onPress={() =>
+                navigation.navigate('ProductDetailScreen', {
+                  productId: item._id,
+                })
+              }
+            >
+              <View style={styles.imageWrapper}>
+                <Image
+                  source={imageSource}
+                  style={styles.icon}
+                  fadeDuration={0}      // Optimization: Load instantly
+                  resizeMethod="resize" // Optimization: Low memory usage on Android
+                />
+              </View>
+              <Text style={styles.label}>{item.title || item.name}</Text>
+            </TouchableOpacity>
+          );
+        }}
+      />
+
+      {/* TOP CAROUSEL */}
+      {topCarousel.length > 0 && <Carousel images={topCarousel} />}
+
+      {/* SECTIONS */}
+      {sections.map((section) => (
+        <View key={section.title} style={styles.sectionWrapper}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>{section.title}</Text>
+            <TouchableOpacity>
+              <Text style={styles.viewAll}>View All</Text>
+            </TouchableOpacity>
+          </View>
+
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={section.data}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
+              <ProductCard
+                item={item}
+                onAddToCart={(product: any, quantity: number) =>
+                  handleAddToCart(product, quantity)
+                }
+                onToggleFavorite={() =>
+                  handleToggleFavorite(item._id, !favorites.includes(item._id))
+                }
+              />
+            )}
+            contentContainerStyle={styles.horizontalList}
+          />
+        </View>
+      ))}
+
+      {/* MIDDLE CAROUSEL */}
+      {middleCarousel.length > 0 && <Carousel images={middleCarousel} />}
+
+      {bottomCarousel.length > 0 && <Carousel images={bottomCarousel} />}
+      <FeatureStats />
+      {/* BOTTOM CAROUSEL at end */}
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 16,
+    paddingBottom: 20,
+    backgroundColor: '#ffffff',
+  },
+
+  header: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  grid: {
+    justifyContent: 'center',
+  },
+  item: {
+    width: '22%',
+    margin: '1.5%',
+    alignItems: 'center',
+  },
+  imageWrapper: {
+    backgroundColor: '#f0f4ff',
+    borderRadius: 12,
+    width: '100%',
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  icon: {
+    width: '70%',
+    height: '70%',
+    resizeMode: 'contain',
+  },
+  label: {
+    marginTop: 6,
+    textAlign: 'center',
+    fontSize: 12,
+  },
+  sectionWrapper: {
+    marginTop: 24,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  viewAll: {
+    fontSize: 13,
+    color: '#007bff',
+  },
+  horizontalList: {
+    paddingHorizontal: 0,
+    justifyContent: 'center',
+    gap: 12,
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
