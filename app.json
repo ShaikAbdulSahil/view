@@ -22,7 +22,6 @@
       "bundler": "metro",
       "favicon": "./assets/images/favicon.png"
     },
-    "entryPoint": "./App.tsx",
     "plugins": [
       [
         "expo-splash-screen",
