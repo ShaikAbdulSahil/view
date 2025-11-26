@@ -19,4 +19,30 @@ axiosClient.interceptors.request.use(async (config) => {
   return config;
 });
 
+// Log detailed error info for failed requests to help debugging 500s
+// axiosClient.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     // Only log in non-production to avoid leaking sensitive info
+//     if (process.env.NODE_ENV !== 'production') {
+//       try {
+//         const cfg = error?.config || {};
+//         console.error('Axios request failed:', {
+//           url: cfg.url,
+//           method: cfg.method,
+//           data: cfg.data,
+//           params: cfg.params,
+//           headers: cfg.headers,
+//           status: error?.response?.status,
+//           responseData: error?.response?.data,
+//         });
+//       } catch (e) {
+//         console.error('Failed to log axios error details', e);
+//       }
+//     }
+
+//     return Promise.reject(error);
+//   },
+// );
+
 export default axiosClient;

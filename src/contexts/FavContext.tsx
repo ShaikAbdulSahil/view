@@ -9,6 +9,7 @@ import {
   getFavorites,
   removeFavoriteItem,
 } from '../api/fav-api';
+import { AuthContext } from './AuthContext';
 
 const FavoriteContext = createContext<any>(null);
 
@@ -19,8 +20,10 @@ export const FavoriteProvider = ({
 }) => {
   const [favorites, setFavorites] = useState<any[]>([]);
 
+  const {token} = useContext(AuthContext)
   const fetchFavorites = async () => {
     try {
+      if(!token) return;
       const res = await getFavorites();
       setFavorites(res.data);
     } catch (err) {
@@ -29,6 +32,7 @@ export const FavoriteProvider = ({
   };
 
   const toggleFavorite = async (productId: string) => {
+    if(!token) return;
     const isFav = favorites.some((fav) => fav.product._id === productId);
 
     try {
@@ -47,8 +51,12 @@ export const FavoriteProvider = ({
   };
 
   useEffect(() => {
-    fetchFavorites();
-  }, []);
+    if (token) {
+      fetchFavorites();
+    } else {
+      setFavorites([]);
+    }
+  }, [token]);
 
   return (
     <FavoriteContext.Provider value={{ favorites, toggleFavorite }}>
