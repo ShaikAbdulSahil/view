@@ -29,6 +29,7 @@ export default function ProductDetailScreen({ route }: any) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
     async function fetchProduct() {
@@ -97,11 +98,18 @@ export default function ProductDetailScreen({ route }: any) {
         return;
       }
 
-      await addToCart(productId, 1);
-      Alert.alert('Success', 'Product added to cart');
+      setAdding(true);
+      const res = await addToCart(productId, 1);
+      // res may contain server message
+      const successMsg = res?.message || 'Product added to cart';
+      Alert.alert('Success', successMsg);
     } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'Failed to add product to cart');
+      console.error('Add to cart failed:', error);
+      const msg = (error as any)?.message || 'Failed to add product to cart';
+      Alert.alert('Error', msg);
+    }
+    finally {
+      setAdding(false);
     }
   };
 
@@ -170,8 +178,16 @@ export default function ProductDetailScreen({ route }: any) {
         ))}
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleAddToCart}>
-        <Text style={styles.buttonText}>Add to cart</Text>
+      <TouchableOpacity
+        style={[styles.button, adding && styles.buttonDisabled]}
+        onPress={handleAddToCart}
+        disabled={adding}
+      >
+        {adding ? (
+          <Text style={styles.buttonText}>Adding...</Text>
+        ) : (
+          <Text style={styles.buttonText}>Add to cart</Text>
+        )}
       </TouchableOpacity>
     </ScrollView>
   );
@@ -246,4 +262,7 @@ const styles = StyleSheet.create({
     marginBottom: 130,
   },
   buttonText: { color: '#fff', textAlign: 'center', fontSize: 16 },
+  buttonDisabled: {
+    opacity: 0.7,
+  },
 });
