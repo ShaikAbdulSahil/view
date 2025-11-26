@@ -45,7 +45,7 @@ const PaymentScreen = () => {
         currency: 'INR',
         amount: orderAmount,
         order_id,
-        key: 'yfUqsbfAGKQkXC4w6agUSs66',
+        key: 'rzp_test_25fAOt7JGFTRdP',
         prefill: {
           email: 'shaikfarhat79@gmail.com',
           contact: '9849492909',
