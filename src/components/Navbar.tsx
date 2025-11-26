@@ -92,7 +92,7 @@ export default function Navbar() {
           style={styles.iconButton}
           onPress={() => navigation.navigate('CartScreen')}
         >
-          <Ionicons name="cart-outline" size={22} color="#4CAF50" />
+          <Ionicons name="cart-outline" size={22} color="#FD343E" />
         </TouchableOpacity>
       </View>
 

@@ -7,21 +7,25 @@ interface AuthContextProps {
   token: string | null;
   login: (token: string) => void;
   logout: () => void;
+  loading: boolean;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
   token: null,
-  login: () => {},
-  logout: () => {},
+  login: () => { },
+  logout: () => { },
+  loading: true,
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const loadToken = async () => {
       const storedToken = await getToken();
       if (storedToken) setToken(storedToken);
+      setLoading(false);
     };
     loadToken();
   }, []);
@@ -37,7 +41,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
+    <AuthContext.Provider value={{ token, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

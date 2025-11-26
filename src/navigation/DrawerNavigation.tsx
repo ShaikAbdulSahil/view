@@ -11,7 +11,7 @@ export default function DrawerNavigator() {
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
-        drawerType: 'slide',
+        drawerType: 'front',
         headerShown: false,
       }}
     >

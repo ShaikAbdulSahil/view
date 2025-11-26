@@ -31,7 +31,7 @@ export default function App() {
     // Hide the custom video splash after 5 seconds
     const timer = setTimeout(() => {
       setShowVideoSplash(false);
-    }, 5000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -40,7 +40,7 @@ export default function App() {
     return (
       <View style={styles.splashContainer}>
         <Video
-          source={require('./assets/src/animation-logo.mp4')}
+          source={require('./assets/welcome.mp4')}
           style={StyleSheet.absoluteFill}
           resizeMode={ResizeMode.CONTAIN}
           shouldPlay

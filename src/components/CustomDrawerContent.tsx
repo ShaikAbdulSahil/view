@@ -18,14 +18,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { useUser } from '../contexts/UserContext';
 import EditProfileForm from './EditUserDetails';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import MYDENT_LOGO from '../../assets/static_assets/MYDENT_LOGO.jpg';
+import MYDENT_LOGO from '../../assets/static_assets/LOGO_PNG_PREVIEW.png';
 import CONSULTANT_IMAGE from '../../assets/static_assets/CONSULTANT_IMAGE.jpg';
 
 export default function CustomDrawerContent(props: any) {
   const { user, setUser } = useUser();
   const [isEditVisible, setEditVisible] = useState(false);
 
-  const iconColor = '#4CAF50';
+  const iconColor = '#FD343E';
 
   return (
     <DrawerContentScrollView
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F0F4F8',
+    backgroundColor: '#E9F9FA',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     height: 100,
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F0F4F8',
+    backgroundColor: '#E9F9FA',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },

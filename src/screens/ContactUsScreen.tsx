@@ -853,7 +853,7 @@ const styles = StyleSheet.create({
   },
 
   coordinatorButton: {
-    backgroundColor: '#00AEEF',
+    backgroundColor: '#E84850',
     padding: 10,
     borderRadius: 12,
     maxWidth: 300,
@@ -1227,7 +1227,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   bookButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#E84850',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,

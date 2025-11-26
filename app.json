@@ -14,7 +14,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#CAFDFF"
+        "backgroundColor": "#C7FCFF"
       },
       "package": "com.sahilshaik786.mydent"
     },

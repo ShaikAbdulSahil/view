@@ -23,7 +23,11 @@ const linking = {
 };
 
 export default function AppNavigator() {
-  const { token } = useContext(AuthContext);
+  const { token, loading } = useContext(AuthContext);
+
+  // Don't render navigation until auth state is resolved to avoid
+  // flickering between Auth and App stacks when a token exists.
+  if (loading) return null;
 
   return (
     <NavigationContainer linking={linking}>
