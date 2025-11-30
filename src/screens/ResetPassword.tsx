@@ -13,8 +13,9 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
 } from 'react-native';
+import { showSuccess } from '../utils/successToast';
+import { showError } from '../utils/errorAlert';
 import { resetPassword } from '../api/auth-api';
 
 const ResetPasswordScreen = ({ route, navigation }: any) => {
@@ -28,22 +29,22 @@ const ResetPasswordScreen = ({ route, navigation }: any) => {
 
   const handleReset = async () => {
     if (!newPassword || !confirmPassword) {
-      Alert.alert('Error', 'Please fill in both fields');
+      showError('Please fill in both fields');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+      showError('Passwords do not match');
       return;
     }
 
     try {
       setLoading(true);
       await resetPassword(token, newPassword);
-      Alert.alert('Success', 'Password has been reset');
+      showSuccess('Password has been reset');
       navigation.navigate('Login');
     } catch (error) {
-      Alert.alert('Error', 'Something went wrong. Please try again.');
+      showError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }

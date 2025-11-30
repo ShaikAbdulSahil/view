@@ -15,6 +15,7 @@ import {
   Alert,
   Platform,
 } from 'react-native';
+import { showSuccess } from '../utils/successToast';
 import { Ionicons } from '@expo/vector-icons';
 import { uploadTicketImage } from '../api/tickets-api';
 
@@ -74,7 +75,7 @@ const NewTicketScreen = () => {
 
       await uploadTicketImage(formData);
 
-      Alert.alert('Success', 'Your ticket has been submitted.');
+      showSuccess('Your ticket has been submitted.');
       setTitle('');
       setMessage('');
       setSelectedFile(null);

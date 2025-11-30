@@ -12,6 +12,7 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
+import { showSuccess } from '../utils/successToast';
 import { forgotPassword } from '../api/auth-api';
 
 export default function ForgotPasswordScreen({ navigation }: any) {
@@ -20,10 +21,10 @@ export default function ForgotPasswordScreen({ navigation }: any) {
   const handleSubmit = async () => {
     try {
       await forgotPassword(email);
-      Alert.alert('Success', 'Reset link sent to your email');
+      showSuccess('Reset link sent to your email');
       navigation.goBack();
     } catch (err) {
-      Alert.alert('Error', 'Could not send reset link');
+      import('../utils/errorAlert').then(({ showError }) => showError('Could not send reset link'));
     }
   };
 

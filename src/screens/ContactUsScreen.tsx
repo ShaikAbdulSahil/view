@@ -16,6 +16,7 @@ import {
   Alert,
   TouchableWithoutFeedback,
 } from 'react-native';
+import { showError } from '../utils/errorAlert';
 import { useUser } from '../contexts/UserContext';
 import {
   NavigationProp,
@@ -37,6 +38,8 @@ import * as ImagePicker from 'expo-image-picker';
 import MeetModal from '../components/Meet';
 import { getUserMeets } from '../api/meet-api';
 import { getDoctorTeams } from '../api/doctors-team';
+import Skeleton from '../components/Skeleton';
+import { showSuccess } from '../utils/successToast';
 import WHITENING_PEN_1 from '../../assets/static_assets/WHITENING_PEN_1.png';
 import WHITENING_GEL_1 from '../../assets/static_assets/WHITENING_GEL_1.png';
 import CONSULTANT_IMAGE from '../../assets/static_assets/CONSULTANT_IMAGE.jpg';
@@ -145,13 +148,17 @@ export default function ContactUsScreen() {
     null,
   );
   const [videos, setVideos] = useState<AVPlaybackSource[]>([]);
+  const [videosLoading, setVideosLoading] = useState(true);
 
   const [reports, setReports] = useState<string[]>([]);
+  const [reportsLoading, setReportsLoading] = useState(true);
 
   const [doctorTeams, setDoctorTeams] = useState<DoctorTeams[] | []>([]);
+  const [doctorTeamsLoading, setDoctorTeamsLoading] = useState(true);
 
   const [doctorAssignment, setDoctorAssignment] =
     useState<DoctorAssignment | null>(null);
+  const [doctorAssignmentLoading, setDoctorAssignmentLoading] = useState(true);
 
   const navigation = useNavigation<NavigationProp<any>>();
 
@@ -215,6 +222,7 @@ export default function ContactUsScreen() {
 
   useEffect(() => {
     const fetchDoctorData = async () => {
+      setDoctorAssignmentLoading(true);
       try {
         const res = await getDoctorAssignment();
         const assignment = {
@@ -228,20 +236,43 @@ export default function ContactUsScreen() {
         } else {
           console.error('Failed to fetch doctor assignment:', err);
         }
+      } finally {
+        setDoctorAssignmentLoading(false);
       }
     };
 
     const fetchTeams = async () => {
-      if (!user?._id) return;
+      if (!user?._id) {
+        setDoctorTeamsLoading(false);
+        return;
+      }
+      setDoctorTeamsLoading(true);
       try {
         const res = await getDoctorTeams(user?._id);
-        setDoctorTeams(res.data);
+        const data = res.data || [];
+        setDoctorTeams(data);
+
+        // Prefetch team images
+        const urls: string[] = [];
+        data.forEach((d: any) => {
+          if (d?.image) urls.push(d.image);
+        });
+        if (urls.length > 0) {
+          try {
+            await Promise.all(urls.map((u) => Image.prefetch(u)));
+          } catch (e) {
+            console.warn('Doctor team images prefetch failed', e);
+          }
+        }
       } catch (error) {
         console.error('Failed to fetch doctor teams', error);
+      } finally {
+        setDoctorTeamsLoading(false);
       }
     };
 
     const fetchContactData = async () => {
+      setVideosLoading(true);
       try {
         const res = await getContactUs();
         const allVideos: string[] = [];
@@ -259,6 +290,8 @@ export default function ContactUsScreen() {
         }
       } catch (err) {
         console.error('Failed to fetch contact data:', err);
+      } finally {
+        setVideosLoading(false);
       }
     };
 
@@ -268,11 +301,24 @@ export default function ContactUsScreen() {
   }, []);
 
   const fetchReports = async () => {
+    setReportsLoading(true);
     try {
       const { data } = await getMyReports();
-      setReports(data.map((r: any) => r.imageUrl));
+      const urls = data.map((r: any) => r.imageUrl).filter(Boolean);
+      setReports(urls);
+
+      // Prefetch report images
+      if (urls.length > 0) {
+        try {
+          await Promise.all(urls.map((u: string) => Image.prefetch(u)));
+        } catch (e) {
+          console.warn('Report images prefetch failed', e);
+        }
+      }
     } catch (err) {
       console.error('Error fetching reports:', err);
+    } finally {
+      setReportsLoading(false);
     }
   };
 
@@ -313,14 +359,14 @@ export default function ContactUsScreen() {
   const handleAddToCart = async (product: any, quantity: number) => {
     try {
       if (!product || !product._id) {
-        Alert.alert('Error', 'Product ID is missing');
+        showError('Product ID is missing');
         return;
       }
       await addToCart(product._id, quantity);
-      Alert.alert('Success', `${product.title} added to cart`);
+      showSuccess(`${product.title} added to cart`);
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', 'Failed to add product to cart');
+      showError('Failed to add product to cart');
     }
   };
 
@@ -411,7 +457,20 @@ export default function ContactUsScreen() {
       <View style={styles.todayAppointmentCard}>
         <Text style={styles.todayTitle}>Today's Appointment</Text>
 
-        {doctorAssignment ? (
+        {doctorAssignmentLoading ? (
+          <View style={{ padding: 12 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Skeleton width={64} height={64} radius={32} style={{ marginRight: 12 }} />
+              <View style={{ flex: 1 }}>
+                <Skeleton width={'50%'} height={16} radius={6} style={{ marginBottom: 6 }} />
+                <Skeleton width={'40%'} height={12} radius={6} />
+              </View>
+            </View>
+            <View style={{ marginTop: 12 }}>
+              <Skeleton width={'100%'} height={140} radius={8} />
+            </View>
+          </View>
+        ) : doctorAssignment ? (
           <>
             <Text style={styles.appointmentId}>
               Appointment ID: {doctorAssignment.doctor._id}
@@ -484,16 +543,22 @@ export default function ContactUsScreen() {
                 </TouchableOpacity>
               </View>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {reports.map((url, index) => (
-                  <Image
-                    key={index}
-                    source={{ uri: url }}
-                    style={styles.reportImage}
-                    resizeMode="cover"
-                    fadeDuration={0}
-                    resizeMethod="resize"
-                  />
-                ))}
+                {reportsLoading ? (
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <Skeleton key={i} width={120} height={120} radius={10} style={{ marginRight: 10, marginTop: 16 }} />
+                  ))
+                ) : (
+                  reports.map((url, index) => (
+                    <Image
+                      key={index}
+                      source={{ uri: url }}
+                      style={styles.reportImage}
+                      resizeMode="cover"
+                      fadeDuration={0}
+                      resizeMethod="resize"
+                    />
+                  ))
+                )}
               </ScrollView>
             </View>
           </>
@@ -524,12 +589,21 @@ export default function ContactUsScreen() {
           showsHorizontalScrollIndicator={false}
           style={styles.expertsContainer}
         >
-          {doctorTeams.map((item, idx) => (
-            <View key={idx} style={styles.expertBox}>
-              <Image source={{ uri: item.image }} style={styles.expertImage} fadeDuration={0} resizeMethod="resize" />
-              <Text style={styles.expertName}>{item.name}</Text>
-            </View>
-          ))}
+          {doctorTeamsLoading ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <View key={i} style={styles.expertBox}>
+                <Skeleton width={64} height={64} radius={32} style={{ marginRight: 12 }} />
+                <Skeleton width={80} height={12} style={{ marginTop: 8 }} />
+              </View>
+            ))
+          ) : (
+            doctorTeams.map((item, idx) => (
+              <View key={idx} style={styles.expertBox}>
+                <Image source={{ uri: item.image }} style={styles.expertImage} fadeDuration={0} resizeMethod="resize" />
+                <Text style={styles.expertName}>{item.name}</Text>
+              </View>
+            ))
+          )}
         </ScrollView>
         {doctorTeams.length === 0 && (
           <Text style={styles.noAppointmentText}>No Doctors Team Assigned</Text>
@@ -538,18 +612,33 @@ export default function ContactUsScreen() {
         <Text style={[styles.sectionTitle, { marginTop: 16 }]}>
           Schedule Appointments
         </Text>
-        {doctorTeams.map((item, index) => (
-          <View key={index} style={styles.scheduleItem}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.scheduleDoctor}>{item.name}</Text>
-              <Text style={styles.scheduleInfo}>{item.type}</Text>
+        {doctorTeamsLoading ? (
+          Array.from({ length: 2 }).map((_, i) => (
+            <View key={i} style={styles.scheduleItem}>
+              <View style={{ flex: 1 }}>
+                <Skeleton width={120} height={14} style={{ marginBottom: 6 }} />
+                <Skeleton width={80} height={12} />
+              </View>
+              <View>
+                <Skeleton width={60} height={14} />
+                <Skeleton width={60} height={12} style={{ marginTop: 6 }} />
+              </View>
             </View>
-            <View>
-              <Text style={styles.scheduleTime}>{item.time}</Text>
-              <Text style={styles.scheduleDate}>{item.date}</Text>
+          ))
+        ) : (
+          doctorTeams.map((item, index) => (
+            <View key={index} style={styles.scheduleItem}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.scheduleDoctor}>{item.name}</Text>
+                <Text style={styles.scheduleInfo}>{item.type}</Text>
+              </View>
+              <View>
+                <Text style={styles.scheduleTime}>{item.time}</Text>
+                <Text style={styles.scheduleDate}>{item.date}</Text>
+              </View>
             </View>
-          </View>
-        ))}
+          ))
+        )}
 
         {doctorTeams.length === 0 && (
           <Text style={styles.noAppointmentText}>

@@ -13,27 +13,48 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  ActivityIndicator,
 } from 'react-native';
+import Skeleton from './Skeleton';
 import { getAllBlogs } from '../api/transformation-api';
+
 
 export default function Transformation({ navigation }: any) {
   const [blogs, setBlogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
     const fetchBlogs = async () => {
       try {
         const response = await getAllBlogs();
+        if (!mounted) return;
         setBlogs(response.data);
+
+        const urls = (response.data || []).slice(0, 4).map((b: any) => b.imageUrl).filter(Boolean);
+        if (urls.length === 0) {
+          setImagesLoaded(true);
+        } else {
+          Promise.all(urls.map((u: string) => Image.prefetch(u)))
+            .then(() => mounted && setImagesLoaded(true))
+            .catch((e) => {
+              console.warn('Image prefetch failed for transformation blogs', e);
+              mounted && setImagesLoaded(true);
+            });
+        }
       } catch (error) {
         console.error('Failed to fetch blogs:', error);
+        setImagesLoaded(true);
       } finally {
-        setLoading(false);
+        mounted && setLoading(false);
       }
     };
 
     fetchBlogs();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   return (
@@ -50,8 +71,18 @@ export default function Transformation({ navigation }: any) {
         Tips & info about your smile journey
       </Text>
 
-      {loading ? (
-        <ActivityIndicator size="large" color="#e53935" />
+      {loading || !imagesLoaded ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollRow}
+        >
+          {Array.from({ length: 4 }).map((_, idx) => (
+            <View key={idx} style={styles.card}>
+              <Skeleton width={'100%'} height={220} radius={12} />
+            </View>
+          ))}
+        </ScrollView>
       ) : (
         <ScrollView
           horizontal
@@ -68,13 +99,17 @@ export default function Transformation({ navigation }: any) {
                 })
               }
             >
-              <Image
-                source={{ uri: item.imageUrl }}
-                style={styles.image}
-                resizeMode="cover"
-                fadeDuration={0}
-                resizeMethod="resize"
-              />
+              {item.imageUrl ? (
+                <Image
+                  source={{ uri: item.imageUrl }}
+                  style={styles.image}
+                  resizeMode="cover"
+                  fadeDuration={0}
+                  resizeMethod="resize"
+                />
+              ) : (
+                <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+              )}
             </TouchableOpacity>
           ))}
         </ScrollView>

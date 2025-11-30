@@ -14,8 +14,10 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
+import { showError } from '../utils/errorAlert';
+import { showSuccess } from '../utils/successToast';
+import Skeleton from '../components/Skeleton';
 import { getProductById } from '../api/product-api';
 import { addToCart } from '../api/cart-api';
 import { Product } from '../constants/product.type';
@@ -28,43 +30,94 @@ export default function ProductDetailScreen({ route }: any) {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
     async function fetchProduct() {
       try {
         setLoading(true);
         const fetchedProduct = await getProductById(productId);
+        if (!mounted) return;
         setProduct(fetchedProduct);
+
+        // Prefetch product images (if any)
+        const urls: string[] = [];
+        if (fetchedProduct?.images) {
+          (fetchedProduct.images || []).forEach((u: any) => typeof u === 'string' && u && urls.push(u));
+        }
+
+        if (urls.length === 0) {
+          setImagesLoaded(true);
+        } else {
+          Promise.all(urls.map((u) => Image.prefetch(u)))
+            .then(() => {
+              if (!mounted) return;
+              setImagesLoaded(true);
+            })
+            .catch((e) => {
+              console.warn('Product images prefetch failed', e);
+              if (mounted) setImagesLoaded(true);
+            });
+        }
       } catch (error) {
-        Alert.alert('Error', 'Failed to load product data.');
+        showError('Failed to load product data.');
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     }
 
     fetchProduct();
+    return () => {
+      mounted = false;
+    };
   }, [productId]);
 
-  if (loading) {
-    return (
-      <View
-        style={[
-          styles.container,
-          { justifyContent: 'center', alignItems: 'center' },
-        ]}
-      >
-        <ActivityIndicator size="large" color="#ff4d4d" />
-      </View>
-    );
-  }
 
-  if (!product) {
+  // Render skeleton placeholders while loading product data or images.
+  if (loading || !product || !imagesLoaded) {
+    // If loading finished but product is null, show not found.
+    if (!loading && !product) {
+      return (
+        <View style={styles.container}>
+          <Text>Product not found.</Text>
+        </View>
+      );
+    }
+
     return (
-      <View style={styles.container}>
-        <Text>Product not found.</Text>
-      </View>
+      <ScrollView style={styles.container}>
+        <Skeleton width={screenWidth} height={400} radius={0} style={{ marginBottom: 12 }} />
+
+        <View style={styles.detailsContainer}>
+          <Skeleton width={'60%'} height={24} radius={6} style={{ marginBottom: 8 }} />
+          <View style={{ flexDirection: 'row', marginBottom: 8 }}>
+            <Skeleton width={60} height={20} radius={6} style={{ marginRight: 8 }} />
+            <Skeleton width={60} height={20} radius={6} style={{ marginRight: 8 }} />
+            <Skeleton width={60} height={20} radius={6} />
+          </View>
+
+          <Skeleton width={'40%'} height={20} radius={6} style={{ marginBottom: 8 }} />
+          <Skeleton width={'100%'} height={12} radius={4} style={{ marginBottom: 6 }} />
+          <Skeleton width={'100%'} height={12} radius={4} style={{ marginBottom: 6 }} />
+          <Skeleton width={'80%'} height={12} radius={4} />
+        </View>
+
+        <View style={styles.sectionContainer}>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <View key={i} style={styles.section}>
+              <Skeleton width={'100%'} height={44} radius={8} style={{ marginBottom: 8 }} />
+              <Skeleton width={'100%'} height={60} radius={8} />
+            </View>
+          ))}
+        </View>
+
+        <View style={{ paddingHorizontal: 16 }}>
+          <Skeleton width={'100%'} height={48} radius={8} />
+        </View>
+      </ScrollView>
     );
   }
 
@@ -94,7 +147,7 @@ export default function ProductDetailScreen({ route }: any) {
       const productId = product._id;
 
       if (!productId) {
-        Alert.alert('Error', 'Product ID is missing');
+        showError('Product ID is missing');
         return;
       }
 
@@ -102,11 +155,11 @@ export default function ProductDetailScreen({ route }: any) {
       const res = await addToCart(productId, 1);
       // res may contain server message
       const successMsg = res?.message || 'Product added to cart';
-      Alert.alert('Success', successMsg);
+      showSuccess(successMsg);
     } catch (error) {
       console.error('Add to cart failed:', error);
       const msg = (error as any)?.message || 'Failed to add product to cart';
-      Alert.alert('Error', msg);
+      showError(msg);
     }
     finally {
       setAdding(false);

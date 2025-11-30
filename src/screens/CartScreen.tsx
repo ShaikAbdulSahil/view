@@ -12,11 +12,12 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ActivityIndicator,
   StyleSheet,
   Alert,
   ScrollView,
 } from 'react-native';
+import { showError } from '../utils/errorAlert';
+import Skeleton from '../components/Skeleton';
 import {
   clearCart,
   getCart,
@@ -46,7 +47,7 @@ export default function CartScreen({ navigation }: any) {
       const response = await getCart();
       setCartItems(response.data);
     } catch (error) {
-      Alert.alert('Error', 'Failed to load cart');
+      showError('Failed to load cart');
     } finally {
       setLoading(false);
     }
@@ -64,7 +65,7 @@ export default function CartScreen({ navigation }: any) {
       const message =
         err?.response?.data?.message ||
         'Failed to update item. Please try again.';
-      Alert.alert('Error', message);
+      showError(message);
     }
   };
 
@@ -73,7 +74,7 @@ export default function CartScreen({ navigation }: any) {
       await removeCartItem(id);
       fetchCart();
     } catch {
-      Alert.alert('Error', 'Failed to remove item');
+      showError('Failed to remove item');
     }
   };
 
@@ -131,7 +132,37 @@ export default function CartScreen({ navigation }: any) {
     </View>
   );
 
-  if (loading) return <ActivityIndicator size="large" style={{ flex: 1 }} />;
+  if (loading)
+    return (
+      <View style={{ flex: 1, padding: 16, backgroundColor: '#f7f7f7' }}>
+        <Skeleton width={'60%'} height={28} radius={6} style={{ marginBottom: 16 }} />
+
+        {Array.from({ length: 3 }).map((_, i) => (
+          <View
+            key={i}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingVertical: 12,
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <Skeleton width={'70%'} height={14} radius={6} style={{ marginBottom: 8 }} />
+              <Skeleton width={'40%'} height={12} radius={6} />
+            </View>
+
+            <View style={{ width: 80, alignItems: 'flex-end' }}>
+              <Skeleton width={60} height={14} radius={6} />
+            </View>
+          </View>
+        ))}
+
+        <View style={{ marginTop: 20 }}>
+          <Skeleton width={'50%'} height={20} radius={6} style={{ marginBottom: 10 }} />
+          <Skeleton width={'100%'} height={44} radius={8} />
+        </View>
+      </View>
+    );
 
   if (!cartItems.length)
     return (
@@ -168,7 +199,7 @@ export default function CartScreen({ navigation }: any) {
           <TouchableOpacity
             style={styles.checkoutButton}
             onPress={() =>
-              navigation.navigate('Home', {
+              navigation.navigate('HomeTab', {
                 screen: 'PaymentScreen',
                 params: {
                   from: 'cart',

@@ -31,7 +31,7 @@ export default function App() {
     // Hide the custom video splash after 5 seconds
     const timer = setTimeout(() => {
       setShowVideoSplash(false);
-    }, 3000);
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, []);

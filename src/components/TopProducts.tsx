@@ -9,7 +9,7 @@ import DOCTOR_3 from '../../assets/static_assets/DOCTOR_3.png';
 import DOCTOR_4 from '../../assets/static_assets/DOCTOR_4.png';
 import DOCTOR_5 from '../../assets/static_assets/DOCTOR_5.png';
 import Doctor_6 from '../../assets/static_assets/DOCTOR6.png';
-
+import SkeletonImage from './Skeleton';
 const doctors = [
   { img: DOCTOR_5 }, // index 0
   { img: DOCTOR_2 }, // index 1

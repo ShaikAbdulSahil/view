@@ -12,9 +12,12 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import { getCarousels } from '../api/carousel-api';
+import { normalizeScreenName } from '../utils/navigationHelpers';
 import Carousel from '../components/Carousel';
+import Skeleton from '../components/Skeleton';
 import { CarouselItem } from './Home';
 import VIDEO_1 from '../../assets/static_assets/VIDEO_1.png';
 import VIDEO_2 from '../../assets/static_assets/VIDEO_2.png';
@@ -53,6 +56,11 @@ const categories = [
 
 export default function FindBiteTypeScreen({ navigation }: any) {
   const [carousel, setCarousel] = useState<CarouselItem[]>([]);
+  const [carouselLoading, setCarouselLoading] = useState(true);
+
+  const { width: screenWidth } = Dimensions.get('window');
+  const horizontalMargin = 10;
+  const imageWidth = screenWidth - horizontalMargin * 2;
 
   useEffect(() => {
     const fetchCarousels = async () => {
@@ -63,27 +71,39 @@ export default function FindBiteTypeScreen({ navigation }: any) {
             uri: img.imageUrl,
             type: img.type,
             group: 'biteType',
-            navigateTo: img.screenName || 'DefaultScreen',
+            navigateTo: normalizeScreenName(img.screenName) || 'DefaultScreen',
           })),
         );
+        // prefetch carousel images and only clear loading after assets are cached
+        const urls = (res.data.biteTypeCarousel || []).map((it: any) => it.imageUrl).filter(Boolean);
+        if (urls.length === 0) {
+          setCarouselLoading(false);
+        } else {
+          try {
+            await Promise.all(urls.map((u: string) => Image.prefetch(u)));
+          } catch (e) {
+            // ignore individual prefetch failures, still show carousel
+            console.warn('Carousel image prefetch failed', e);
+          }
+          setCarouselLoading(false);
+        }
       } catch (error) {
         console.error('Failed to load carousels:', error);
+        setCarouselLoading(false);
       }
     };
 
     fetchCarousels();
   }, []);
 
-  return (
-    <ScrollView style={styles.container}>
-      <Carousel images={carousel} />
+  const showGridAtTop = !carouselLoading && carousel.length === 0;
 
-      {/* Section Title */}
+  const renderGrid = () => (
+    <>
       <Text style={styles.sectionTitle}>
         Discover your bite type and See the transformation
       </Text>
 
-      {/* Grid */}
       <View style={styles.grid}>
         {categories.map((item, idx) => (
           <TouchableOpacity
@@ -93,11 +113,31 @@ export default function FindBiteTypeScreen({ navigation }: any) {
               navigation.navigate('BiteTypeVideosScreen', { title: item.title })
             }
           >
-            <Image source={{ uri: item.icon }} style={styles.icon} fadeDuration={0} resizeMethod="resize" />
+            <Image source={item.icon} style={styles.icon} fadeDuration={0} resizeMethod="resize" />
             <Text style={styles.label}>{item.title}</Text>
           </TouchableOpacity>
         ))}
       </View>
+    </>
+  );
+
+  return (
+    <ScrollView style={styles.container}>
+      {showGridAtTop ? (
+        renderGrid()
+      ) : (
+        <>
+          {carouselLoading ? (
+            <View style={{ alignItems: 'center', marginBottom: 20 }}>
+              <Skeleton width={imageWidth} height={200} radius={10} />
+            </View>
+          ) : (
+            <Carousel images={carousel} />
+          )}
+
+          {renderGrid()}
+        </>
+      )}
     </ScrollView>
   );
 }
@@ -125,8 +165,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   icon: {
-    width: 60,
-    height: 60,
+    width: 80,
+    height: 80,
     marginBottom: 6,
   },
 

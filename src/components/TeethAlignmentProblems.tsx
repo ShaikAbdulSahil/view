@@ -12,6 +12,7 @@ import OVERBITE from '../../assets/static_assets/OVERBITE.png';
 import UNDERBITE from '../../assets/static_assets/UNDERBITE.png';
 
 
+
 const treatmentItems = [
   {
     img: TEETH_GAPS,

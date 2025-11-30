@@ -10,13 +10,14 @@ import {
   Image,
   SafeAreaView,
 } from 'react-native';
+import { navigateToScreen } from '../utils/navigationHelpers';
 import CONSULTANT_IMAGE from '../../assets/static_assets/CONSULTANT_IMAGE.jpg';
 
 export default function CheckoutSummaryScreen({ navigation }: any) {
   const handlePayment = () => {
-    navigation.navigate('PaymentScreen', {
-      from: 'checkout-summary',
-      amount: 199,
+    navigateToScreen(navigation, 'PaymentScreen', {
+      params: { from: 'checkout-summary', amount: 199 },
+      parentTab: 'HomeTab',
     });
   };
 

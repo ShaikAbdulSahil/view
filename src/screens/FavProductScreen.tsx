@@ -7,10 +7,10 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  ActivityIndicator,
   Dimensions,
   Alert,
 } from 'react-native';
+import Skeleton from '../components/Skeleton';
 import ProductCard from '../components/ProductCard';
 import { getFavorites } from '../api/fav-api';
 import { useCart } from '../contexts/CartContext';
@@ -50,7 +50,7 @@ const FavProductScreen = () => {
         setFavoriteProducts(uniqueFavorites);
       } catch (err) {
         console.error('Failed to load favorite products:', err);
-        Alert.alert('Error', 'Unable to fetch favorites.');
+        import('../utils/errorAlert').then(({ showError }) => showError('Unable to fetch favorites.'));
       } finally {
         setLoading(false);
       }
@@ -83,8 +83,18 @@ const FavProductScreen = () => {
 
   if (loading) {
     return (
-      <View style={styles.loader}>
-        <ActivityIndicator size="large" color="#00BCD4" />
+      <View style={{ flex: 1, padding: 12, backgroundColor: '#fafafa' }}>
+        <Skeleton width={'50%'} height={28} radius={6} style={{ marginBottom: 12 }} />
+
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <View key={i} style={{ width: itemWidth, marginBottom: 16 }}>
+              <Skeleton width={'100%'} height={120} radius={10} />
+              <Skeleton width={'70%'} height={12} style={{ marginTop: 8 }} />
+              <Skeleton width={'40%'} height={12} style={{ marginTop: 6 }} />
+            </View>
+          ))}
+        </View>
       </View>
     );
   }

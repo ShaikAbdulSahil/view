@@ -16,7 +16,12 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#C7FCFF"
       },
-      "package": "com.sahilshaik786.mydent"
+      "package": "com.sahilshaik786.mydent",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDN8BFsIZT6n7vYcrn4Jw0NHWKUkIifZVw"
+        }
+      }
     },
     "web": {
       "bundler": "metro",

@@ -8,6 +8,7 @@ import {
   Pressable,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { navigateToScreen } from '../utils/navigationHelpers';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface CarouselProps {
@@ -44,12 +45,8 @@ export default function Carousel({ images }: CarouselProps) {
 
   const handlePress = (tab?: string, screen?: string) => {
     if (!screen) return;
-
-    if (tab) {
-      navigation.navigate(tab, { screen });
-    } else {
-      navigation.navigate(screen);
-    }
+    // Delegate to shared safe navigation helper
+    navigateToScreen(navigation, screen, { params: {}, parentTab: tab });
   };
 
   return (
@@ -65,12 +62,16 @@ export default function Carousel({ images }: CarouselProps) {
         {images.map((img, idx) => (
           <View key={idx} style={styles.imageWrapper}>
             <Pressable onPress={() => handlePress(img.tab, img.navigateTo)}>
-              <Image
-                source={{ uri: img.uri }}
-                style={styles.image}
-                fadeDuration={0}
-                resizeMethod="resize"
-              />
+              {img.uri ? (
+                <Image
+                  source={{ uri: img.uri }}
+                  style={styles.image}
+                  fadeDuration={0}
+                  resizeMethod="resize"
+                />
+              ) : (
+                <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+              )}
             </Pressable>
           </View>
         ))}

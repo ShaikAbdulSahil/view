@@ -37,7 +37,7 @@ export default function AgeSelectionScreen({ navigation }: any) {
       navigation.navigate('TeethIssueSelection');
     } catch (error) {
       console.error('Failed to update age group:', error);
-      Alert.alert('Error', 'Something went wrong while saving your selection.');
+      import('../utils/errorAlert').then(({ showError }) => showError('Something went wrong while saving your selection.'));
     } finally {
       setLoading(false);
     }

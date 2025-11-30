@@ -10,26 +10,51 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  ActivityIndicator,
 } from 'react-native';
+import Skeleton from './Skeleton';
 import { getCenters } from '../api/centers-api';
+
 
 export default function MydentCenters({ navigation }: any) {
   const [centers, setCenters] = useState<
     { cityName: string; imageUrl: string; _id: string }[]
   >([]);
   const [loading, setLoading] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
     setLoading(true);
+    let mounted = true;
     getCenters()
       .then((res) => {
+        if (!mounted) return;
         setCenters(res.data);
+
+        const urls = (res.data || []).map((c: any) => c.imageUrl).filter(Boolean);
+        if (urls.length === 0) {
+          setImagesLoaded(true);
+          return;
+        }
+
+        // Prefetch images and only stop loading once they are ready
+        Promise.all(urls.map((u: string) => Image.prefetch(u)))
+          .then(() => {
+            if (mounted) setImagesLoaded(true);
+          })
+          .catch((e) => {
+            console.warn('Image prefetch failed for centers', e);
+            if (mounted) setImagesLoaded(true);
+          });
       })
       .catch((err) => {
         console.error('Failed to fetch centers:', err);
+        setImagesLoaded(true);
       })
-      .finally(() => setLoading(false));
+      .finally(() => mounted && setLoading(false));
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   return (
@@ -41,8 +66,19 @@ export default function MydentCenters({ navigation }: any) {
         </TouchableOpacity>
       </View>
 
-      {loading ? (
-        <ActivityIndicator size="large" color="#007AFF" />
+      {loading || !imagesLoaded ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.row}
+        >
+          {Array.from({ length: 6 }).map((_, idx) => (
+            <View key={idx} style={styles.item}>
+              <Skeleton width={70} height={70} radius={35} />
+              <Skeleton style={{ marginTop: 8, width: 60, height: 10 }} />
+            </View>
+          ))}
+        </ScrollView>
       ) : (
         <ScrollView
           horizontal
@@ -59,13 +95,17 @@ export default function MydentCenters({ navigation }: any) {
                 })
               }
             >
-              <Image
-                source={{ uri: center.imageUrl }}
-                style={styles.image}
-                resizeMode="cover"
-                fadeDuration={0}
-                resizeMethod="resize"
-              />
+              {center.imageUrl ? (
+                <Image
+                  source={{ uri: center.imageUrl }}
+                  style={styles.image}
+                  resizeMode="cover"
+                  fadeDuration={0}
+                  resizeMethod="resize"
+                />
+              ) : (
+                <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+              )}
               <Text style={{ marginTop: 4 }}>{center.cityName}</Text>
             </TouchableOpacity>
           ))}

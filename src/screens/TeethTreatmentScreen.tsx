@@ -11,6 +11,51 @@ import { treatmentData } from '../constants/teethTreatment';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import IMG_12 from '../../assets/static_assets/IMG_12.png';
+import Skeleton from '../components/Skeleton';
+
+const LazyImage = ({
+  source,
+  style,
+  resizeMode = 'cover',
+}: {
+  source: any;
+  style?: any;
+  resizeMode?: any;
+}) => {
+  const [loaded, setLoaded] = useState(false);
+
+  // If local asset (number), render directly (keep original styling)
+  if (typeof source === 'number') {
+    return <Image source={source} style={style} resizeMode={resizeMode} />;
+  }
+
+  const uri = source?.uri;
+  // If no uri, render plain grey box with the same style
+  if (!uri) {
+    return <View style={[style, { backgroundColor: '#f0f0f0' }]} />;
+  }
+
+  // Ensure we preserve the original style/layout by applying it to the wrapper
+  const wrapperStyle = Array.isArray(style) ? StyleSheet.flatten(style) : style || {};
+  const imageBorderRadius = wrapperStyle?.borderRadius ?? 0;
+  const imageHeight = wrapperStyle?.height;
+
+  return (
+    <View style={wrapperStyle}>
+      {!loaded && (
+        <View style={StyleSheet.absoluteFill}>
+          <Skeleton width={'100%'} height={imageHeight ?? 200} radius={imageBorderRadius} />
+        </View>
+      )}
+      <Image
+        source={{ uri }}
+        style={[StyleSheet.absoluteFill, { borderRadius: imageBorderRadius }]}
+        resizeMode={resizeMode}
+        onLoad={() => setLoaded(true)}
+      />
+    </View>
+  );
+};
 
 type TeethTreatmentRouteParams = {
   params: {
@@ -51,23 +96,11 @@ export default function TeethTreatmentScreen() {
       </Section>
       {/* Intro Illustration Image */}
       {data.images[0] && (
-        <Image
-          source={{ uri: data.images[0] }}
-          style={styles.illustration}
-          resizeMode="contain"
-          fadeDuration={0}
-          resizeMethod="resize"
-        />
+        <LazyImage source={{ uri: data.images[0] }} style={styles.illustration} resizeMode="contain" />
       )}
       {/* Symptoms Image */}
       {data.images[1] && (
-        <Image
-          source={{ uri: data.images[1] }}
-          style={styles.fullWidthImage}
-          resizeMode="cover"
-          fadeDuration={0}
-          resizeMethod="resize"
-        />
+        <LazyImage source={{ uri: data.images[1] }} style={styles.fullWidthImage} resizeMode="cover" />
       )}
       {/* Why Treat */}
       <Section title={`Why should you correct ${routeKey}?`}>
@@ -79,13 +112,7 @@ export default function TeethTreatmentScreen() {
       </Section>
       {/* Aligners Image */}
       {data.images[2] && (
-        <Image
-          source={{ uri: data.images[2] }}
-          style={styles.fullWidthImage}
-          resizeMode="cover"
-          fadeDuration={0}
-          resizeMethod="resize"
-        />
+        <LazyImage source={{ uri: data.images[2] }} style={styles.fullWidthImage} resizeMode="cover" />
       )}
       {/* Journey / Process */}
       <Section title="How it Works – Your Smile Makeover Journey">
@@ -97,13 +124,7 @@ export default function TeethTreatmentScreen() {
       </Section>
       {/* Aligner Demo Image */}
       {data.images[3] && (
-        <Image
-          source={{ uri: data.images[3] }}
-          style={styles.fullWidthImage}
-          resizeMode="cover"
-          fadeDuration={0}
-          resizeMethod="resize"
-        />
+        <LazyImage source={{ uri: data.images[3] }} style={styles.fullWidthImage} resizeMode="cover" />
       )}
       {/* Cost */}
       <Section title={`Cost of ${routeKey} treatment`}>
@@ -158,7 +179,7 @@ export default function TeethTreatmentScreen() {
       </Section>
 
       {/* Gallery */}
-      <View style={{ marginTop: -20 }}>
+      <View style={{ marginTop: -20 , marginBottom:120}}>
         <Image
           source={IMG_12}
           style={styles.galleryImage}

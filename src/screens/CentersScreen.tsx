@@ -19,10 +19,12 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Carousel from '../components/Carousel';
+import Skeleton from '../components/Skeleton';
 import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import FeatureStats from '../components/FeatureStats';
 import { getCenters } from '../api/centers-api';
 import { getCarousels } from '../api/carousel-api';
+import { normalizeScreenName } from '../utils/navigationHelpers';
 import { CarouselItem } from './Home';
 
 type RootStackParamList = {
@@ -51,10 +53,17 @@ export default function Centers() {
   >({});
   const [bottomCarousel, setBottomCarousel] = useState<CarouselItem[]>([]);
   const scrollRef = useRef<ScrollView>(null);
+  const [centersLoading, setCentersLoading] = useState(true);
+  const [centersImagesLoaded, setCentersImagesLoaded] = useState(false);
+  const [carouselLoading, setCarouselLoading] = useState(true);
+  const [carouselImagesLoaded, setCarouselImagesLoaded] = useState(false);
 
   useEffect(() => {
+    setCentersLoading(true);
+    let mounted = true;
     getCenters()
       .then((res) => {
+        if (!mounted) return;
         const fetchedCenters = res.data;
 
         // Create a map of cityName -> services[]
@@ -68,10 +77,40 @@ export default function Centers() {
         const allOption = { cityName: 'All', imageUrl: '', clinic: [] };
         setCenters([allOption, ...fetchedCenters]);
         setServicesMap(newServiceMap);
+
+        // Prefetch clinic and service images
+        const clinicUrls: string[] = [];
+        fetchedCenters.forEach((c: any) => {
+          (c.clinic || []).forEach((cl: any) => {
+            if (cl.clinicImage) clinicUrls.push(cl.clinicImage);
+          });
+          (c.services || []).forEach((s: any) => {
+            if (s.image) clinicUrls.push(s.image);
+          });
+        });
+
+        if (clinicUrls.length === 0) {
+          setCentersImagesLoaded(true);
+        } else {
+          Promise.all(clinicUrls.map((u) => Image.prefetch(u)))
+            .then(() => setCentersImagesLoaded(true))
+            .catch((e) => {
+              console.warn('Centers image prefetch failed', e);
+              setCentersImagesLoaded(true);
+            });
+        }
       })
       .catch((err) => {
         console.error('Failed to fetch centers:', err);
+        setCentersImagesLoaded(true);
+      })
+      .finally(() => {
+        if (mounted) setCentersLoading(false);
       });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useFocusEffect(
@@ -91,24 +130,44 @@ export default function Centers() {
   );
 
   useEffect(() => {
+    setCarouselLoading(true);
+    let mounted = true;
     const fetchCarousels = async () => {
       try {
         const res = await getCarousels();
 
-        setBottomCarousel(
-          res.data.home.bottomCarousel.map((img: any) => ({
-            uri: img.imageUrl,
-            type: img.type,
-            group: 'home',
-            navigateTo: img.screenName || 'DefaultScreen',
-          })),
-        );
+        const items = res.data.home.bottomCarousel.map((img: any) => ({
+          uri: img.imageUrl,
+          type: img.type,
+          group: 'home',
+          navigateTo: normalizeScreenName(img.screenName) || 'DefaultScreen',
+        }));
+        if (!mounted) return;
+        setBottomCarousel(items);
+
+        const urls = (res.data.home.bottomCarousel || []).map((i: any) => i.imageUrl).filter(Boolean);
+        if (urls.length === 0) {
+          setCarouselImagesLoaded(true);
+        } else {
+          Promise.all(urls.map((u: string) => Image.prefetch(u)))
+            .then(() => setCarouselImagesLoaded(true))
+            .catch((e) => {
+              console.warn('Carousel prefetch failed', e);
+              setCarouselImagesLoaded(true);
+            });
+        }
       } catch (error) {
         console.error('Failed to load carousels:', error);
+        setCarouselImagesLoaded(true);
+      } finally {
+        if (mounted) setCarouselLoading(false);
       }
     };
 
     fetchCarousels();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const filteredClinics =
@@ -124,7 +183,11 @@ export default function Centers() {
         backgroundColor: '#f9f9f9',
       }}
     >
-      <Carousel images={bottomCarousel} />
+      {(carouselLoading || !carouselImagesLoaded) ? (
+        <Skeleton width={'100%'} height={200} radius={10} style={{ marginBottom: 10 }} />
+      ) : (
+        <Carousel images={bottomCarousel} />
+      )}
 
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>
@@ -141,37 +204,60 @@ export default function Centers() {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.cityTabs}
       >
-        {centers.map((city) => (
-          <TouchableOpacity
-            key={city._id || city.cityName}
-            onPress={() => setSelectedCity(city.cityName)}
-            style={[
-              styles.cityButton,
-              selectedCity === city.cityName && styles.activeCityButton,
-            ]}
-          >
-            <Text
+        {centersLoading ? (
+          Array.from({ length: 6 }).map((_, i) => (
+            <View key={i} style={{ marginRight: 10 }}>
+              <Skeleton width={90} height={36} radius={20} />
+            </View>
+          ))
+        ) : (
+          centers.map((city) => (
+            <TouchableOpacity
+              key={city._id || city.cityName}
+              onPress={() => setSelectedCity(city.cityName)}
               style={[
-                styles.cityButtonText,
-                selectedCity === city.cityName && styles.activeCityButtonText,
+                styles.cityButton,
+                selectedCity === city.cityName && styles.activeCityButton,
               ]}
             >
-              {city.cityName}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                style={[
+                  styles.cityButtonText,
+                  selectedCity === city.cityName && styles.activeCityButtonText,
+                ]}
+              >
+                {city.cityName}
+              </Text>
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
 
       <View style={{ padding: 16 }}>
-        {filteredClinics.length > 0 ? (
+        {(centersLoading || !centersImagesLoaded) ? (
+          Array.from({ length: 3 }).map((_, idx) => (
+            <View key={idx} style={styles.card}>
+              <Skeleton width={'100%'} height={180} radius={8} />
+              <View style={styles.infoContainer}>
+                <Skeleton width={'60%'} height={16} radius={4} style={{ marginBottom: 8 }} />
+                <Skeleton width={'80%'} height={12} radius={4} style={{ marginBottom: 6 }} />
+                <Skeleton width={'40%'} height={12} radius={4} />
+              </View>
+            </View>
+          ))
+        ) : filteredClinics.length > 0 ? (
           filteredClinics.map((clinic) => (
             <View key={clinic._id || clinic.clinicName} style={styles.card}>
-              <Image
-                source={{ uri: clinic.clinicImage }}
-                style={styles.image}
-                fadeDuration={0}
-                resizeMethod="resize"
-              />
+              {clinic.clinicImage ? (
+                <Image
+                  source={{ uri: clinic.clinicImage }}
+                  style={styles.image}
+                  fadeDuration={0}
+                  resizeMethod="resize"
+                />
+              ) : (
+                <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+              )}
               <View style={styles.infoContainer}>
                 <Text style={styles.name}>{clinic.clinicName}</Text>
 

@@ -9,11 +9,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Alert,
 } from 'react-native';
 import RazorpayCheckout from 'react-native-razorpay';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { createOrder, verifyPayment } from '../api/payment-api';
+import { showPaymentSuccessAlert, showPaymentFailureAlert } from '../utils/errorAlert';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import type { ComponentProps } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -23,7 +23,14 @@ type IconName = ComponentProps<typeof MaterialCommunityIcons>['name'];
 const PaymentScreen = () => {
   const route = useRoute();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const { amount } = route.params as { amount: number };
+  // Accept both direct params and nested `{ params: { amount } }` shapes
+  const routeParams = (route as any)?.params ?? {};
+  const amount: number =
+    typeof routeParams.amount === 'number'
+      ? routeParams.amount
+      : typeof routeParams?.params?.amount === 'number'
+        ? routeParams.params.amount
+        : 0;
   const [selectedUpiApp, setSelectedUpiApp] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -37,6 +44,10 @@ const PaymentScreen = () => {
   const handlePayment = async () => {
     try {
       setLoading(true);
+      if (!amount || amount <= 0) {
+        showPaymentFailureAlert('Invalid amount. Please try again.');
+        return;
+      }
       const { id: order_id, amount: orderAmount } = await createOrder(amount);
 
       const options: any = {
@@ -71,6 +82,7 @@ const PaymentScreen = () => {
         };
       }
 
+      // Open Razorpay checkout
       RazorpayCheckout.open(options)
         .then(async (paymentData: any) => {
           const verifyRes = await verifyPayment({
@@ -81,18 +93,17 @@ const PaymentScreen = () => {
 
           console.log('✨ ~ verifyRes:', verifyRes);
 
-          Alert.alert(
-            '✅ Payment Successful',
-            'Transaction verified successfully.',
-          );
-          navigation.navigate('BookingSuccessScreen');
+          showPaymentSuccessAlert('Transaction verified successfully.', () => {
+            navigation.navigate('BookingSuccessScreen');
+          });
         })
         .catch((error: any) => {
-          Alert.alert('❌ Payment Failed', error?.description || 'Cancelled');
+          const msg = typeof error?.description === 'string' ? error.description : 'Payment cancelled or failed';
+          showPaymentFailureAlert(msg);
         });
     } catch (err) {
       console.error(err);
-      Alert.alert('Error', 'Something went wrong. Please try again.');
+      showPaymentFailureAlert('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }

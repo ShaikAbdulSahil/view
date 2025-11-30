@@ -14,49 +14,107 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
+import Skeleton from '../components/Skeleton';
 import { getAllBlogs } from '../api/transformation-api';
 
 export default function TransformationScreen({ navigation }: any) {
   const [blogs, setBlogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
     const fetchBlogs = async () => {
       try {
+        setLoading(true);
         const response = await getAllBlogs();
-        setBlogs(response.data);
+        if (!mounted) return;
+        const data = response.data || [];
+        setBlogs(data);
+
+        // Prefetch images
+        const urls: string[] = [];
+        data.forEach((b: any) => {
+          if (b?.imageUrl) urls.push(b.imageUrl);
+        });
+
+        if (urls.length === 0) {
+          if (mounted) setImagesLoaded(true);
+        } else {
+          Promise.all(urls.map((u) => Image.prefetch(u)))
+            .then(() => {
+              if (mounted) setImagesLoaded(true);
+            })
+            .catch((e) => {
+              console.warn('Transformation images prefetch failed', e);
+              if (mounted) setImagesLoaded(true);
+            });
+        }
       } catch (error) {
         console.error('Failed to fetch blogs:', error);
+        if (mounted) setImagesLoaded(true);
+      } finally {
+        if (mounted) setLoading(false);
       }
     };
 
     fetchBlogs();
+    return () => {
+      mounted = false;
+    };
   }, []);
+
+  // Show skeletons while loading data or prefetching images
+  if (loading || !imagesLoaded) {
+    return (
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <Text style={styles.title}>Before vs After Treatment</Text>
+        <View style={styles.grid}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <View key={i} style={styles.card}>
+              <Skeleton width={'100%'} height={'100%'} radius={10} />
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    );
+  }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.title}>Before vs After Treatment</Text>
 
-      <View style={styles.grid}>
-        {blogs.map((item, idx) => (
-          <TouchableOpacity
-            key={idx}
-            style={styles.card}
-            onPress={() =>
-              navigation.navigate('TransformationBlogDetailsScreen', {
-                blog: item,
-              })
-            }
-          >
-            <Image
-              source={{ uri: item.imageUrl }}
-              style={styles.image}
-              resizeMode="cover"
-              fadeDuration={0}
-              resizeMethod="resize"
-            />
-          </TouchableOpacity>
-        ))}
-      </View>
+      {blogs.length === 0 ? (
+        <View style={{ padding: 16 }}>
+          <Text style={{ color: '#666' }}>No transformations available.</Text>
+        </View>
+      ) : (
+        <View style={styles.grid}>
+          {blogs.map((item, idx) => (
+            <TouchableOpacity
+              key={idx}
+              style={styles.card}
+              onPress={() =>
+                navigation.navigate('TransformationBlogDetailsScreen', {
+                  blog: item,
+                })
+              }
+            >
+              {item.imageUrl ? (
+                <Image
+                  source={{ uri: item.imageUrl }}
+                  style={styles.image}
+                  resizeMode="cover"
+                  fadeDuration={0}
+                  resizeMethod="resize"
+                />
+              ) : (
+                <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
     </ScrollView>
   );
 }

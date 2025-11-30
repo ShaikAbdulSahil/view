@@ -13,11 +13,13 @@ import {
   Image,
   TouchableOpacity,
   Modal,
+  Linking,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useUser } from '../contexts/UserContext';
 import EditProfileForm from './EditUserDetails';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CommonActions } from '@react-navigation/native';
 import MYDENT_LOGO from '../../assets/static_assets/LOGO_PNG_PREVIEW.png';
 import CONSULTANT_IMAGE from '../../assets/static_assets/CONSULTANT_IMAGE.jpg';
 
@@ -98,12 +100,47 @@ export default function CustomDrawerContent(props: any) {
           <DrawerItem
             key={index}
             label={item.label}
-            onPress={() =>
+            onPress={async () => {
+              if (item.label === 'Help & Support') {
+                Linking.openURL('https://wa.me/+919381590963');
+                return;
+              }
+              if (item.label === 'Rate us') {
+                const pkg = 'com.sahilshaik786.mydent';
+                const marketUrl = `market://details?id=${pkg}`;
+                const webUrl = `https://play.google.com/store/apps/details?id=${pkg}`;
+                try {
+                  const canOpen = await Linking.canOpenURL(marketUrl);
+                  if (canOpen) {
+                    await Linking.openURL(marketUrl);
+                  } else {
+                    await Linking.openURL(webUrl);
+                  }
+                } catch {
+                  await Linking.openURL(webUrl);
+                }
+                return;
+              }
+              if (item.label === 'Refer a friend') {
+                const pkg = 'com.sahilshaik786.mydent';
+                const storeUrl = `https://play.google.com/store/apps/details?id=${pkg}`;
+                const message = encodeURIComponent(
+                  `Check out the Mydent app! Download here: ${storeUrl}`,
+                );
+                const waShareUrl = `https://wa.me/?text=${message}`;
+                try {
+                  await Linking.openURL(waShareUrl);
+                } catch {
+                  // fallback: open store link directly
+                  await Linking.openURL(storeUrl);
+                }
+                return;
+              }
               props.navigation.navigate('HomeTabs', {
                 screen: item.parentTab ?? item.screen,
                 ...(item.parentTab && { params: { screen: item.screen } }),
-              })
-            }
+              });
+            }}
             icon={({ size }) => (
               <Ionicons name={item.icon as any} size={size} color={iconColor} />
             )}
@@ -151,11 +188,21 @@ export default function CustomDrawerContent(props: any) {
               // 2. Optionally reset user state if using context
               setUser(null);
 
-              // 3. Navigate and reset navigation stack
-              props.navigation.reset({
+              // 3. Reset navigation stack to login screen (ensure route name exists)
+              const resetAction = CommonActions.reset({
                 index: 0,
-                routes: [{ name: 'Login' }],
+                routes: [{ name: 'LoginScreen' }],
               });
+              try {
+                props.navigation.dispatch(resetAction);
+              } catch (e) {
+                // Fallback: try legacy name if LoginScreen not registered here
+                const legacyReset = CommonActions.reset({
+                  index: 0,
+                  routes: [{ name: 'Login' }],
+                });
+                props.navigation.dispatch(legacyReset);
+              }
             } catch (err) {
               console.error('Logout error:', err);
             }
@@ -185,6 +232,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E9F9FA',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    borderTopRightRadius: 18,
     height: 100,
     paddingHorizontal: 10,
     marginTop: -50,
@@ -192,7 +240,7 @@ const styles = StyleSheet.create({
   logo: {
     width: '100%',
     height: 90,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
   profileContainer: {
     padding: 16,

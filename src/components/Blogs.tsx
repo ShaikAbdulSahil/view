@@ -14,15 +14,29 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { getLatestBlogs } from '../api/blogs-api';
+import Skeleton from './Skeleton';
+
 
 export default function Blogs({ navigation }: any) {
   const [blogs, setBlogs] = useState<any[]>([]);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
         const response = await getLatestBlogs();
         setBlogs(response.data);
+        const urls = (response.data || []).slice(0, 6).map((b: any) => b.images?.[0]).filter(Boolean);
+        if (urls.length === 0) {
+          setImagesLoaded(true);
+        } else {
+          Promise.all(urls.map((u: string) => Image.prefetch(u)))
+            .then(() => setImagesLoaded(true))
+            .catch((e) => {
+              console.warn('Image prefetch failed for blogs', e);
+              setImagesLoaded(true);
+            });
+        }
       } catch (error) {
         console.error('Failed to fetch blogs:', error);
       }
@@ -55,18 +69,32 @@ export default function Blogs({ navigation }: any) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollContainer}
       >
-        {blogs.map((blog) => (
-          <TouchableOpacity
-            key={blog._id}
-            style={styles.card}
-            onPress={() => handlePress(blog)}
-          >
-            <Image source={{ uri: blog.images[0] }} style={styles.image} fadeDuration={0} resizeMethod="resize" />
-            <Text style={styles.title} numberOfLines={3}>
-              {blog.title}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        {(blogs.length === 0 || !imagesLoaded) ? (
+          Array.from({ length: 4 }).map((_, idx) => (
+            <View key={idx} style={styles.card}>
+              <Skeleton width={'100%'} height={110} radius={12} />
+              <Skeleton style={{ marginTop: 8, width: '80%', height: 12 }} />
+              <Skeleton style={{ marginTop: 6, width: '60%', height: 12 }} />
+            </View>
+          ))
+        ) : (
+          blogs.map((blog) => (
+            <TouchableOpacity
+              key={blog._id}
+              style={styles.card}
+              onPress={() => handlePress(blog)}
+            >
+              {blog.images && blog.images[0] ? (
+                <Image source={{ uri: blog.images[0] }} style={styles.image} fadeDuration={0} resizeMethod="resize" />
+              ) : (
+                <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+              )}
+              <Text style={styles.title} numberOfLines={3}>
+                {blog.title}
+              </Text>
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
     </View>
   );

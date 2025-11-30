@@ -45,7 +45,7 @@ export default function MedicalHistoryScreen({ navigation }: any) {
       navigation.navigate('GenderSelection');
     } catch (error) {
       console.error('Failed to update medical history:', error);
-      Alert.alert('Error', 'Something went wrong while saving your selection.');
+      import('../utils/errorAlert').then(({ showError }) => showError('Something went wrong while saving your selection.'));
     } finally {
       setLoading(false);
     }

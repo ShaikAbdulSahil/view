@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import AD_BANNER from '../../assets/static_assets/AD_BANNER.png';
 
+
 export default function BeforeAfterTreatment() {
   const navigation = useNavigation<NavigationProp<any>>();
 

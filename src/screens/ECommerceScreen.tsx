@@ -15,12 +15,15 @@ import {
   Image,
   ScrollView,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
+import { showError } from '../utils/errorAlert';
 import Carousel from '../components/Carousel';
+import Skeleton from '../components/Skeleton';
+import { showSuccess } from '../utils/successToast';
 import { addToCart } from '../api/cart-api';
 import FeatureStats from '../components/FeatureStats';
 import { getCarousels } from '../api/carousel-api';
+import { normalizeScreenName } from '../utils/navigationHelpers';
 import { getAllProducts } from '../api/product-api';
 import ProductCard from '../components/ProductCard';
 import {
@@ -45,6 +48,8 @@ export default function EComScreen({ navigation }: any) {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<any[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [carouselImagesLoaded, setCarouselImagesLoaded] = useState(false);
 
   const bestSellers = categories.filter((p) => p.bestSeller);
   const combos = categories.filter((p) => p.combos);
@@ -87,7 +92,7 @@ export default function EComScreen({ navigation }: any) {
             type: img.type,
             group: 'shop',
             tab: img.tabName || 'Home',
-            navigateTo: img.screenName || 'DefaultScreen',
+            navigateTo: normalizeScreenName(img.screenName) || 'DefaultScreen',
           })),
         );
 
@@ -97,7 +102,7 @@ export default function EComScreen({ navigation }: any) {
             type: img.type,
             group: 'shop',
             tab: img.tabName || 'Home',
-            navigateTo: img.screenName || 'DefaultScreen',
+            navigateTo: normalizeScreenName(img.screenName) || 'DefaultScreen',
           })),
         );
         setBottomCarousel(
@@ -106,9 +111,24 @@ export default function EComScreen({ navigation }: any) {
             type: img.type,
             group: 'shop',
             tab: img.tabName || 'Home',
-            navigateTo: img.screenName || 'DefaultScreen',
+            navigateTo: normalizeScreenName(img.screenName) || 'DefaultScreen',
           })),
         );
+        // Prefetch carousel images
+        const urls: string[] = [];
+        (res.data.shop.topCarousel || []).forEach((i: any) => i.imageUrl && urls.push(i.imageUrl));
+        (res.data.shop.middleCarousel || []).forEach((i: any) => i.imageUrl && urls.push(i.imageUrl));
+        (res.data.shop.bottomCarousel || []).forEach((i: any) => i.imageUrl && urls.push(i.imageUrl));
+        if (urls.length === 0) {
+          setCarouselImagesLoaded(true);
+        } else {
+          Promise.all(urls.map((u) => Image.prefetch(u)))
+            .then(() => setCarouselImagesLoaded(true))
+            .catch((e) => {
+              console.warn('Carousel prefetch failed', e);
+              setCarouselImagesLoaded(true);
+            });
+        }
       } catch (error) {
         console.error('Failed to load carousels:', error);
       } finally {
@@ -120,6 +140,22 @@ export default function EComScreen({ navigation }: any) {
       try {
         const products = await getAllProducts();
         setCategories(products);
+        // Prefetch product images (first image of each product)
+        const prodUrls: string[] = [];
+        (products || []).forEach((p: any) => {
+          const rawImage = Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : p.images;
+          if (typeof rawImage === 'string' && rawImage) prodUrls.push(rawImage);
+        });
+        if (prodUrls.length === 0) {
+          setImagesLoaded(true);
+        } else {
+          Promise.all(prodUrls.map((u: string) => Image.prefetch(u)))
+            .then(() => setImagesLoaded(true))
+            .catch((e) => {
+              console.warn('Product images prefetch failed', e);
+              setImagesLoaded(true);
+            });
+        }
       } catch (error) {
         console.error('Failed to load products:', error);
       }
@@ -139,13 +175,8 @@ export default function EComScreen({ navigation }: any) {
     fetchFavorites();
   }, []);
 
-  if (loading) {
-    return (
-      <View style={styles.loader}>
-        <ActivityIndicator size="large" color="#000" />
-      </View>
-    );
-  }
+  // We no longer short-circuit render the whole screen while loading.
+  // Instead we show skeletons in-place until data and images are ready.
 
   const handleToggleFavorite = async (productId: string, newState: boolean) => {
     try {
@@ -164,14 +195,14 @@ export default function EComScreen({ navigation }: any) {
   const handleAddToCart = async (product: any, quantity: number) => {
     try {
       if (!product || !product._id) {
-        Alert.alert('Error', 'Product ID is missing');
+        showError('Product ID is missing');
         return;
       }
       await addToCart(product._id, quantity);
-      Alert.alert('Success', `${product.title} added to cart`);
+      showSuccess(`${product.title} added to cart`);
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', 'Failed to add product to cart');
+      showError('Failed to add product to cart');
     }
   };
 
@@ -180,47 +211,66 @@ export default function EComScreen({ navigation }: any) {
       <Text style={styles.header}>Oral Care Categories</Text>
 
       {/* CATEGORIES GRID */}
-      <FlatList
-        data={categories}
-        numColumns={4}
-        keyExtractor={(item) => item._id}
-        scrollEnabled={false}
-        renderItem={({ item }) => {
-          // 1. Safely extract the specific image asset (handle Array vs Single value)
-          const rawImage = Array.isArray(item.images) && item.images.length > 0
-            ? item.images[0]
-            : item.images;
-
-          // 2. Determine the correct source format for React Native Image
-          const imageSource = typeof rawImage === 'string'
-            ? { uri: rawImage } // Remote URL -> Needs { uri: ... }
-            : rawImage;         // Local Asset (Number) -> Pass directly
-
-          return (
-            <TouchableOpacity
-              style={styles.item}
-              onPress={() =>
-                navigation.navigate('ProductDetailScreen', {
-                  productId: item._id,
-                })
-              }
-            >
+      {!imagesLoaded ? (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 8 }}>
+          {Array.from({ length: 12 }).map((_, i) => (
+            <View key={i} style={styles.item}>
               <View style={styles.imageWrapper}>
-                <Image
-                  source={imageSource}
-                  style={styles.icon}
-                  fadeDuration={0}      // Optimization: Load instantly
-                  resizeMethod="resize" // Optimization: Low memory usage on Android
-                />
+                <Skeleton width={'70%'} height={'70%'} radius={12} />
               </View>
-              <Text style={styles.label}>{item.title || item.name}</Text>
-            </TouchableOpacity>
-          );
-        }}
-      />
+              <Skeleton width={'80%'} height={12} radius={4} style={{ marginTop: 6 }} />
+            </View>
+          ))}
+        </View>
+      ) : (
+        <FlatList
+          data={categories}
+          numColumns={4}
+          keyExtractor={(item) => item._id}
+          scrollEnabled={false}
+          renderItem={({ item }) => {
+            const rawImage = Array.isArray(item.images) && item.images.length > 0
+              ? item.images[0]
+              : item.images;
+
+            const imageSource = typeof rawImage === 'string' ? { uri: rawImage } : rawImage;
+
+            return (
+              <TouchableOpacity
+                style={styles.item}
+                onPress={() =>
+                  navigation.navigate('ProductDetailScreen', {
+                    productId: item._id,
+                  })
+                }
+              >
+                <View style={styles.imageWrapper}>
+                  {imageSource ? (
+                    <Image
+                      source={imageSource}
+                      style={styles.icon}
+                      fadeDuration={0}
+                      resizeMethod="resize"
+                    />
+                  ) : (
+                    <View style={[styles.icon, { backgroundColor: '#f0f0f0', borderRadius: 8 }]} />
+                  )}
+                </View>
+                <Text style={styles.label}>{item.title || item.name}</Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      )}
 
       {/* TOP CAROUSEL */}
-      {topCarousel.length > 0 && <Carousel images={topCarousel} />}
+      {topCarousel.length > 0 ? (
+        carouselImagesLoaded ? (
+          <Carousel images={topCarousel} />
+        ) : (
+          <Skeleton width={'100%'} height={180} radius={10} style={{ marginVertical: 8 }} />
+        )
+      ) : null}
 
       {/* SECTIONS */}
       {sections.map((section) => (
@@ -232,31 +282,55 @@ export default function EComScreen({ navigation }: any) {
             </TouchableOpacity>
           </View>
 
-          <FlatList
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            data={section.data}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => (
-              <ProductCard
-                item={item}
-                onAddToCart={(product: any, quantity: number) =>
-                  handleAddToCart(product, quantity)
-                }
-                onToggleFavorite={() =>
-                  handleToggleFavorite(item._id, !favorites.includes(item._id))
-                }
-              />
-            )}
-            contentContainerStyle={styles.horizontalList}
-          />
+          {!imagesLoaded ? (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalList}>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <View key={i} style={{ width: 160, marginRight: 12 }}>
+                  <Skeleton width={'100%'} height={140} radius={8} />
+                  <Skeleton width={'80%'} height={12} radius={4} style={{ marginTop: 8 }} />
+                  <Skeleton width={'60%'} height={12} radius={4} style={{ marginTop: 6 }} />
+                </View>
+              ))}
+            </ScrollView>
+          ) : (
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={section.data}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => (
+                <ProductCard
+                  item={item}
+                  onAddToCart={(product: any, quantity: number) =>
+                    handleAddToCart(product, quantity)
+                  }
+                  onToggleFavorite={() =>
+                    handleToggleFavorite(item._id, !favorites.includes(item._id))
+                  }
+                />
+              )}
+              contentContainerStyle={styles.horizontalList}
+            />
+          )}
         </View>
       ))}
 
       {/* MIDDLE CAROUSEL */}
-      {middleCarousel.length > 0 && <Carousel images={middleCarousel} />}
+      {middleCarousel.length > 0 ? (
+        carouselImagesLoaded ? (
+          <Carousel images={middleCarousel} />
+        ) : (
+          <Skeleton width={'100%'} height={140} radius={10} style={{ marginVertical: 8 }} />
+        )
+      ) : null}
 
-      {bottomCarousel.length > 0 && <Carousel images={bottomCarousel} />}
+      {bottomCarousel.length > 0 ? (
+        carouselImagesLoaded ? (
+          <Carousel images={bottomCarousel} />
+        ) : (
+          <Skeleton width={'100%'} height={140} radius={10} style={{ marginVertical: 8 }} />
+        )
+      ) : null}
       <FeatureStats />
       {/* BOTTOM CAROUSEL at end */}
     </ScrollView>

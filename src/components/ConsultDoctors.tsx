@@ -9,9 +9,9 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  ActivityIndicator,
 } from 'react-native';
 import { getExperts } from '../api/expert-api';
+import Skeleton from './Skeleton';
 
 interface Expert {
   _id: string;
@@ -22,12 +22,24 @@ interface Expert {
 export default function DoctorCard() {
   const [experts, setExperts] = useState<Expert[]>([]);
   const [loading, setLoading] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
     const fetchExperts = async () => {
       try {
         const { data } = await getExperts();
         setExperts(data);
+        const urls = (data || []).map((d: any) => d.imageUrl).filter(Boolean);
+        if (urls.length === 0) {
+          setImagesLoaded(true);
+        } else {
+          Promise.all(urls.map((u: string) => Image.prefetch(u)))
+            .then(() => setImagesLoaded(true))
+            .catch((e) => {
+              console.warn('Image prefetch failed for experts', e);
+              setImagesLoaded(true);
+            });
+        }
       } catch (error) {
         console.error('Failed to fetch experts:', error);
       } finally {
@@ -40,11 +52,15 @@ export default function DoctorCard() {
 
   const renderItem = ({ item }: { item: Expert }) => (
     <TouchableOpacity style={styles.card}>
-      <Image
-        source={{ uri: item.imageUrl }}
-        style={styles.image} fadeDuration={0}
-        resizeMethod="resize"
-      />
+      {item.imageUrl ? (
+        <Image
+          source={{ uri: item.imageUrl }}
+          style={styles.image} fadeDuration={0}
+          resizeMethod="resize"
+        />
+      ) : (
+        <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+      )}
       <Text style={styles.name} numberOfLines={2}>
         {item.title}
       </Text>
@@ -59,8 +75,20 @@ export default function DoctorCard() {
         superstars.
       </Text>
 
-      {loading ? (
-        <ActivityIndicator size="large" color="#e53935" />
+      {loading || !imagesLoaded ? (
+        <FlatList
+          data={Array.from({ length: 4 })}
+          renderItem={() => (
+            <View style={styles.card}>
+              <Skeleton width={'100%'} height={190} radius={12} />
+              <Skeleton style={{ marginTop: 8, width: '60%', height: 12 }} />
+            </View>
+          )}
+          keyExtractor={(_, i) => String(i)}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContainer}
+        />
       ) : (
         <FlatList
           data={experts}

@@ -13,6 +13,7 @@ import SERVICE_CARD_BOOK_2 from '../../assets/static_assets/SERVICE_CARD_BOOK_2.
 import SERVICE_CARD_BOOK_4 from '../../assets/static_assets/SERVICE_CARD_BOOK_4.png';
 import SERVICE_CARD_MY_DENT_AI from '../../assets/static_assets/SERVICE_CARD_MY_DENT_AI.jpg';
 
+
 const services = [
   {
     title: 'Book Appointment',

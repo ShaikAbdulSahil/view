@@ -20,6 +20,7 @@ import VIDEO_5 from '../../assets/static_assets/VIDEO_5.png';
 import VIDEO_6 from '../../assets/static_assets/VIDEO_6.png';
 import VIDEO_7 from '../../assets/static_assets/VIDEO_7.png';
 
+
 const categories = [
   { title: 'Under bite', img: VIDEO_1 },
   { title: 'Open bite', img: VIDEO_2 },

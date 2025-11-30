@@ -83,7 +83,7 @@ export default function TeethIssueSelectionScreen({ navigation }: any) {
       navigation.navigate('ProblemDetail');
     } catch (error) {
       console.error('Failed to update teeth issue:', error);
-      Alert.alert('Error', 'Something went wrong while saving your selection.');
+      import('../utils/errorAlert').then(({ showError }) => showError('Something went wrong while saving your selection.'));
     } finally {
       setLoading(false);
     }

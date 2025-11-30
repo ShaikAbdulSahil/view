@@ -13,11 +13,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-  ActivityIndicator,
   FlatList,
 } from 'react-native';
+import Skeleton from '../components/Skeleton';
 import { Ionicons } from '@expo/vector-icons';
 import { getTicket, updateTicketStatus } from '../api/tickets-api';
+import { showSuccess } from '../utils/successToast';
 
 const CancelTicketScreen = () => {
   const [tickets, setTickets] = useState<any[]>([]);
@@ -32,7 +33,7 @@ const CancelTicketScreen = () => {
         }
       } catch (error) {
         console.error('Failed to fetch tickets:', error);
-        Alert.alert('Error', 'Could not load ticket data.');
+        import('../utils/errorAlert').then(({ showError }) => showError('Could not load ticket data.'));
       } finally {
         setLoading(false);
       }
@@ -59,10 +60,10 @@ const CancelTicketScreen = () => {
               setTickets((prev) =>
                 prev.map((t) => (t._id === ticketId ? updated : t)),
               );
-              Alert.alert('Success', 'Ticket has been cancelled.');
+              showSuccess('Ticket has been cancelled.');
             } catch (error) {
               console.error('Cancel failed:', error);
-              Alert.alert('Error', 'Failed to cancel the ticket.');
+              import('../utils/errorAlert').then(({ showError }) => showError('Failed to cancel the ticket.'));
             }
           },
         },
@@ -72,8 +73,16 @@ const CancelTicketScreen = () => {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#007bff" />
+      <View style={{ flex: 1, padding: 16, backgroundColor: '#f9fafa' }}>
+        <Skeleton width={'40%'} height={24} radius={6} style={{ marginBottom: 12 }} />
+
+        {Array.from({ length: 3 }).map((_, i) => (
+          <View key={i} style={{ backgroundColor: '#fff', padding: 12, borderRadius: 12, marginBottom: 12 }}>
+            <Skeleton width={'60%'} height={16} radius={6} style={{ marginBottom: 8 }} />
+            <Skeleton width={'40%'} height={12} radius={6} />
+            <Skeleton width={'30%'} height={12} radius={6} style={{ marginTop: 8 }} />
+          </View>
+        ))}
       </View>
     );
   }

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import HOSPITAL_ICON from '../../assets/static_assets/HOSPITAL_ICON.png';
 
+
 interface Props {
   onPress: () => void;
 }

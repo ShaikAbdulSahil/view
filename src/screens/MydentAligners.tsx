@@ -15,14 +15,15 @@ import {
   StyleSheet,
   TouchableOpacity,
   LayoutAnimation,
-  ActivityIndicator,
   TouchableWithoutFeedback,
 } from 'react-native';
+import Skeleton from '../components/Skeleton';
 import { ResizeMode, Video } from 'expo-av';
 import Carousel from '../components/Carousel';
 import FeatureStats from '../components/FeatureStats';
 import { Ionicons } from '@expo/vector-icons';
 import { getCarousels } from '../api/carousel-api';
+import { normalizeScreenName } from '../utils/navigationHelpers';
 import { getAligners } from '../api/aligners-api';
 import TeethAlignmentProblems from '../components/TeethAlignmentProblems';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -63,6 +64,7 @@ const MyDentAlignersScreen = () => {
   const [loading, setLoading] = useState(true);
   const [images, setImages] = useState<{ uri: string }[]>([]);
   const [videos, setVideos] = useState<{ uri: string }[]>([]);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
   const [price, setPrice] = useState('');
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
@@ -119,7 +121,7 @@ const MyDentAlignersScreen = () => {
             type: img.type,
             group: 'home',
             tab: img.tabName || 'Home',
-            navigateTo: img.screenName || 'DefaultScreen',
+            navigateTo: normalizeScreenName(img.screenName) || 'DefaultScreen',
           })),
         );
 
@@ -138,7 +140,23 @@ const MyDentAlignersScreen = () => {
           if (firstAligner.price) {
             setPrice(aligner[0].price);
           }
-        } 
+        }
+
+        // Prefetch images used on this screen (carousel + aligner images)
+        try {
+          const carouselUrls = (carouselRes.data?.home?.mydentCarousel || []).map((i: any) => i.imageUrl).filter(Boolean);
+          const alignerUrls = (aligner && aligner[0] && aligner[0].image) ? aligner[0].image : [];
+          const urls = [...carouselUrls, ...alignerUrls];
+          if (urls.length === 0) {
+            setImagesLoaded(true);
+          } else {
+            await Promise.all(urls.map((u: string) => Image.prefetch(u)));
+            setImagesLoaded(true);
+          }
+        } catch (e) {
+          console.warn('Image prefetch failed for MydentAligners', e);
+          setImagesLoaded(true);
+        }
       } catch (err) {
         console.error('Failed to fetch aligner or carousel data:', err);
       } finally {
@@ -176,13 +194,7 @@ const MyDentAlignersScreen = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <View style={styles.loader}>
-        <ActivityIndicator size="large" color="#000" />
-      </View>
-    );
-  }
+
 
   const toggleFAQ = (index: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -197,7 +209,13 @@ const MyDentAlignersScreen = () => {
           <Text style={styles.subtitle}>
             Achieve Your Dream Smile with mydent Clear Aligners
           </Text>
-          <Image source={images[0]} style={styles.image} fadeDuration={0} resizeMethod="resize" />
+          {!imagesLoaded ? (
+            <Skeleton width={'100%'} height={200} radius={8} style={{ marginVertical: 10 }} />
+          ) : images[0] ? (
+            <Image source={images[0]} style={styles.image} fadeDuration={0} resizeMethod="resize" />
+          ) : (
+            <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+          )}
           <Text style={styles.text}>
             mydent's transparent aligners are designed to gently shift your
             teeth into place over time. These removable, custom-fit trays are a
@@ -218,10 +236,20 @@ const MyDentAlignersScreen = () => {
           </Text>
         </View>
       </View>
-      <Carousel images={mydentCarousel} />
+      {(!imagesLoaded || mydentCarousel.length === 0) ? (
+        <Skeleton width={'100%'} height={200} radius={12} style={{ marginVertical: 10 }} />
+      ) : (
+        <Carousel images={mydentCarousel} />
+      )}
       {/* Problems We Address */}
       <View style={styles.section}>
-        <Image source={images[1]} style={styles.image} fadeDuration={0} resizeMethod="resize" />
+        {!imagesLoaded ? (
+          <Skeleton width={'100%'} height={200} radius={8} style={{ marginVertical: 10 }} />
+        ) : images[1] ? (
+          <Image source={images[1]} style={styles.image} fadeDuration={0} resizeMethod="resize" />
+        ) : (
+          <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+        )}
         <Text style={styles.title}>Dental Problems We Can Address</Text>
         <Text style={styles.text}>
           Spacing, crowding, overbite, underbite, and more
@@ -280,7 +308,13 @@ const MyDentAlignersScreen = () => {
         </View>
         {/* Technology */}
         <View style={styles.technology}>
-          <Image source={images[2]} style={styles.image} fadeDuration={0} resizeMethod="resize" />
+          {!imagesLoaded ? (
+            <Skeleton width={'100%'} height={200} radius={8} style={{ marginVertical: 10 }} />
+          ) : images[2] ? (
+            <Image source={images[2]} style={styles.image} fadeDuration={0} resizeMethod="resize" />
+          ) : (
+            <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+          )}
           <Text style={styles.title}>
             The Technology Behind mydent Aligners
           </Text>
@@ -304,7 +338,13 @@ const MyDentAlignersScreen = () => {
             • Faster Treatment Times for Many Cases
           </Text>
 
-          <Image source={images[3]} style={styles.image} fadeDuration={0} resizeMethod="resize" />
+          {!imagesLoaded ? (
+            <Skeleton width={'100%'} height={200} radius={8} style={{ marginVertical: 10 }} />
+          ) : images[3] ? (
+            <Image source={images[3]} style={styles.image} fadeDuration={0} resizeMethod="resize" />
+          ) : (
+            <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+          )}
         </View>
       </View>
       {/* 4 Steps */}
@@ -334,14 +374,18 @@ const MyDentAlignersScreen = () => {
         {videoSteps.map((item, index) => (
           <View key={index} style={styles.videoStepContainer}>
             <TouchableWithoutFeedback onPress={() => handlePlayPause(index)}>
-              <Video
-                ref={(ref) => {(videoRefs.current[index] = ref)}}
-                source={item.video}
-                style={styles.videoFull}
-                resizeMode={ResizeMode.CONTAIN}
-                useNativeControls
-                isLooping
-              />
+              {item.video && item.video.uri ? (
+                <Video
+                  ref={(ref) => { (videoRefs.current[index] = ref) }}
+                  source={item.video}
+                  style={styles.videoFull}
+                  resizeMode={ResizeMode.CONTAIN}
+                  useNativeControls
+                  isLooping
+                />
+              ) : (
+                <Skeleton width={'100%'} height={200} radius={12} />
+              )}
             </TouchableWithoutFeedback>
 
             <Text style={styles.videoStepTitle}>{item.title}</Text>
@@ -378,7 +422,13 @@ const MyDentAlignersScreen = () => {
             </View>
 
             {/* Right side: Doctor image with badge */}
-            <Image source={images[3]} style={styles.priceImage} fadeDuration={0} resizeMethod="resize" />
+            {!imagesLoaded ? (
+              <Skeleton width={100} height={100} radius={50} />
+            ) : images[3] ? (
+              <Image source={images[3]} style={styles.priceImage} fadeDuration={0} resizeMethod="resize" />
+            ) : (
+              <View style={[styles.priceImage, { backgroundColor: '#f0f0f0' }]} />
+            )}
           </View>
 
           {/* Comparison Table */}
@@ -632,18 +682,20 @@ const styles = StyleSheet.create({
   stepCircle: {
     width: 30,
     height: 30,
-    borderRadius: 15,
+    borderRadius: 50,
+    borderColor: '#3BC3FF',
+    borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
   },
-  stepNumber: { color: '#fff', fontWeight: 'bold' },
+  stepNumber: { fontWeight: 'bold' },
   button: {
     padding: 15,
     borderRadius: 8,
     margin: 20,
     alignItems: 'center',
-    backgroundColor: '#00bcd4',
+    backgroundColor: '#E84850',
   },
   buttonText: { color: '#fff', fontWeight: 'bold' },
   videoRow: {

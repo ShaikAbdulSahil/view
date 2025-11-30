@@ -13,6 +13,7 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native';
+import { navigateToScreen } from '../utils/navigationHelpers';
 import WHATSAPP_06_13_1AM from '../../assets/static_assets/WHATSAPP_06_13_1AM.jpg';
 
 export default function ConsultationDetailsScreen({ navigation }: any) {
@@ -92,9 +93,9 @@ export default function ConsultationDetailsScreen({ navigation }: any) {
           <TouchableOpacity
             style={styles.ctaButton}
             onPress={() =>
-              navigation.navigate('PaymentScreen', {
-                from: 'consultation',
-                amount: 500, // Replace with actual fee
+              navigateToScreen(navigation, 'PaymentScreen', {
+                params: { from: 'consultation', amount: 500 },
+                parentTab: 'HomeTab',
               })
             }
           >

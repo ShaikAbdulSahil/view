@@ -11,16 +11,17 @@ import NEWS_1 from '../../assets/static_assets/NEWS_1.png';
 import NEWS_2 from '../../assets/static_assets/NEWS_2.png';
 import NEWS_3 from '../../assets/static_assets/NEWS_3.png';
 import NEWS_4 from '../../assets/static_assets/NEWS_4.png';
+import SkeletonImage from './Skeleton';
 
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function FeaturedIn() {
   const images = [
-    NEWS_1 ,
-    NEWS_2 ,
-    NEWS_3 ,
-    NEWS_4 ,
+    NEWS_1,
+    NEWS_2,
+    NEWS_3,
+    NEWS_4,
   ];
 
   return (
@@ -33,7 +34,8 @@ export default function FeaturedIn() {
         >
           {images.map((img, idx) => (
             <View key={idx} style={styles.card}>
-              <Image source={img}
+              <Image
+                source={img}
                 style={styles.image}
                 resizeMode="contain"
                 fadeDuration={0}

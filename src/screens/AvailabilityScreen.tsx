@@ -29,7 +29,7 @@ export default function AvailabilityScreen({ navigation }: any) {
       navigation.navigate('CheckoutSummary');
     } catch (error) {
       console.error('Error updating availability:', error);
-      Alert.alert('Error', 'Failed to save your selection. Please try again.');
+      import('../utils/errorAlert').then(({ showError }) => showError('Failed to save your selection. Please try again.'));
     } finally {
       setLoading(false);
     }

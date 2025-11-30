@@ -26,7 +26,7 @@ export default function ProblemDetailScreen({ navigation }: any) {
       navigation.navigate('MedicalHistory');
     } catch (error) {
       console.error('Failed to update problem text:', error);
-      Alert.alert('Error', 'Something went wrong while saving your input.');
+      import('../utils/errorAlert').then(({ showError }) => showError('Something went wrong while saving your input.'));
     } finally {
       setLoading(false);
     }
