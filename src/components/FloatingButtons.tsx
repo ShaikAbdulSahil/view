@@ -51,21 +51,16 @@ export default function OverlayFloatingButtons() {
       </TouchableOpacity>
 
       {/* Center Consult Button */}
-      <TouchableOpacity
-        style={[styles.centerWrapper, { left: width / 2 - buttonWidth / 2 }]}
-        onLayout={(event) => {
-          const { width } = event.nativeEvent.layout;
-          setButtonWidth(width);
-        }}
-        onPress={handleConsultPress}
-      >
-        <Image
-          source={CONSULT_IMAGE}
-          style={styles.centerIconImage}
-          fadeDuration={0}
-          resizeMethod="resize"
-        />
-      </TouchableOpacity>
+      <View pointerEvents="box-none" style={styles.centerAbsoluteRow}>
+        <TouchableOpacity style={styles.centerWrapper} onPress={handleConsultPress}>
+          <Image
+            source={CONSULT_IMAGE}
+            style={styles.centerIconImage}
+            fadeDuration={0}
+            resizeMethod="resize"
+          />
+        </TouchableOpacity>
+      </View>
 
       {/* WhatsApp */}
       <TouchableOpacity onPress={handleWhatsAppPress}>
@@ -108,8 +103,16 @@ const styles = StyleSheet.create({
     height: 25,
     resizeMode: 'contain',
   },
-  centerWrapper: {
+  centerAbsoluteRow: {
     position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    pointerEvents: 'box-none',
+  },
+  centerWrapper: {
     bottom: -22,
     backgroundColor: '#fff',
     padding: 6,

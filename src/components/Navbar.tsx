@@ -8,6 +8,7 @@ import {
   NavigationProp,
   DrawerActions,
 } from '@react-navigation/native';
+import { navigateToScreen } from '../utils/navigationHelpers';
 import { Menu } from 'react-native-paper';
 import LOGO_PNG_PREVIEW from '../../assets/static_assets/LOGO_PNG_PREVIEW.png';
 
@@ -39,7 +40,7 @@ export default function Navbar() {
       <View style={styles.headerContainer}>
         <View>
           <Text style={styles.greeting}>Hi, {user?.firstName}</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('ClinicMap')}>
+          <TouchableOpacity onPress={() => navigateToScreen(navigation, 'ClinicMap')}>
             <Text style={styles.location}>Add location ▼</Text>
           </TouchableOpacity>
         </View>
@@ -50,7 +51,7 @@ export default function Navbar() {
             size={22}
             color="#333"
             style={styles.icon}
-            onPress={() => navigation.navigate('FavProductScreen')}
+            onPress={() => navigateToScreen(navigation, 'FavProductScreen')}
           />
           <Ionicons
             name="notifications-outline"
@@ -90,7 +91,7 @@ export default function Navbar() {
 
         <TouchableOpacity
           style={styles.iconButton}
-          onPress={() => navigation.navigate('CartScreen')}
+          onPress={() => navigateToScreen(navigation, 'CartScreen')}
         >
           <Ionicons name="cart-outline" size={22} color="#FD343E" />
         </TouchableOpacity>
