@@ -21,6 +21,7 @@ import Carousel from '../components/Carousel';
 import Skeleton from '../components/Skeleton';
 import { showSuccess } from '../utils/successToast';
 import { addToCart } from '../api/cart-api';
+import { useCart } from '../contexts/CartContext';
 import FeatureStats from '../components/FeatureStats';
 import { getCarousels } from '../api/carousel-api';
 import { normalizeScreenName } from '../utils/navigationHelpers';
@@ -192,6 +193,8 @@ export default function EComScreen({ navigation }: any) {
     }
   };
 
+  const { addItems, addProductId } = useCart();
+
   const handleAddToCart = async (product: any, quantity: number) => {
     try {
       if (!product || !product._id) {
@@ -199,10 +202,16 @@ export default function EComScreen({ navigation }: any) {
         return;
       }
       await addToCart(product._id, quantity);
+      addItems(quantity);
+      addProductId(product._id);
       showSuccess(`${product.title} added to cart`);
-    } catch (error) {
-      console.error(error);
-      showError('Failed to add product to cart');
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || error?.message || '';
+      if (typeof msg === 'string' && msg.toLowerCase().includes('out of stock')) {
+        showError(`${product.title} is out of stock`);
+      } else {
+        showError('Failed to add product to cart');
+      }
     }
   };
 

@@ -16,7 +16,7 @@ import {
 import { signup } from '../api/auth-api';
 import { AuthContext } from '../contexts/AuthContext';
 import React from 'react';
-import LOGO_JPG from '../../assets/static_assets/LOGO_JPG.jpg';
+import LOGO_PNG from '../../assets/static_assets/LOGO_PNG_PREVIEW.png';
 
 export default function SignupScreen({ navigation }: any) {
   const { login } = useContext(AuthContext);
@@ -30,6 +30,9 @@ export default function SignupScreen({ navigation }: any) {
   const [firstNameError, setFirstNameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [signupError, setSignupError] = useState('');
+  const [address, setAddress] = useState('');
+  const [addressError, setAddressError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const validateEmail = (value: string) => {
     if (!value) {
@@ -59,6 +62,7 @@ export default function SignupScreen({ navigation }: any) {
     }
   };
 
+
   const validatePassword = (value: string) => {
     if (!value) {
       setPasswordError('Password is required');
@@ -69,17 +73,28 @@ export default function SignupScreen({ navigation }: any) {
     }
   };
 
+  const validateAddress = (value: string) => {
+    if (!value.trim()) {
+      setAddressError('Address is required');
+    } else {
+      setAddressError('');
+    }
+  };
+
   const handleSignup = async () => {
     validateEmail(email);
     validateFirstName(firstName);
     validatePassword(password);
     validateMobile(mobile);
 
-    if (emailError || firstNameError || passwordError || mobileError) return;
+    if (emailError || firstNameError || passwordError || mobileError || addressError) {
+      return;
+    }
 
     try {
+      setLoading(true);
       setSignupError('');
-      const res = await signup({ email, firstName, password, mobile });
+      const res = await signup({ email, firstName, password, mobile, address });
       login(res.data.access_token);
     } catch (err: any) {
       console.error('Signup error:', err);
@@ -101,13 +116,15 @@ export default function SignupScreen({ navigation }: any) {
         // Something else happened
         setSignupError('Signup failed. Please try again.');
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
       <Image
-        source={LOGO_JPG}
+        source={LOGO_PNG}
         style={styles.logo}
         fadeDuration={0}
         resizeMethod="resize"
@@ -129,7 +146,7 @@ export default function SignupScreen({ navigation }: any) {
       {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
       <TextInput
-        placeholder="First Name"
+        placeholder="Name"
         value={firstName}
         onChangeText={(value) => {
           setFirstName(value);
@@ -164,6 +181,17 @@ export default function SignupScreen({ navigation }: any) {
       />
       {mobileError ? <Text style={styles.errorText}>{mobileError}</Text> : null}
 
+      <TextInput
+        placeholder="Address"
+        value={address}
+        onChangeText={(value) => {
+          setAddress(value);
+          validateAddress(value);
+        }}
+        style={styles.input}
+      />
+      {addressError ? <Text style={styles.errorText}>{addressError}</Text> : null}
+
       {passwordError ? (
         <Text style={styles.errorText}>{passwordError}</Text>
       ) : null}
@@ -172,8 +200,12 @@ export default function SignupScreen({ navigation }: any) {
         <Text style={styles.signupError}>{signupError}</Text>
       ) : null}
 
-      <TouchableOpacity style={styles.button} onPress={handleSignup}>
-        <Text style={styles.buttonText}>Sign Up</Text>
+      <TouchableOpacity
+        style={[styles.button, loading && styles.buttonDisabled]}
+        onPress={handleSignup}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>{loading ? 'Signing up...' : 'Sign Up'}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -191,7 +223,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9fafe',
   },
   logo: {
-    width: 120,
+    width: 200,
     height: 120,
     alignSelf: 'center',
     marginBottom: 20,
@@ -229,6 +261,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 10,
+  },
+  buttonDisabled: {
+    opacity: 0.7,
   },
   buttonText: {
     color: '#fff',

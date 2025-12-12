@@ -73,17 +73,17 @@ export default function CustomDrawerContent(props: any) {
           },
           { label: 'Buy Products', icon: 'bag-add', screen: 'ProductsTab' },
           {
-            label: 'Mydent Centers',
+            label: 'Centers',
             icon: 'business-outline',
             screen: 'CentersTab',
           },
           {
-            label: 'My addresses',
+            label: 'Addresses',
             icon: 'location-outline',
             screen: 'CentersTab',
           },
           {
-            label: 'Mydent coins',
+            label: 'Coins',
             icon: 'cash-outline',
             screen: 'MyDentCoinsScreen',
             parentTab: 'Home',
@@ -229,6 +229,7 @@ const styles = StyleSheet.create({
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#E9F9FA',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
     marginTop: -50,
   },
   logo: {
-    width: '100%',
+    width: '80%',
     height: 90,
     resizeMode: 'cover',
   },

@@ -1,4 +1,5 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AppNavigator from './src/navigation/AppNavigation';
 import { AuthProvider } from './src/contexts/AuthContext';
@@ -56,6 +57,7 @@ export default function App() {
       <PaperProvider>
         <SafeAreaProvider>
           <SafeAreaView style={styles.root} edges={['top', 'left', 'right']}>
+            <StatusBar style="dark" backgroundColor="#E9F9FA" />
             <QueryClientProvider client={queryClient}>
               <AuthProvider>
                 <UserProvider>

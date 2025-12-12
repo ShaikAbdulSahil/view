@@ -21,7 +21,7 @@ import {
 import { login } from '../api/auth-api';
 import { AuthContext } from '../contexts/AuthContext';
 import React from 'react';
-import LOGO_JPG from '../../assets/static_assets/LOGO_JPG.jpg';
+import LOGO_JPG from '../../assets/static_assets/LOGO_PNG_PREVIEW.png';
 
 
 export default function LoginScreen({ navigation }: any) {
@@ -29,9 +29,11 @@ export default function LoginScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     try {
+      setLoading(true);
       const res = await login({ email, password });
       setToken(res.data.access_token);
       setLoginError(''); // Clear any previous error if login successful
@@ -55,6 +57,8 @@ export default function LoginScreen({ navigation }: any) {
         // Something else happened
         setLoginError('Login failed. Please try again.');
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -105,8 +109,12 @@ export default function LoginScreen({ navigation }: any) {
             <Text style={styles.errorText}>{loginError}</Text>
           ) : null}
 
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Login</Text>
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
+            onPress={handleLogin}
+            disabled={loading}
+          >
+            <Text style={styles.buttonText}>{loading ? 'Logging in...' : 'Login'}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
@@ -126,7 +134,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9fafe',
   },
   logo: {
-    width: 120,
+    width: 200,
     height: 120,
     alignSelf: 'center',
     marginBottom: 20,
@@ -159,6 +167,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 10,
+  },
+  buttonDisabled: {
+    opacity: 0.7,
   },
   buttonText: {
     color: '#fff',

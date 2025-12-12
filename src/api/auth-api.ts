@@ -5,6 +5,7 @@ export const signup = async (data: {
   firstName: string;
   password: string;
   mobile: string;
+  address: string;
 }) => {
   try {
     const response = await axiosClient.post('/auth/signup/user', data);

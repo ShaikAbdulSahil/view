@@ -1,20 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { useFavorites } from '../contexts/FavContext';
+import { useCart } from '../contexts/CartContext';
 
 const ProductCard = ({ item, onAddToCart, onToggleFavorite, style }: any) => {
   const [isAdded, setIsAdded] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const { favorites, toggleFavorite } = useFavorites();
+  const { cartProductIds } = useCart();
+
+  useEffect(() => {
+    // React instantly to context changes without extra API call
+    const exists = cartProductIds.has(String(item?._id));
+    setIsAdded(exists);
+  }, [item?._id, cartProductIds]);
+  // no direct badge updates here; CartScreen handles confirmed changes
 
   const isFavorite = favorites.some((fav: any) => fav.product._id === item._id);
 
   const discount =
     item.originalPrice && item.originalPrice > item.price
       ? Math.round(
-          ((item.originalPrice - item.price) / item.originalPrice) * 100,
-        )
+        ((item.originalPrice - item.price) / item.originalPrice) * 100,
+      )
       : 0;
 
   const handleAdd = () => {
@@ -32,6 +41,7 @@ const ProductCard = ({ item, onAddToCart, onToggleFavorite, style }: any) => {
     const newQty = quantity > 1 ? quantity - 1 : 1;
     setQuantity(newQty);
     onAddToCart(item, newQty);
+    // Cart badge updates on confirmed API in CartScreen
   };
 
   const handleFavoriteToggle = () => {
@@ -42,13 +52,13 @@ const ProductCard = ({ item, onAddToCart, onToggleFavorite, style }: any) => {
   };
 
   // 👇 FIX: Safely extract the image source (Handle Array vs Single)
-  const rawImage = Array.isArray(item.images) && item.images.length > 0 
-    ? item.images[0] 
+  const rawImage = Array.isArray(item.images) && item.images.length > 0
+    ? item.images[0]
     : item.images;
 
   // 👇 FIX: Determine format (Local Number vs Remote String)
-  const imageSource = typeof rawImage === 'string' 
-    ? { uri: rawImage } 
+  const imageSource = typeof rawImage === 'string'
+    ? { uri: rawImage }
     : rawImage;
 
   return (
@@ -96,15 +106,9 @@ const ProductCard = ({ item, onAddToCart, onToggleFavorite, style }: any) => {
           <Text style={styles.addText}>ADD TO CART</Text>
         </TouchableOpacity>
       ) : (
-        <View style={styles.qtyRow}>
-          <TouchableOpacity onPress={decrement} style={styles.qtyButton}>
-            <Text style={styles.qtyText}>-</Text>
-          </TouchableOpacity>
-          <Text style={styles.qtyCount}>{quantity}</Text>
-          <TouchableOpacity onPress={increment} style={styles.qtyButton}>
-            <Text style={styles.qtyText}>+</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={[styles.addButton, styles.addedButton]} disabled>
+          <Text style={styles.addedText}>ADDED TO CART</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -157,11 +161,11 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontWeight: '600',
     fontSize: 14,
-    height: 20, 
+    height: 20,
     overflow: 'hidden',
     textAlign: 'center',
     alignSelf: 'center',
-    width: 140, 
+    width: 140,
   },
   priceRow: {
     flexDirection: 'row',
@@ -196,23 +200,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
-  qtyRow: {
-    marginTop: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
+  addedButton: {
+    backgroundColor: '#28a745',
   },
-  qtyButton: {
-    backgroundColor: '#f0f0f0',
-    padding: 6,
-    borderRadius: 4,
-  },
-  qtyText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  qtyCount: {
-    fontSize: 16,
+  addedText: {
+    color: '#fff',
     fontWeight: 'bold',
   },
 });

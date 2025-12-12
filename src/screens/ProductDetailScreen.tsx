@@ -20,6 +20,7 @@ import { showSuccess } from '../utils/successToast';
 import Skeleton from '../components/Skeleton';
 import { getProductById } from '../api/product-api';
 import { addToCart } from '../api/cart-api';
+import { useCart } from '../contexts/CartContext';
 import { Product } from '../constants/product.type';
 import { Dimensions } from 'react-native';
 
@@ -33,6 +34,7 @@ export default function ProductDetailScreen({ route }: any) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
+  const { addItems, addProductId } = useCart();
 
   useEffect(() => {
     let mounted = true;
@@ -153,13 +155,19 @@ export default function ProductDetailScreen({ route }: any) {
 
       setAdding(true);
       const res = await addToCart(productId, 1);
+      addItems(1);
+      addProductId(productId);
       // res may contain server message
       const successMsg = res?.message || 'Product added to cart';
       showSuccess(successMsg);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Add to cart failed:', error);
-      const msg = (error as any)?.message || 'Failed to add product to cart';
-      showError(msg);
+      const msg = error?.response?.data?.message || error?.message || '';
+      if (typeof msg === 'string' && msg.toLowerCase().includes('out of stock')) {
+        showError(`${product?.title ?? 'Product'} is out of stock`);
+      } else {
+        showError('Failed to add product to cart');
+      }
     }
     finally {
       setAdding(false);

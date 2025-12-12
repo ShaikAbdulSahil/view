@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useUser } from '../contexts/UserContext';
 import { AuthContext } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
 import {
   useNavigation,
   NavigationProp,
@@ -17,6 +18,7 @@ export default function Navbar() {
   const navigation = useNavigation<NavigationProp<any>>();
   const { logout } = useContext(AuthContext);
   const [menuVisible, setMenuVisible] = useState(false);
+  const { itemsCount } = useCart();
 
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
@@ -90,10 +92,17 @@ export default function Navbar() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.iconButton}
+          style={[styles.iconButton, { position: 'relative' }]}
           onPress={() => navigateToScreen(navigation, 'CartScreen')}
         >
           <Ionicons name="cart-outline" size={22} color="#FD343E" />
+          {itemsCount > 0 && (
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText} numberOfLines={1}>
+                {itemsCount}
+              </Text>
+            </View>
+          )}
         </TouchableOpacity>
       </View>
 
@@ -155,6 +164,24 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 8,
     padding: 6,
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: 4,
+    borderRadius: 9,
+    backgroundColor: '#FD343E',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 10,
+  },
+  cartBadgeText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: '700',
   },
   imageContainer: {
     position: 'absolute',

@@ -30,16 +30,17 @@ type CartItem = {
   _id: string;
   quantity: number;
   product: {
+    _id: string;
     title: string;
     price: number;
-    quantity: number;
+    quantity?: number;
   };
 };
 
 export default function CartScreen({ navigation }: any) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const { totalAmount, setTotalAmount } = useCart();
+  const { totalAmount, setTotalAmount, addItems, removeItem, removeItems, removeProductId, clearProductIds, itemsCount } = useCart();
 
   const fetchCart = async () => {
     setLoading(true);
@@ -58,23 +59,54 @@ export default function CartScreen({ navigation }: any) {
   }, []);
 
   const onUpdateQuantity = async (id: string, quantity: number) => {
+    // Determine delta before optimistic update
+    const prevItem = cartItems.find((ci) => ci._id === id);
+    const prevQty = prevItem ? prevItem.quantity : 0;
+    const delta = quantity - prevQty;
+
+    // Optimistically update UI only (badge updates after success)
+    setCartItems((prev) => prev.map((ci) => (ci._id === id ? { ...ci, quantity } : ci)));
     try {
       await updateCartItem(id, quantity);
+      // Update badge counts based on confirmed delta
+      if (delta > 0) {
+        addItems(delta);
+      } else if (delta < 0) {
+        removeItems(Math.abs(delta));
+      }
+      // Refresh to ensure server truth
       fetchCart();
     } catch (err: any) {
-      const message =
-        err?.response?.data?.message ||
-        'Failed to update item. Please try again.';
+      const message = err?.response?.data?.message || 'Failed to update item. Please try again.';
       showError(message);
+      // Revert by refetching
+      fetchCart();
     }
   };
 
-  const onRemoveItem = async (id: string) => {
+  const incrementItem = (item: CartItem) => {
+    const newQty = item.quantity + 1;
+    onUpdateQuantity(item._id, newQty);
+  };
+
+  const decrementItem = (item: CartItem) => {
+    if (item.quantity <= 1) return;
+    const newQty = item.quantity - 1;
+    onUpdateQuantity(item._id, newQty);
+  };
+
+  const onRemoveItem = async (id: string, quantity: number, productId?: string) => {
+    // Optimistically update UI and badge
+    removeItems(quantity);
+    setCartItems((prev) => prev.filter((ci) => ci._id !== id));
+    if (productId) removeProductId(productId);
     try {
       await removeCartItem(id);
       fetchCart();
     } catch {
       showError('Failed to remove item');
+      // Revert by refetching
+      fetchCart();
     }
   };
 
@@ -95,38 +127,29 @@ export default function CartScreen({ navigation }: any) {
         </Text>
         <View style={styles.quantityRow}>
           <TouchableOpacity
-            onPress={() => onUpdateQuantity(item._id, item.quantity - 1)}
+            onPress={() => decrementItem(item)}
             disabled={item.quantity <= 1}
+            style={[styles.qtyButtonContainer, item.quantity <= 1 && styles.disabledButton]}
           >
-            <Text
-              style={[
-                styles.qtyButton,
-                item.quantity <= 1 && styles.disabledButton,
-              ]}
-            >
-              -
-            </Text>
+            <Text style={styles.qtyButtonText}>-</Text>
           </TouchableOpacity>
 
           <Text style={styles.qtyText}>{item.quantity}</Text>
 
           <TouchableOpacity
-            onPress={() => onUpdateQuantity(item._id, item.quantity + 1)}
-            disabled={item.quantity >= item.product.quantity}
+            onPress={() => incrementItem(item)}
+            disabled={item.product.quantity != null && item.quantity >= item.product.quantity}
+            style={[
+              styles.qtyButtonContainer,
+              item.product.quantity != null && item.quantity >= item.product.quantity && styles.disabledButton,
+            ]}
           >
-            <Text
-              style={[
-                styles.qtyButton,
-                item.quantity >= item.product.quantity && styles.disabledButton,
-              ]}
-            >
-              +
-            </Text>
+            <Text style={styles.qtyButtonText}>+</Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      <TouchableOpacity onPress={() => onRemoveItem(item._id)}>
+      <TouchableOpacity onPress={() => onRemoveItem(item._id, item.quantity, (item as any)?.product?._id)}>
         <Text style={styles.remove}>Remove</Text>
       </TouchableOpacity>
     </View>
@@ -189,8 +212,15 @@ export default function CartScreen({ navigation }: any) {
           <TouchableOpacity
             style={styles.clearButton}
             onPress={async () => {
-              await clearCart();
-              fetchCart();
+              // Optimistic clear: reset local list, badge, and product IDs
+              setCartItems([]);
+              if (itemsCount > 0) removeItems(itemsCount);
+              clearProductIds();
+              try {
+                await clearCart();
+              } finally {
+                fetchCart();
+              }
             }}
           >
             <Text style={styles.clearText}>Clear Cart</Text>
@@ -255,17 +285,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  qtyButton: {
-    fontSize: 20,
-    paddingHorizontal: 10,
+  qtyButtonContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#007bff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  qtyButtonText: {
+    fontSize: 18,
+    fontWeight: '800',
     color: '#007bff',
+    lineHeight: 20,
   },
   disabledButton: {
     opacity: 0.4,
   },
   qtyText: {
     fontSize: 16,
-    marginHorizontal: 8,
+    marginHorizontal: 12,
+    fontWeight: '700',
+    color: '#333',
   },
   remove: {
     color: '#ff3b30',

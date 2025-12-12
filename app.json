@@ -11,6 +11,19 @@
     "ios": {
       "supportsTablet": true
     },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ],
+      "expo-font",
+      "expo-web-browser"
+    ],
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -27,10 +40,6 @@
       "bundler": "metro",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": [
-      "expo-font",
-      "expo-web-browser"
-    ],
     "extra": {
       "eas": {
         "projectId": "a028b5ad-41b5-4f9f-a20d-37477dce0302"

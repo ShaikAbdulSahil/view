@@ -15,6 +15,7 @@ import ProductCard from '../components/ProductCard';
 import { getFavorites } from '../api/fav-api';
 import { useCart } from '../contexts/CartContext';
 import { addToCart } from '../api/cart-api';
+import { showError, showSuccess } from '../utils/errorAlert';
 
 type FavoriteItem = {
   _id: string;
@@ -59,15 +60,25 @@ const FavProductScreen = () => {
     fetchFavorites();
   }, []);
 
-  const handleAddToCart = (
+  const { addItems, addProductId } = useCart();
+
+  const handleAddToCart = async (
     product: FavoriteItem['product'],
     quantity: number,
   ) => {
-    addToCart(product._id, quantity);
-    Alert.alert(
-      'Added to Cart',
-      `$New product added with quantity ${quantity}`,
-    );
+    try {
+      await addToCart(product._id, quantity);
+      addItems(quantity);
+      addProductId(product._id);
+      showSuccess('Added to cart');
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err?.message || '';
+      if (typeof msg === 'string' && msg.toLowerCase().includes('out of stock')) {
+        showError('This product is out of stock');
+      } else {
+        showError('Failed to add to cart');
+      }
+    }
   };
 
   const handleToggleFavorite = (productId: string, newState: boolean) => {
