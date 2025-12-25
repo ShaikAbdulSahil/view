@@ -35,7 +35,8 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-#android
-./android/
+# Native Projects (Ignored for EAS CNG)
+android/
+ios/
 
 app-example
