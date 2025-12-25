@@ -12,6 +12,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Pressable,
 } from 'react-native';
 import { signup } from '../api/auth-api';
 import { AuthContext } from '../contexts/AuthContext';
@@ -33,6 +34,7 @@ export default function SignupScreen({ navigation }: any) {
   const [address, setAddress] = useState('');
   const [addressError, setAddressError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
 
   const validateEmail = (value: string) => {
     if (!value) {
@@ -200,10 +202,34 @@ export default function SignupScreen({ navigation }: any) {
         <Text style={styles.signupError}>{signupError}</Text>
       ) : null}
 
+      <View style={styles.consentRow}>
+        <TouchableOpacity
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: consentChecked }}
+          onPress={() => setConsentChecked((v) => !v)}
+          style={[styles.checkbox, consentChecked && styles.checkboxChecked]}
+          activeOpacity={0.8}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          {consentChecked ? <Text style={styles.checkmark}>✓</Text> : null}
+        </TouchableOpacity>
+        <Text style={styles.consentText}>I agree to the </Text>
+        <Pressable onPress={() => navigation.navigate('TermsWebView')} hitSlop={6}>
+          <Text style={styles.consentLink}>Terms & Conditions</Text>
+        </Pressable>
+        <Text style={styles.consentText}> and </Text>
+        <Pressable onPress={() => navigation.navigate('PrivacyWebView')} hitSlop={6}>
+          <Text style={styles.consentLink}>Privacy Policy</Text>
+        </Pressable>
+      </View>
+
       <TouchableOpacity
-        style={[styles.button, loading && styles.buttonDisabled]}
+        style={[
+          styles.button,
+          (loading || !consentChecked) && styles.buttonDisabled,
+        ]}
         onPress={handleSignup}
-        disabled={loading}
+        disabled={loading || !consentChecked}
       >
         <Text style={styles.buttonText}>{loading ? 'Signing up...' : 'Sign Up'}</Text>
       </TouchableOpacity>
@@ -255,6 +281,43 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontWeight: '500',
   },
+  consentRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    marginTop: 6,
+    marginBottom: 6,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#bbb',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 8,
+    backgroundColor: '#fff',
+  },
+  checkboxChecked: {
+    borderColor: '#1e90ff',
+    backgroundColor: '#e6f2ff',
+  },
+  checkmark: {
+    color: '#1e90ff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  consentText: {
+    color: '#444',
+    fontSize: 13,
+  },
+  consentLink: {
+    color: '#1e90ff',
+    fontSize: 13,
+    fontWeight: '600',
+    textDecorationLine: 'underline',
+  },
   button: {
     backgroundColor: '#1e90ff',
     padding: 14,
@@ -263,7 +326,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   buttonDisabled: {
-    opacity: 0.7,
+    opacity: 0.5,
   },
   buttonText: {
     color: '#fff',

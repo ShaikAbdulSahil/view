@@ -10,7 +10,7 @@ import {
   DrawerActions,
 } from '@react-navigation/native';
 import { navigateToScreen } from '../utils/navigationHelpers';
-import { Menu } from 'react-native-paper';
+// Removed react-native-paper Menu due to inconsistent anchor behavior; implementing a lightweight dropdown
 import LOGO_PNG_PREVIEW from '../../assets/static_assets/LOGO_PNG_PREVIEW.png';
 
 export default function Navbar() {
@@ -19,12 +19,14 @@ export default function Navbar() {
   const { logout } = useContext(AuthContext);
   const [menuVisible, setMenuVisible] = useState(false);
   const { itemsCount } = useCart();
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
-  const openMenu = () => setMenuVisible(true);
-  const closeMenu = () => setMenuVisible(false);
+  const openMenu = () => setShowProfileMenu(true);
+  const closeMenu = () => setShowProfileMenu(false);
 
   const handleProfile = () => {
     closeMenu();
+    navigateToScreen(navigation, 'EditProfile');
   };
 
   const handleLogout = () => {
@@ -38,6 +40,7 @@ export default function Navbar() {
 
   return (
     <View style={styles.navbarWrapper}>
+      {/* Status bar is controlled globally for non-auth in AppNavigation */}
       {/* Header Section */}
       <View style={styles.headerContainer}>
         <View>
@@ -61,22 +64,28 @@ export default function Navbar() {
             color="#333"
             style={styles.icon}
           />
-          <Menu
-            visible={menuVisible}
-            onDismiss={closeMenu}
-            anchor={
-              <TouchableOpacity onPress={openMenu} style={{ zIndex: 9999 }}>
-                <Ionicons name="person-circle-outline" size={26} color="#333" />
-              </TouchableOpacity>
-            }
-            contentStyle={{ backgroundColor: 'white', marginTop: 6 }}
-            anchorPosition="bottom"
+          <TouchableOpacity
+            onPress={() => setShowProfileMenu((v) => !v)}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Menu.Item onPress={handleProfile} title="My Profile" />
-            <Menu.Item onPress={handleLogout} title="Logout" />
-          </Menu>
+            <Ionicons name="person-circle-outline" size={26} color="#333" />
+          </TouchableOpacity>
         </View>
       </View>
+
+      {showProfileMenu && (
+        <TouchableOpacity style={styles.menuOverlay} activeOpacity={1} onPress={closeMenu}>
+          <View style={styles.dropdownMenu}>
+            <TouchableOpacity style={styles.menuItem} onPress={handleProfile}>
+              <Text style={styles.menuItemText}>My Profile</Text>
+            </TouchableOpacity>
+            <View style={styles.menuDivider} />
+            <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+              <Text style={styles.menuItemText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      )}
 
       {/* Filter and Cart Row */}
       <View style={styles.actionRow}>
@@ -147,8 +156,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   menuWrapper: {
+    zIndex: 1,
+  },
+  menuOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     zIndex: 1000,
-    elevation: 10,
+  },
+  dropdownMenu: {
+    position: 'absolute',
+    top: 52,
+    right: 12,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    paddingVertical: 6,
+    minWidth: 160,
+    borderWidth: 1,
+    borderColor: '#eee',
+  },
+  menuItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+  },
+  menuItemText: {
+    fontSize: 14,
+    color: '#222',
+  },
+  menuDivider: {
+    height: 1,
+    backgroundColor: '#eee',
+    marginVertical: 4,
   },
   icon: {
     marginHorizontal: 4,
@@ -189,6 +234,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     zIndex: -1,
+    pointerEvents: 'none',
   },
 
   logoImage: {
@@ -197,5 +243,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1080 / 289,
     borderRadius: 10,
     opacity: 0.95, // optional
+    pointerEvents: 'none',
   },
 });

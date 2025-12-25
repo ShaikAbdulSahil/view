@@ -43,6 +43,7 @@ import ClinicMapScreen from '../screens/ClinicMapScreen';
 import WelcomeVideoScreen from '../screens/WelcomeScreen';
 import FormExampleScreen from '../screens/FormExampleScreen';
 import AppConfigScreen from '../screens/AppConfigScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -104,6 +105,7 @@ export default function HomeStack() {
       <Stack.Screen name="CartScreen" component={withAppShell(CartScreen)} />
       <Stack.Screen name="BlogScreen" component={withAppShell(BlogScreen)} />
       <Stack.Screen name="Profile" component={withAppShell(ProfileScreen)} />
+      <Stack.Screen name="EditProfile" component={withAppShell(EditProfileScreen)} />
       <Stack.Screen
         name="ContactUs"
         component={withAppShell(ContactUsScreen)}

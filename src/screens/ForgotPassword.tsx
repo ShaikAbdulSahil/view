@@ -13,18 +13,23 @@ import {
   Alert,
 } from 'react-native';
 import { showSuccess } from '../utils/successToast';
+import { showError } from '../utils/errorAlert';
 import { forgotPassword } from '../api/auth-api';
 
 export default function ForgotPasswordScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     try {
+      setLoading(true);
       await forgotPassword(email);
       showSuccess('Reset link sent to your email');
       navigation.goBack();
     } catch (err) {
-      import('../utils/errorAlert').then(({ showError }) => showError('Could not send reset link'));
+      showError('Could not send reset link');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -39,8 +44,12 @@ export default function ForgotPasswordScreen({ navigation }: any) {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Send Reset Link</Text>
+      <TouchableOpacity
+        style={[styles.button, loading && styles.buttonDisabled]}
+        onPress={handleSubmit}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>{loading ? 'Sending...' : 'Send Reset Link'}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -63,6 +72,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 10,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   buttonText: { color: '#fff', fontWeight: '600', fontSize: 16 },
 });

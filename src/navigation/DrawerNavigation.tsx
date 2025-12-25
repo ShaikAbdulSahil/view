@@ -8,15 +8,17 @@ const Drawer = createDrawerNavigator();
 
 export default function DrawerNavigator() {
   return (
-    <Drawer.Navigator
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
-      screenOptions={{
-        drawerType: 'front',
-        headerShown: false,
-      }}
-    >
-      <Drawer.Screen name="HomeTabs" component={BottomTabNavigator} />
-      <Drawer.Screen name="Profile" component={ProfileScreen} />
-    </Drawer.Navigator>
+    <>
+      <Drawer.Navigator
+        drawerContent={(props) => <CustomDrawerContent {...props} />}
+        screenOptions={{
+          drawerType: 'front',
+          headerShown: false,
+        }}
+      >
+        <Drawer.Screen name="HomeTabs" component={BottomTabNavigator} />
+        <Drawer.Screen name="Profile" component={ProfileScreen} />
+      </Drawer.Navigator>
+    </>
   );
 }

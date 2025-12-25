@@ -4,6 +4,7 @@ import { getToken } from '../utils/storage';
 const axiosClient = axios.create({
   // baseURL: 'https://doctor-appointment-5j6e.onrender.com',
   baseURL: 'https://mydent-api.onrender.com',
+  timeout: 15000,
 });
 
 // Attach token from storage to each request
@@ -19,30 +20,29 @@ axiosClient.interceptors.request.use(async (config) => {
   return config;
 });
 
-// Log detailed error info for failed requests to help debugging 500s
-// axiosClient.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     // Only log in non-production to avoid leaking sensitive info
-//     if (process.env.NODE_ENV !== 'production') {
-//       try {
-//         const cfg = error?.config || {};
-//         console.error('Axios request failed:', {
-//           url: cfg.url,
-//           method: cfg.method,
-//           data: cfg.data,
-//           params: cfg.params,
-//           headers: cfg.headers,
-//           status: error?.response?.status,
-//           responseData: error?.response?.data,
-//         });
-//       } catch (e) {
-//         console.error('Failed to log axios error details', e);
-//       }
-//     }
-
-//     return Promise.reject(error);
-//   },
-// );
+// Log detailed error info for failed requests to help debugging network issues
+axiosClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    try {
+      const cfg = error?.config || {};
+      const payload = {
+        url: cfg.baseURL ? cfg.baseURL + (cfg.url || '') : cfg.url,
+        method: cfg.method,
+        timeout: cfg.timeout,
+        data: cfg.data,
+        params: cfg.params,
+        status: error?.response?.status,
+        responseData: error?.response?.data,
+        message: error?.message,
+        code: error?.code,
+      };
+      console.error('Axios request failed:', payload);
+    } catch (e) {
+      console.error('Failed to log axios error details', e);
+    }
+    return Promise.reject(error);
+  },
+);
 
 export default axiosClient;

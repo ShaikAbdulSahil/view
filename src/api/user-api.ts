@@ -8,6 +8,7 @@ export const updateUser = (
   updates: Partial<{
     firstName: string;
     email: string;
+    address: string;
     mobile: string;
     ageGroup: string;
     teethIssue: string;

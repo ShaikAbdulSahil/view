@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import {
   View,
@@ -25,7 +25,6 @@ import CONSULTANT_IMAGE from '../../assets/static_assets/CONSULTANT_IMAGE.jpg';
 
 export default function CustomDrawerContent(props: any) {
   const { user, setUser } = useUser();
-  const [isEditVisible, setEditVisible] = useState(false);
 
   const iconColor = '#FD343E';
 
@@ -53,7 +52,12 @@ export default function CustomDrawerContent(props: any) {
           <Text style={styles.name}>{user?.firstName ?? 'John Doe'}</Text>
           <Text style={styles.email}>{user?.email ?? 'email@example.com'}</Text>
           <TouchableOpacity
-            onPress={() => setEditVisible(true)}
+            onPress={() =>
+              props.navigation.navigate('HomeTabs', {
+                screen: 'Home',
+                params: { screen: 'EditProfile' },
+              })
+            }
             style={styles.editButton}
           >
             <Ionicons name="create-outline" size={16} color="#007AFF" />
@@ -213,10 +217,7 @@ export default function CustomDrawerContent(props: any) {
         />
       </View>
 
-      {/* Edit Modal */}
-      <Modal visible={isEditVisible} animationType="slide">
-        <EditProfileForm onClose={() => setEditVisible(false)} />
-      </Modal>
+      {/* Edit navigates to screen, modal removed for consistency */}
     </DrawerContentScrollView>
   );
 }

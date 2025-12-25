@@ -1,12 +1,14 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { useContext } from 'react';
+import { View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { AuthContext } from '../contexts/AuthContext';
 
 import AuthScreen from './AuthScreen';
 import DrawerNavigator from './DrawerNavigation';
 
 const linking = {
-  prefixes: ['https://mawosfs-anonymous-8081.exp.direct', 'mydent://'],
+  prefixes: ['myapp://'],
   config: {
     screens: {
       Login: 'login',
@@ -31,7 +33,25 @@ export default function AppNavigator() {
 
   return (
     <NavigationContainer linking={linking}>
-      {token ? <DrawerNavigator /> : <AuthScreen />}
+      {token ? (
+        <View style={{ flex: 1, backgroundColor: '#E9F9FA' }}>
+          <StatusBar
+            style="dark"
+            backgroundColor="#E9F9FA"
+            translucent={false}
+          />
+          <DrawerNavigator />
+        </View>
+      ) : (
+        <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
+          <StatusBar
+            style="dark"
+            backgroundColor="#ffffff"
+            translucent={false}
+          />
+          <AuthScreen />
+        </View>
+      )}
     </NavigationContainer>
   );
 }

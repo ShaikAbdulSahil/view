@@ -1,5 +1,4 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AppNavigator from './src/navigation/AppNavigation';
 import { AuthProvider } from './src/contexts/AuthContext';
@@ -12,6 +11,7 @@ import { FavoriteProvider } from './src/contexts/FavContext';
 import { CartProvider } from './src/contexts/CartContext';
 import { Video, ResizeMode } from 'expo-av';
 import * as SplashScreen from 'expo-splash-screen'; // Import this
+
 
 // 1. Prevent the native splash from hiding automatically
 SplashScreen.preventAutoHideAsync();
@@ -29,6 +29,8 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+
+
     // Hide the custom video splash after 5 seconds
     const timer = setTimeout(() => {
       setShowVideoSplash(false);
@@ -56,8 +58,7 @@ export default function App() {
     <GestureHandlerRootView style={styles.root}>
       <PaperProvider>
         <SafeAreaProvider>
-          <SafeAreaView style={styles.root} edges={['top', 'left', 'right']}>
-            <StatusBar style="dark" backgroundColor="#E9F9FA" />
+          <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
             <QueryClientProvider client={queryClient}>
               <AuthProvider>
                 <UserProvider>
@@ -86,5 +87,9 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'transparent',
   },
 });

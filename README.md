@@ -48,3 +48,23 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Deep linking: Reset Password
+
+- Scheme: `myapp` (see app.json)
+- Route: `myapp://reset-password?token=YOUR_TOKEN`
+- Test on Android emulator (Windows):
+
+   ```bash
+   adb shell am start -W -a android.intent.action.VIEW -d "myapp://reset-password?token=TEST123"
+   ```
+
+- iOS simulator (macOS):
+
+   ```bash
+   xcrun simctl openurl booted "myapp://reset-password?token=TEST123"
+   ```
+
+Notes:
+- The token is passed to the `ResetPassword` screen via React Navigation linking.
+- If the user is already authenticated, the app shows the main drawer; the reset route is available when the Auth stack is active.

@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { Platform } from 'react-native';
 import { showSuccess } from '../utils/successToast';
 import { showError } from '../utils/errorAlert';
 import { resetPassword } from '../api/auth-api';
@@ -23,9 +24,17 @@ const ResetPasswordScreen = ({ route, navigation }: any) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const token =
-    route?.params?.token ??
-    new URL(window.location.href).searchParams.get('token');
+  const token: string | null = useMemo(() => {
+    if (route?.params?.token) return String(route.params.token);
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      try {
+        return new URL(window.location.href).searchParams.get('token');
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }, [route?.params?.token]);
 
   const handleReset = async () => {
     if (!newPassword || !confirmPassword) {
@@ -39,6 +48,10 @@ const ResetPasswordScreen = ({ route, navigation }: any) => {
     }
 
     try {
+      if (!token) {
+        showError('Invalid or missing reset token');
+        return;
+      }
       setLoading(true);
       await resetPassword(token, newPassword);
       showSuccess('Password has been reset');
