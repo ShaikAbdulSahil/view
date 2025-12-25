@@ -1,13 +1,13 @@
-Ignore native folders (EAS generates these in the cloud)
+# Ignore native folders (EAS generates these in the cloud)
 
 android/
 ios/
 
-Ignore dependencies (EAS runs 'yarn install' on the server)
+# Ignore dependencies
 
 node_modules/
 
-Ignore development and build artifacts
+# Ignore development and build artifacts
 
 .expo/
 .git/
@@ -16,13 +16,13 @@ web-build/
 *.log
 *.tsbuildinfo
 
-Ignore all large video/media formats by default
+# Ignore all large video/media formats by default
 
 *.zip
 *.mov
 *.mp4
 *.avi
 
-EXCEPTION: Do NOT ignore the splash screen video
+# EXCEPTION: Do NOT ignore the splash screen video
 
 !assets/welcome.mp4
