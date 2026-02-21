@@ -15,6 +15,7 @@ import {
   Image,
   Alert,
   TouchableWithoutFeedback,
+  Linking,
 } from 'react-native';
 import { showError } from '../utils/errorAlert';
 import { useUser } from '../contexts/UserContext';
@@ -399,7 +400,7 @@ export default function ContactUsScreen() {
             Start your journey of Aligners with us
           </Text>
 
-          <TouchableOpacity style={styles.coordinatorButton}>
+          <TouchableOpacity style={styles.coordinatorButton} onPress={() => Linking.openURL('https://wa.me/+919381590963')}>
             <Text style={styles.buttonText}>
               Reach out to your program co-ordinator
             </Text>
@@ -583,7 +584,7 @@ export default function ContactUsScreen() {
             <Text style={styles.noAppointmentText}>
               No appointment scheduled for today
             </Text>
-            <TouchableOpacity style={styles.bookButton}>
+            <TouchableOpacity style={styles.bookButton} onPress={() => navigation.navigate('HomeTab', { screen: 'ConsultationOption' })}>
               <Text style={styles.bookButtonText}>Book an Appointment</Text>
             </TouchableOpacity>
           </View>
@@ -826,8 +827,7 @@ export default function ContactUsScreen() {
         <Text style={styles.footerHeading}>About Company</Text>
         <Text style={styles.linkText}>
           Corporate Office Address:
-          {'\n'}VM Steel Project S.O, Pragati Maidan, Pivot Building, AMTZ
-          Campus, Visakhapatnam, Andhra Pradesh 530031
+          {'\n'}mydent pvt.ltd, 4th floor, Apurupa Turbo Tower, No:36 Pillar No:1680, H.No 8-2-293/82/a/787, Jubilee Hills, Hyderabad, Telangana , 500033
         </Text>
 
         {/* Footer Note */}

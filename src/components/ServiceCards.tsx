@@ -20,7 +20,7 @@ const services = [
     image: BOOK_ICON,
   },
   {
-    title: 'Instant Video Consultation',
+    title: 'Instant video Consultation',
     image: SERVICE_CARD_BOOK_2,
   },
   {

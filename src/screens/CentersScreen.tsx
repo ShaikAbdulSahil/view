@@ -300,10 +300,15 @@ export default function Centers() {
                 <TouchableOpacity
                   style={styles.directionButton}
                   onPress={() => {
-                    if (clinic.directions) {
-                      Linking.openURL(clinic.directions);
+                    if (clinic.address) {
+                      const encodedAddress = encodeURIComponent(clinic.address);
+                      const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+                      Linking.openURL(mapsUrl).catch((err) => {
+                        Alert.alert('Error', 'Unable to open Google Maps');
+                        console.error('Failed to open maps:', err);
+                      });
                     } else {
-                      Alert.alert('No directions link available');
+                      Alert.alert('No address available');
                     }
                   }}
                 >
