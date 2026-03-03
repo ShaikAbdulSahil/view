@@ -13,6 +13,7 @@ import {
   Alert,
 } from 'react-native';
 import { updateUser } from '../api/user-api';
+import { Colors } from '../constants/Colors';
 
 const options = ['Yes', 'No'];
 
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
   },
   header: {
     fontSize: 18,
@@ -100,22 +101,22 @@ const styles = StyleSheet.create({
     width: '45%',
     padding: 16,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: Colors.borderInput,
     borderRadius: 12,
     marginBottom: 16,
     flexDirection: 'row',
     alignItems: 'center',
   },
   optionBoxSelected: {
-    borderColor: '#D43F3F',
-    backgroundColor: '#fff2f2',
+    borderColor: Colors.brandRed,
+    backgroundColor: Colors.errorBg,
   },
   radioCircle: {
     width: 20,
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#D43F3F',
+    borderColor: Colors.brandRed,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#D43F3F',
+    backgroundColor: Colors.brandRed,
   },
   optionText: {
     fontSize: 16,
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   stepText: {
-    color: '#6c757d',
+    color: Colors.tabInactive,
     fontSize: 14,
   },
   stepCounter: {
@@ -143,14 +144,14 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   nextButton: {
-    backgroundColor: '#D43F3F',
+    backgroundColor: Colors.brandRed,
     borderRadius: 24,
     paddingVertical: 14,
     alignItems: 'center',
     marginTop: 8,
   },
   nextButtonText: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     fontWeight: 'bold',
     fontSize: 16,
   },

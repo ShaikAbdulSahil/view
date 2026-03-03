@@ -15,6 +15,7 @@ import {
   Alert,
 } from 'react-native';
 import { updateUser } from '../api/user-api';
+import { Colors } from '../constants/Colors';
 import TEETH_GAPS from '../../assets/static_assets/TEETH_GAPS.png';
 import OVERBITE from '../../assets/static_assets/OVERBITE.png';
 import CROSSBITE from '../../assets/static_assets/CROSSBITE.png';
@@ -170,29 +171,29 @@ export default function TeethIssueSelectionScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     padding: 16,
     paddingBottom: 110,
   },
   header: { fontSize: 20, fontWeight: 'bold', marginBottom: 4 },
-  subText: { color: '#555', marginBottom: 16 },
+  subText: { color: Colors.textSecondary, marginBottom: 16 },
   grid: { justifyContent: 'space-between' },
   card: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: Colors.borderInput,
     padding: 12,
     borderRadius: 8,
     margin: 4,
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
   },
   commentBoxContainer: {
     marginTop: 8,
     width: '100%',
   },
   commentBox: {
-    borderColor: '#ccc',
+    borderColor: Colors.borderInput,
     borderWidth: 1,
     borderRadius: 6,
     padding: 8,
@@ -200,11 +201,11 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   cardSelected: {
-    borderColor: '#D43F3F',
-    backgroundColor: '#FFF5F5',
+    borderColor: Colors.brandRed,
+    backgroundColor: Colors.errorBg,
   },
   cardText: { fontWeight: '600', marginVertical: 6 },
-  knowMore: { color: 'red', fontSize: 12 },
+  knowMore: { color: Colors.error, fontSize: 12 },
   image: { width: 80, height: 120, resizeMode: 'contain' },
 
   // Bottom Progress UI
@@ -212,11 +213,11 @@ const styles = StyleSheet.create({
     marginTop: 'auto',
     paddingVertical: 16,
     paddingHorizontal: 12,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
   },
   progressBarBackground: {
     height: 4,
-    backgroundColor: '#e0f0f7',
+    backgroundColor: Colors.primaryBg,
     borderRadius: 4,
     overflow: 'hidden',
     marginBottom: 12,
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
   progressBarFill: {
     width: '25%',
     height: 4,
-    backgroundColor: '#3EC6FF',
+    backgroundColor: Colors.info,
   },
   progressContent: {
     flexDirection: 'row',
@@ -232,25 +233,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   progressSmallText: {
-    color: '#6c757d',
+    color: Colors.tabInactive,
     fontSize: 12,
   },
   progressTitle: {
     fontWeight: 'bold',
     fontSize: 16,
-    color: '#000',
+    color: Colors.textPrimary,
   },
   nextButtonAlt: {
-    backgroundColor: '#D43F3F',
+    backgroundColor: Colors.brandRed,
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 24,
   },
   nextButtonDisabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: Colors.borderInput,
   },
   nextButtonTextAlt: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     fontWeight: '600',
   },
 });

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { getExperts } from '../api/expert-api';
 import Skeleton from './Skeleton';
+import { Colors } from '../constants/Colors';
 
 interface Expert {
   _id: string;
@@ -59,7 +60,7 @@ export default function DoctorCard() {
           resizeMethod="resize"
         />
       ) : (
-        <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+        <View style={[styles.image, { backgroundColor: Colors.skeletonBg }]} />
       )}
       <Text style={styles.name} numberOfLines={2}>
         {item.title}
@@ -111,12 +112,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#e53935',
+    color: Colors.favorite,
     marginBottom: 4,
   },
   sectionSubtitle: {
     fontSize: 14,
-    color: '#333',
+    color: Colors.textBody,
     marginBottom: 12,
   },
   scrollContainer: {
@@ -126,11 +127,11 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     marginRight: 12,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 12,
     overflow: 'hidden',
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
   name: {
     padding: 8,
     fontSize: 13,
-    color: '#444',
+    color: Colors.textSecondary,
     fontWeight: '500',
   },
 });

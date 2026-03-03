@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Colors } from '../constants/Colors';
 
 interface FormExamplesCardProps {
   navigation: any;
@@ -12,14 +13,14 @@ export default function FormExamplesCard({ navigation }: FormExamplesCardProps) 
       <Text style={styles.description}>
         Check out our new form components and examples
       </Text>
-      
+
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate('FormExample')}
       >
         <Text style={styles.buttonText}>Generic Form Example</Text>
       </TouchableOpacity>
-      
+
       <TouchableOpacity
         style={[styles.button, styles.secondaryButton]}
         onPress={() => navigation.navigate('AppConfig')}
@@ -32,11 +33,11 @@ export default function FormExamplesCard({ navigation }: FormExamplesCardProps) 
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 12,
     padding: 20,
     margin: 16,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -49,25 +50,25 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#333',
+    color: Colors.textBody,
   },
   description: {
     fontSize: 16,
-    color: '#666',
+    color: Colors.textSecondary,
     marginBottom: 16,
   },
   button: {
-    backgroundColor: '#1e90ff',
+    backgroundColor: Colors.primaryLight,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 12,
   },
   secondaryButton: {
-    backgroundColor: '#6c757d',
+    backgroundColor: Colors.tabInactive,
   },
   buttonText: {
-    color: '#fff',
+    color: Colors.textOnPrimary,
     fontWeight: '600',
     fontSize: 16,
   },

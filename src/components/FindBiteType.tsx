@@ -19,6 +19,7 @@ import VIDEO_4 from '../../assets/static_assets/VIDEO_4.png';
 import VIDEO_5 from '../../assets/static_assets/VIDEO_5.png';
 import VIDEO_6 from '../../assets/static_assets/VIDEO_6.png';
 import VIDEO_7 from '../../assets/static_assets/VIDEO_7.png';
+import { Colors } from '../constants/Colors';
 
 
 const categories = [
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: { fontSize: 16, fontWeight: '600' },
-  viewAll: { color: '#1e90ff' },
+  viewAll: { color: Colors.primaryLight },
   item: { alignItems: 'center', marginRight: 16 },
   image: { width: 50, height: 50, borderRadius: 25, marginBottom: 4 },
   itemText: { marginTop: 4, fontSize: 12 },

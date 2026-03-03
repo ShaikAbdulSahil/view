@@ -11,7 +11,7 @@
 If you don't have EAS CLI installed, install it globally:
 
 ```bash
-npm install -g eas-cli
+yarn global add eas-cli
 ```
 
 ## Login to Expo

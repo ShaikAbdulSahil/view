@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import Skeleton from '../components/Skeleton';
+import { Colors } from '../constants/Colors';
 
 export default function TransformationBlogDetailsScreen({ route }: any) {
   const { blog } = route.params || {};
@@ -66,7 +67,7 @@ export default function TransformationBlogDetailsScreen({ route }: any) {
           resizeMethod="resize"
         />
       ) : (
-        <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+        <View style={[styles.image, { backgroundColor: Colors.skeletonBg }]} />
       )}
 
       <View style={styles.details}>
@@ -79,7 +80,7 @@ export default function TransformationBlogDetailsScreen({ route }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     paddingHorizontal: 15,
   },
   image: { width: '100%', height: 550 },
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '700',
     marginBottom: 12,
-    color: '#e53935',
+    color: Colors.favorite,
   },
-  content: { fontSize: 16, lineHeight: 24, color: '#333' },
+  content: { fontSize: 16, lineHeight: 24, color: Colors.textBody },
 });

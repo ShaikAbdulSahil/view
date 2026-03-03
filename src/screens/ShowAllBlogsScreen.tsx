@@ -14,6 +14,7 @@ import {
   View,
 } from 'react-native';
 import Skeleton from '../components/Skeleton';
+import { Colors } from '../constants/Colors';
 import { getLatestBlogs } from '../api/blogs-api';
 
 export default function ShowAllBlogsScreen({ navigation }: any) {
@@ -96,11 +97,11 @@ export default function ShowAllBlogsScreen({ navigation }: any) {
               return uri ? (
                 <Image source={{ uri }} style={styles.image} fadeDuration={0} resizeMethod="resize" />
               ) : (
-                <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+                <View style={[styles.image, { backgroundColor: Colors.skeletonBg }]} />
               );
             })()
           ) : (
-            <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+            <View style={[styles.image, { backgroundColor: Colors.skeletonBg }]} />
           )}
           <Text style={styles.title}>{blog.title}</Text>
         </TouchableOpacity>
@@ -112,19 +113,19 @@ export default function ShowAllBlogsScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     paddingBottom: 120,
   },
   header: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 12,
-    color: '#e53935',
+    color: Colors.favorite,
   },
   card: {
     marginBottom: 20,
     borderRadius: 10,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: Colors.screenBg,
     overflow: 'hidden',
     elevation: 1,
   },
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 14,
     padding: 8,
-    color: '#333',
+    color: Colors.textBody,
     fontWeight: '500',
   },
 });

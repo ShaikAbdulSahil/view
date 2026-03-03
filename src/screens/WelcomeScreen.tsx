@@ -5,6 +5,7 @@
 import React, { useRef, useEffect, useContext } from 'react';
 import { ResizeMode, Video } from 'expo-av';
 import { View, StyleSheet } from 'react-native';
+import { Colors } from '../constants/Colors';
 import { AuthContext } from '../contexts/AuthContext';
 
 const WelcomeVideoScreen = ({ navigation }: any) => {
@@ -51,7 +52,7 @@ const WelcomeVideoScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     justifyContent: 'center',
     alignItems: 'center',
   },

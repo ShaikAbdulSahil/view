@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import appConfig from '../../app.json';
+import { Colors } from '../constants/Colors';
 
 export default function AppConfigScreen() {
   const { expo } = appConfig;
@@ -9,7 +10,7 @@ export default function AppConfigScreen() {
   const renderConfig = (config: any, level = 0) => {
     return Object.entries(config).map(([key, value]) => {
       const indent = { paddingLeft: level * 20 };
-      
+
       if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
         return (
           <View key={key} style={indent}>
@@ -57,7 +58,7 @@ export default function AppConfigScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fafe',
+    backgroundColor: Colors.screenBg,
     padding: 20,
   },
   title: {
@@ -65,26 +66,26 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
-    color: '#333',
+    color: Colors.textBody,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: Colors.textSecondary,
     marginBottom: 20,
     textAlign: 'center',
   },
   configContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 10,
     padding: 15,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: Colors.border,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
     marginVertical: 10,
-    color: '#1e90ff',
+    color: Colors.primaryLight,
   },
   row: {
     flexDirection: 'row',
@@ -93,10 +94,10 @@ const styles = StyleSheet.create({
   key: {
     fontWeight: '600',
     width: 150,
-    color: '#333',
+    color: Colors.textBody,
   },
   value: {
     flex: 1,
-    color: '#666',
+    color: Colors.textSecondary,
   },
 });

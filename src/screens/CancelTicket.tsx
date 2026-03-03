@@ -18,6 +18,7 @@ import {
 import Skeleton from '../components/Skeleton';
 import { Ionicons } from '@expo/vector-icons';
 import { getTicket, updateTicketStatus } from '../api/tickets-api';
+import { Colors } from '../constants/Colors';
 import { showSuccess } from '../utils/successToast';
 
 const CancelTicketScreen = () => {
@@ -73,11 +74,11 @@ const CancelTicketScreen = () => {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, padding: 16, backgroundColor: '#f9fafa' }}>
+      <View style={{ flex: 1, padding: 16, backgroundColor: Colors.screenBg }}>
         <Skeleton width={'40%'} height={24} radius={6} style={{ marginBottom: 12 }} />
 
         {Array.from({ length: 3 }).map((_, i) => (
-          <View key={i} style={{ backgroundColor: '#fff', padding: 12, borderRadius: 12, marginBottom: 12 }}>
+          <View key={i} style={{ backgroundColor: Colors.cardBg, padding: 12, borderRadius: 12, marginBottom: 12 }}>
             <Skeleton width={'60%'} height={16} radius={6} style={{ marginBottom: 8 }} />
             <Skeleton width={'40%'} height={12} radius={6} />
             <Skeleton width={'30%'} height={12} radius={6} style={{ marginTop: 8 }} />
@@ -113,10 +114,10 @@ const CancelTicketScreen = () => {
                   {
                     color:
                       item.status === 'open'
-                        ? '#28a745'
+                        ? Colors.success
                         : item.status === 'closed'
-                          ? '#dc3545'
-                          : '#6c757d',
+                          ? Colors.error
+                          : Colors.tabInactive,
                   },
                 ]}
               >
@@ -128,7 +129,7 @@ const CancelTicketScreen = () => {
             <TouchableOpacity
               style={[
                 styles.cancelButton,
-                item.status === 'closed' && { backgroundColor: '#ccc' },
+                item.status === 'closed' && { backgroundColor: Colors.borderInput },
               ]}
               onPress={() => handleCancel(item._id)}
               disabled={item.status === 'closed'}
@@ -151,16 +152,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f9fafa',
+    backgroundColor: Colors.screenBg,
   },
   heading: {
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 16,
-    color: '#222',
+    color: Colors.textPrimary,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 12,
     padding: 16,
     elevation: 2,
@@ -170,12 +171,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 8,
-    color: '#333',
+    color: Colors.textBody,
   },
   label: {
     fontSize: 14,
     marginBottom: 6,
-    color: '#555',
+    color: Colors.textSecondary,
   },
   status: {
     fontWeight: 'bold',
@@ -183,12 +184,12 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 14,
-    color: '#444',
+    color: Colors.textSecondary,
     marginTop: 8,
     lineHeight: 20,
   },
   cancelButton: {
-    backgroundColor: '#dc3545',
+    backgroundColor: Colors.error,
     paddingVertical: 12,
     borderRadius: 8,
     flexDirection: 'row',
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   cancelButtonText: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     fontSize: 16,
     fontWeight: '600',
   },

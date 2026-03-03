@@ -2,6 +2,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import AD_BANNER from '../../assets/static_assets/AD_BANNER.png';
+import { Colors } from '../constants/Colors';
 
 
 export default function BeforeAfterTreatment() {
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
   container: { padding: 12 },
   title: { fontSize: 16, fontWeight: '600', marginBottom: 8 },
   card: {
-    backgroundColor: '#ffe4e1',
+    backgroundColor: Colors.errorBg,
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',

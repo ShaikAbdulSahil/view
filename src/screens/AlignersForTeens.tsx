@@ -4,6 +4,7 @@ import { LayoutAnimation, TouchableOpacity, View } from 'react-native';
 import { ScrollView, Text, StyleSheet, Image } from 'react-native';
 import TEEN_GIRL from '../../assets/static_assets/TEEN_GIRL.jpg';
 import ALIGNER_MODEL from '../../assets/static_assets/ALIGNER_MODEL.png';
+import { Colors } from '../constants/Colors';
 
 const faqBullets = [
   {
@@ -177,7 +178,7 @@ export default function AlignersForTeensScreen() {
                         : 'chevron-down-outline'
                     }
                     size={20}
-                    color="#888"
+                    color={Colors.tabInactive}
                   />
                 </View>
               </TouchableOpacity>
@@ -197,7 +198,7 @@ export default function AlignersForTeensScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.cardBg,
   },
   heading: {
     fontSize: 20,
@@ -206,13 +207,13 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: Colors.border,
     marginVertical: 8,
   },
   answer: {
     marginTop: 6,
     fontSize: 14,
-    color: '#666',
+    color: Colors.textSecondary,
     lineHeight: 20,
   },
   subheading: {
@@ -231,7 +232,7 @@ const styles = StyleSheet.create({
   question: {
     fontWeight: '600',
     fontSize: 15,
-    color: '#333',
+    color: Colors.textBody,
     flex: 1,
   },
   sectionTitle: {
@@ -242,20 +243,20 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 14,
-    color: '#333',
+    color: Colors.textBody,
     marginBottom: 12,
   },
   title: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
   bullet: {
     fontSize: 14,
-    color: '#333',
+    color: Colors.textBody,
     marginLeft: 8,
     marginBottom: 6,
   },
   quote: {
     fontStyle: 'italic',
     fontSize: 14,
-    color: '#444',
+    color: Colors.textSecondary,
     marginBottom: 12,
   },
   image: {

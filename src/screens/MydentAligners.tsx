@@ -29,6 +29,7 @@ import TeethAlignmentProblems from '../components/TeethAlignmentProblems';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { CarouselItem } from './Home';
+import { Colors } from '../constants/Colors';
 
 const faqs = [
   {
@@ -214,7 +215,7 @@ const MyDentAlignersScreen = () => {
           ) : images[0] ? (
             <Image source={images[0]} style={styles.image} fadeDuration={0} resizeMethod="resize" />
           ) : (
-            <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+            <View style={[styles.image, { backgroundColor: Colors.skeletonBg }]} />
           )}
           <Text style={styles.text}>
             mydent's transparent aligners are designed to gently shift your
@@ -248,7 +249,7 @@ const MyDentAlignersScreen = () => {
         ) : images[1] ? (
           <Image source={images[1]} style={styles.image} fadeDuration={0} resizeMethod="resize" />
         ) : (
-          <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+          <View style={[styles.image, { backgroundColor: Colors.skeletonBg }]} />
         )}
         <Text style={styles.title}>Dental Problems We Can Address</Text>
         <Text style={styles.text}>
@@ -313,7 +314,7 @@ const MyDentAlignersScreen = () => {
           ) : images[2] ? (
             <Image source={images[2]} style={styles.image} fadeDuration={0} resizeMethod="resize" />
           ) : (
-            <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+            <View style={[styles.image, { backgroundColor: Colors.skeletonBg }]} />
           )}
           <Text style={styles.title}>
             The Technology Behind mydent Aligners
@@ -343,7 +344,7 @@ const MyDentAlignersScreen = () => {
           ) : images[3] ? (
             <Image source={images[3]} style={styles.image} fadeDuration={0} resizeMethod="resize" />
           ) : (
-            <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+            <View style={[styles.image, { backgroundColor: Colors.skeletonBg }]} />
           )}
         </View>
       </View>
@@ -427,7 +428,7 @@ const MyDentAlignersScreen = () => {
             ) : images[3] ? (
               <Image source={images[3]} style={styles.priceImage} fadeDuration={0} resizeMethod="resize" />
             ) : (
-              <View style={[styles.priceImage, { backgroundColor: '#f0f0f0' }]} />
+              <View style={[styles.priceImage, { backgroundColor: Colors.skeletonBg }]} />
             )}
           </View>
 
@@ -482,7 +483,7 @@ const MyDentAlignersScreen = () => {
                       : 'chevron-down-outline'
                   }
                   size={20}
-                  color="#888"
+                  color={Colors.tabInactive}
                 />
               </View>
             </TouchableOpacity>
@@ -513,11 +514,11 @@ const MyDentAlignersScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: Colors.screenBg,
     paddingBottom: 120,
   },
   color_one: {
-    backgroundColor: '#e7fafc',
+    backgroundColor: Colors.primaryBg,
   },
   section: {
     padding: 16,
@@ -528,7 +529,7 @@ const styles = StyleSheet.create({
     padding: 22,
     marginVertical: 8,
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.01,
     shadowRadius: 2,
   },
@@ -553,7 +554,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 10,
     marginTop: 12,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
@@ -564,28 +565,28 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     borderWidth: 1,
-    borderColor: '#ccc', // light gray border
-    backgroundColor: '#fff', // white background
-    shadowColor: '#000',
+    borderColor: Colors.borderInput,
+    backgroundColor: Colors.cardBg,
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3, // for Android shadow
+    elevation: 3,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FF6666',
+    color: Colors.brandRed,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#333',
+    color: Colors.textBody,
     marginBottom: 12,
   },
   text: {
     fontSize: 14,
-    color: '#444',
+    color: Colors.textSecondary,
     marginBottom: 6,
   },
   ctaText: {
@@ -593,7 +594,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     marginBottom: 12,
-    color: '#333',
+    color: Colors.textBody,
   },
   image: {
     width: '100%',
@@ -605,17 +606,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F4F6F8',
+    backgroundColor: Colors.screenBg,
   },
   faq: {
     padding: 20,
     borderRadius: 12,
     margin: 16,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
   },
   separator: {
     height: 1,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: Colors.border,
     marginVertical: 12,
   },
   item: {
@@ -629,18 +630,18 @@ const styles = StyleSheet.create({
   question: {
     fontWeight: '600',
     fontSize: 15,
-    color: '#333',
+    color: Colors.textBody,
     flex: 1,
   },
   icon: {
     fontSize: 16,
-    color: '#888',
+    color: Colors.tabInactive,
     marginLeft: 8,
   },
   answer: {
     marginTop: 6,
     fontSize: 14,
-    color: '#666',
+    color: Colors.textSecondary,
     lineHeight: 20,
   },
 
@@ -649,9 +650,9 @@ const styles = StyleSheet.create({
   },
   videoFull: {
     width: '100%',
-    aspectRatio: 16 / 9, // Maintain full visibility
+    aspectRatio: 16 / 9,
     borderRadius: 12,
-    backgroundColor: '#000',
+    backgroundColor: Colors.shadow,
   },
   videoStepTitle: {
     marginTop: 8,
@@ -667,12 +668,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginRight: 8,
-    color: '#3BC3FF',
+    color: Colors.info,
   },
   stepDescription: {
     flex: 1,
     fontSize: 14,
-    color: '#444',
+    color: Colors.textSecondary,
   },
   stepContainer: {
     flexDirection: 'row',
@@ -683,7 +684,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 50,
-    borderColor: '#3BC3FF',
+    borderColor: Colors.info,
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -695,16 +696,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     margin: 20,
     alignItems: 'center',
-    backgroundColor: '#E84850',
+    backgroundColor: Colors.brandRed,
   },
-  buttonText: { color: '#fff', fontWeight: 'bold' },
+  buttonText: { color: Colors.textOnBrand, fontWeight: 'bold' },
   videoRow: {
     flexDirection: 'column',
     gap: 16,
   },
   table: {
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: Colors.border,
     borderRadius: 12,
     overflow: 'hidden',
     marginTop: 12,
@@ -712,18 +713,18 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-    backgroundColor: '#fff',
+    borderBottomColor: Colors.skeletonBg,
+    backgroundColor: Colors.cardBg,
   },
   headerRow: {
-    backgroundColor: '#f9f9ff',
+    backgroundColor: Colors.screenBg,
   },
   cell: {
     flex: 1,
     paddingVertical: 12,
     paddingHorizontal: 8,
     fontSize: 13,
-    color: '#333',
+    color: Colors.textBody,
   },
   alignCenter: {
     textAlign: 'center',
@@ -731,10 +732,10 @@ const styles = StyleSheet.create({
   headerText: {
     fontWeight: 'bold',
     fontSize: 14,
-    color: '#444',
+    color: Colors.textSecondary,
   },
   clearAlignerCol: {
-    color: '#3BC3FF',
+    color: Colors.info,
     fontWeight: 'bold',
   },
 
@@ -743,17 +744,17 @@ const styles = StyleSheet.create({
   },
   priceLabel: {
     fontSize: 16,
-    color: '#666',
+    color: Colors.textSecondary,
   },
   priceValue: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#FF3D00',
+    color: Colors.brandRed,
   },
 
   emiNote: {
     fontSize: 13,
-    color: '#333',
+    color: Colors.textBody,
     marginTop: 6,
     lineHeight: 18,
   },
@@ -776,14 +777,14 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontSize: 13,
-    color: '#333',
+    color: Colors.textBody,
   },
   tableHeader: {
     fontWeight: 'bold',
   },
 
   highlightRed: {
-    color: '#D32F2F',
+    color: Colors.error,
   },
 });
 

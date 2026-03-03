@@ -25,6 +25,7 @@ import Skeleton from '../components/Skeleton';
 import TeethAlignmentProblems from '../components/TeethAlignmentProblems';
 import { AuthContext } from '../contexts/AuthContext';
 import FormExamplesCard from '../components/FormExamplesCard';
+import { Colors } from '../constants/Colors';
 
 export type CarouselItem = {
   uri: string;
@@ -43,11 +44,6 @@ export default function HomeScreen({ navigation }: any) {
   const [carouselImagesLoaded, setCarouselImagesLoaded] = useState(false);
 
   useEffect(() => {
-    if (!token) {
-      navigation.navigate('Login');
-      return;
-    }
-
     const fetchCarousels = async () => {
       try {
         const res = await getCarousels();
@@ -99,8 +95,6 @@ export default function HomeScreen({ navigation }: any) {
     fetchCarousels();
   }, [token]);
 
-  if (!token) return null;
-
   return (
     <View style={styles.container}>
       <ScrollView
@@ -151,7 +145,7 @@ export default function HomeScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
   },
   scrollContent: {
     paddingBottom: 30,
@@ -159,7 +153,7 @@ const styles = StyleSheet.create({
   // Simple gray placeholder to prevent layout jumps while carousel loads
   carouselPlaceholder: {
     height: 200,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: Colors.skeletonBg,
     borderRadius: 10,
     margin: 10,
   }

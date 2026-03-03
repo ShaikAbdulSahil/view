@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { navigateToScreen } from '../utils/navigationHelpers';
+import { Colors } from '../constants/Colors';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface CarouselProps {
@@ -70,7 +71,7 @@ export default function Carousel({ images }: CarouselProps) {
                   resizeMethod="resize"
                 />
               ) : (
-                <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+                <View style={[styles.image, { backgroundColor: Colors.skeletonBg }]} />
               )}
             </Pressable>
           </View>

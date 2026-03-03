@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
+import { Colors } from '../constants/Colors';
 import { WebView } from 'react-native-webview';
 
 export default function TermsWebViewScreen() {
@@ -13,7 +14,7 @@ export default function TermsWebViewScreen() {
                 startInLoadingState
                 renderLoading={() => (
                     <View style={styles.loaderContainer}>
-                        <ActivityIndicator size="large" color="#1e90ff" />
+                        <ActivityIndicator size="large" color={Colors.primaryLight} />
                     </View>
                 )}
             />
@@ -24,7 +25,7 @@ export default function TermsWebViewScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.cardBg,
     },
     loaderContainer: {
         position: 'absolute',

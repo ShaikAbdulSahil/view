@@ -23,6 +23,7 @@ import { addToCart } from '../api/cart-api';
 import { useCart } from '../contexts/CartContext';
 import { Product } from '../constants/product.type';
 import { Dimensions } from 'react-native';
+import { Colors } from '../constants/Colors';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -257,7 +258,7 @@ export default function ProductDetailScreen({ route }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     paddingBottom: 100,
   },
   productImage: {
@@ -268,7 +269,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 18, fontWeight: 'bold', marginBottom: 8 },
   tags: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 8 },
   tag: {
-    backgroundColor: '#eee',
+    backgroundColor: Colors.borderLight,
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -277,13 +278,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   price: { fontSize: 20, fontWeight: 'bold', marginVertical: 8 },
-  strike: { textDecorationLine: 'line-through', color: '#888', fontSize: 16 },
-  discount: { color: 'green', fontWeight: '600', fontSize: 16 },
-  description: { fontSize: 14, color: '#333', lineHeight: 20 },
+  strike: { textDecorationLine: 'line-through', color: Colors.tabInactive, fontSize: 16 },
+  discount: { color: Colors.discount, fontWeight: '600', fontSize: 16 },
+  description: { fontSize: 14, color: Colors.textBody, lineHeight: 20 },
   sectionContainer: { paddingHorizontal: 16, marginTop: 16 },
   section: { marginBottom: 12 },
   sectionHeader: {
-    backgroundColor: '#f0f8ff',
+    backgroundColor: Colors.sectionHeaderBg,
     padding: 12,
     borderRadius: 8,
     flexDirection: 'row',
@@ -291,38 +292,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sectionHeaderActive: {
-    backgroundColor: '#dbeeff',
+    backgroundColor: Colors.sectionHeaderActiveBg,
   },
   sectionTitle: {
     textTransform: 'lowercase',
     fontWeight: '600',
     fontSize: 15,
-    color: '#333',
+    color: Colors.textBody,
   },
   plus: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: Colors.textBody,
   },
   sectionContent: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: Colors.screenBg,
     padding: 10,
     borderRadius: 8,
     marginTop: 4,
   },
   sectionText: {
     fontSize: 14,
-    color: '#555',
+    color: Colors.textSecondary,
     lineHeight: 20,
   },
   button: {
-    backgroundColor: '#ff4d4d',
+    backgroundColor: Colors.brandRed,
     margin: 16,
     paddingVertical: 12,
     borderRadius: 8,
     marginBottom: 130,
   },
-  buttonText: { color: '#fff', textAlign: 'center', fontSize: 16 },
+  buttonText: { color: Colors.textOnBrand, textAlign: 'center', fontSize: 16 },
   buttonDisabled: {
     opacity: 0.7,
   },

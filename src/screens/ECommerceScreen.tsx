@@ -22,6 +22,7 @@ import Skeleton from '../components/Skeleton';
 import { showSuccess } from '../utils/successToast';
 import { addToCart } from '../api/cart-api';
 import { useCart } from '../contexts/CartContext';
+import { useRequireAuth } from '../hooks/useRequireAuth';
 import FeatureStats from '../components/FeatureStats';
 import { getCarousels } from '../api/carousel-api';
 import { normalizeScreenName } from '../utils/navigationHelpers';
@@ -37,6 +38,7 @@ import { CarouselItem } from './Home';
 import BANNER_1 from '../../assets/static_assets/BANNER_1.png';
 import AD_BANNER from '../../assets/static_assets/AD_BANNER.png';
 import BANNER_3 from '../../assets/static_assets/BANNER_3.png';
+import { Colors } from '../constants/Colors';
 
 const ad1 = BANNER_1;
 const ad2 = AD_BANNER;
@@ -179,39 +181,48 @@ export default function EComScreen({ navigation }: any) {
   // We no longer short-circuit render the whole screen while loading.
   // Instead we show skeletons in-place until data and images are ready.
 
+  const { addItems, addProductId } = useCart();
+  const { requireAuth } = useRequireAuth();
+
   const handleToggleFavorite = async (productId: string, newState: boolean) => {
-    try {
-      if (newState) {
-        await addToFavorite(productId);
-        setFavorites((prev) => [...prev, productId]);
-      } else {
-        await removeFavoriteItem(productId);
-        setFavorites((prev) => prev.filter((id) => id !== productId));
+    if (!requireAuth(async () => {
+      try {
+        if (newState) {
+          await addToFavorite(productId);
+          setFavorites((prev) => [...prev, productId]);
+        } else {
+          await removeFavoriteItem(productId);
+          setFavorites((prev) => prev.filter((id) => id !== productId));
+        }
+      } catch (error) {
+        console.error('Failed to update favorite:', error);
       }
-    } catch (error) {
-      console.error('Failed to update favorite:', error);
+    }, 'Please log in to save favorites')) {
+      return;
     }
   };
 
-  const { addItems, addProductId } = useCart();
-
   const handleAddToCart = async (product: any, quantity: number) => {
-    try {
-      if (!product || !product._id) {
-        showError('Product ID is missing');
-        return;
+    if (!requireAuth(async () => {
+      try {
+        if (!product || !product._id) {
+          showError('Product ID is missing');
+          return;
+        }
+        await addToCart(product._id, quantity);
+        addItems(quantity);
+        addProductId(product._id);
+        showSuccess(`${product.title} added to cart`);
+      } catch (error: any) {
+        const msg = error?.response?.data?.message || error?.message || '';
+        if (typeof msg === 'string' && msg.toLowerCase().includes('out of stock')) {
+          showError(`${product.title} is out of stock`);
+        } else {
+          showError('Failed to add product to cart');
+        }
       }
-      await addToCart(product._id, quantity);
-      addItems(quantity);
-      addProductId(product._id);
-      showSuccess(`${product.title} added to cart`);
-    } catch (error: any) {
-      const msg = error?.response?.data?.message || error?.message || '';
-      if (typeof msg === 'string' && msg.toLowerCase().includes('out of stock')) {
-        showError(`${product.title} is out of stock`);
-      } else {
-        showError('Failed to add product to cart');
-      }
+    }, 'Please log in to add items to your cart')) {
+      return;
     }
   };
 
@@ -262,7 +273,7 @@ export default function EComScreen({ navigation }: any) {
                       resizeMethod="resize"
                     />
                   ) : (
-                    <View style={[styles.icon, { backgroundColor: '#f0f0f0', borderRadius: 8 }]} />
+                    <View style={[styles.icon, { backgroundColor: Colors.skeletonBg, borderRadius: 8 }]} />
                   )}
                 </View>
                 <Text style={styles.label}>{item.title || item.name}</Text>
@@ -351,7 +362,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 16,
     paddingBottom: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.cardBg,
   },
 
   header: {
@@ -369,7 +380,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageWrapper: {
-    backgroundColor: '#f0f4ff',
+    backgroundColor: Colors.categoryBg,
     borderRadius: 12,
     width: '100%',
     aspectRatio: 1,
@@ -403,7 +414,7 @@ const styles = StyleSheet.create({
   },
   viewAll: {
     fontSize: 13,
-    color: '#007bff',
+    color: Colors.primaryLight,
   },
   horizontalList: {
     paddingHorizontal: 0,

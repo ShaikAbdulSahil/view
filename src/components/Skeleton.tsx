@@ -8,6 +8,7 @@ import {
     LayoutChangeEvent,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '../constants/Colors';
 
 interface SkeletonProps {
     width?: number | string;
@@ -61,7 +62,7 @@ const Skeleton: React.FC<SkeletonProps> = ({
                 style,
             ]}
         >
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: '#E1E9EE', borderRadius: radius }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: Colors.skeletonBg, borderRadius: radius }]} />
 
             {containerWidth !== null && (
                 <Animated.View
@@ -94,7 +95,7 @@ const Skeleton: React.FC<SkeletonProps> = ({
 const styles = StyleSheet.create({
     container: {
         overflow: 'hidden',
-        backgroundColor: '#E1E9EE',
+        backgroundColor: Colors.skeletonBg,
     },
     shimmer: {
         position: 'absolute',

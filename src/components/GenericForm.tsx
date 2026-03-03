@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Colors } from '../constants/Colors';
 
 interface FormField {
   name: string;
@@ -42,7 +43,7 @@ export default function GenericForm({
         newErrors[field.name] = `${field.label} is required`;
         isValid = false;
       }
-      
+
       if (field.type === 'email' && formData[field.name]) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData[field.name])) {
@@ -65,7 +66,7 @@ export default function GenericForm({
   return (
     <View style={styles.container}>
       {title && <Text style={styles.title}>{title}</Text>}
-      
+
       {fields.map(field => (
         <View key={field.name} style={styles.fieldContainer}>
           <Text style={styles.label}>{field.label}</Text>
@@ -95,14 +96,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
-    backgroundColor: '#f9fafe',
+    backgroundColor: Colors.screenBg,
   },
   title: {
     fontSize: 24,
     fontWeight: '600',
     marginBottom: 20,
     textAlign: 'center',
-    color: '#333',
+    color: Colors.textBody,
   },
   fieldContainer: {
     marginBottom: 15,
@@ -111,32 +112,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     marginBottom: 6,
-    color: '#333',
+    color: Colors.textBody,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: Colors.borderInput,
     padding: 12,
     borderRadius: 8,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.inputBg,
   },
   inputError: {
-    borderColor: 'red',
+    borderColor: Colors.error,
   },
   errorText: {
-    color: 'red',
+    color: Colors.error,
     marginTop: 5,
     fontSize: 14,
   },
   button: {
-    backgroundColor: '#1e90ff',
+    backgroundColor: Colors.primaryLight,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: Colors.textOnPrimary,
     fontWeight: '600',
     fontSize: 16,
   },

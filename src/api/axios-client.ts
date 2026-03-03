@@ -3,7 +3,8 @@ import { getToken } from '../utils/storage';
 
 const axiosClient = axios.create({
   // baseURL: 'https://doctor-appointment-5j6e.onrender.com',
-  baseURL: 'https://mydent-api.onrender.com',
+  // baseURL: 'https://mydent-api.onrender.com',
+  baseURL: 'http://192.168.31.27:3000',
   timeout: 15000,
 });
 
@@ -26,18 +27,26 @@ axiosClient.interceptors.response.use(
   (error) => {
     try {
       const cfg = error?.config || {};
-      const payload = {
-        url: cfg.baseURL ? cfg.baseURL + (cfg.url || '') : cfg.url,
-        method: cfg.method,
-        timeout: cfg.timeout,
-        data: cfg.data,
-        params: cfg.params,
-        status: error?.response?.status,
-        responseData: error?.response?.data,
-        message: error?.message,
-        code: error?.code,
-      };
-      console.error('Axios request failed:', payload);
+      const status = error?.response?.status;
+      const url = cfg.baseURL ? cfg.baseURL + (cfg.url || '') : cfg.url;
+      // Concise log — full details available in error object at call-site
+      console.warn(
+        `API ${cfg.method?.toUpperCase()} ${cfg.url} → ${status ?? 'NO_RESPONSE'}: ${error?.response?.data?.message ?? error?.message}`,
+      );
+
+      // Graceful message: replace raw network errors with user-friendly text
+      if (!error.response) {
+        // No response at all — network issue
+        error._friendlyMessage =
+          'Unable to connect. Please check your internet connection and try again.';
+      } else if (status === 401) {
+        error._friendlyMessage = 'Session expired. Please log in again.';
+      } else if (status === 403) {
+        error._friendlyMessage = 'You don\'t have permission to do that.';
+      } else if (status >= 500) {
+        error._friendlyMessage =
+          'Something went wrong on our end. Please try again later.';
+      }
     } catch (e) {
       console.error('Failed to log axios error details', e);
     }

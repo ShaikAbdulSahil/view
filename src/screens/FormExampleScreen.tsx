@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Alert } from 'react-native';
 import GenericForm from '../components/GenericForm';
+import { Colors } from '../constants/Colors';
 
 export default function FormExampleScreen({ navigation }: any) {
   const formFields = [
@@ -50,7 +51,7 @@ export default function FormExampleScreen({ navigation }: any) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#f9fafe' }}>
+    <View style={{ flex: 1, backgroundColor: Colors.screenBg }}>
       <GenericForm
         fields={formFields}
         onSubmit={handleSubmit}

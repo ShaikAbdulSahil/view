@@ -26,6 +26,7 @@ import {
 } from '@react-navigation/native';
 import { addToCart } from '../api/cart-api';
 import { useCart } from '../contexts/CartContext';
+import { useRequireAuth } from '../hooks/useRequireAuth';
 import FeatureStats from '../components/FeatureStats';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useRef, useState } from 'react';
@@ -41,6 +42,7 @@ import MeetModal from '../components/Meet';
 import { getUserMeets } from '../api/meet-api';
 import { getDoctorTeams } from '../api/doctors-team';
 import Skeleton from '../components/Skeleton';
+import { Colors } from '../constants/Colors';
 import { showSuccess } from '../utils/successToast';
 import WHITENING_PEN_1 from '../../assets/static_assets/WHITENING_PEN_1.png';
 import WHITENING_GEL_1 from '../../assets/static_assets/WHITENING_GEL_1.png';
@@ -359,25 +361,30 @@ export default function ContactUsScreen() {
   };
 
   const { addItems, addProductId } = useCart();
+  const { requireAuth } = useRequireAuth();
 
   const handleAddToCart = async (product: any, quantity: number) => {
-    try {
-      if (!product || !product._id) {
-        showError('Product ID is missing');
-        return;
+    if (!requireAuth(async () => {
+      try {
+        if (!product || !product._id) {
+          showError('Product ID is missing');
+          return;
+        }
+        await addToCart(product._id, quantity);
+        addItems(quantity);
+        addProductId(product._id);
+        showSuccess(`${product.title} added to cart`);
+      } catch (error: any) {
+        console.error(error);
+        const msg = error?.response?.data?.message || error?.message || '';
+        if (typeof msg === 'string' && msg.toLowerCase().includes('out of stock')) {
+          showError(`${product.title} is out of stock`);
+        } else {
+          showError('Failed to add product to cart');
+        }
       }
-      await addToCart(product._id, quantity);
-      addItems(quantity);
-      addProductId(product._id);
-      showSuccess(`${product.title} added to cart`);
-    } catch (error: any) {
-      console.error(error);
-      const msg = error?.response?.data?.message || error?.message || '';
-      if (typeof msg === 'string' && msg.toLowerCase().includes('out of stock')) {
-        showError(`${product.title} is out of stock`);
-      } else {
-        showError('Failed to add product to cart');
-      }
+    }, 'Please log in to add items to your cart')) {
+      return;
     }
   };
 
@@ -410,7 +417,7 @@ export default function ContactUsScreen() {
 
         {/* Right Side: Bell Icon */}
         <TouchableOpacity style={styles.bellIconWrapper}>
-          <Ionicons name="notifications-outline" size={24} color="#00788D" />
+          <Ionicons name="notifications-outline" size={24} color={Colors.teal} />
         </TouchableOpacity>
       </View>
       {/* 2. Program Structure Section */}
@@ -734,7 +741,7 @@ export default function ContactUsScreen() {
                           : 'chevron-down-outline'
                       }
                       size={20}
-                      color="#888"
+                      color={Colors.tabInactive}
                     />
                   </View>
                 </TouchableOpacity>
@@ -839,19 +846,19 @@ export default function ContactUsScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f8f9fb',
+    backgroundColor: Colors.screenBg,
     flex: 1,
     paddingBottom: 120,
   },
   currentCircle: {
-    backgroundColor: '#FFC107', // Yellow for current step
-    borderColor: '#FFC107',
+    backgroundColor: Colors.warning,
+    borderColor: Colors.warning,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#00A67E',
+    color: Colors.successAlt,
   },
   headerRow: {
     flexDirection: 'row',
@@ -865,7 +872,7 @@ const styles = StyleSheet.create({
   },
   viewAll: {
     fontSize: 14,
-    color: '#007BFF', // Or any accent color
+    color: Colors.primaryLight,
   },
   faq: {
     padding: 20,
@@ -879,9 +886,9 @@ const styles = StyleSheet.create({
   },
   videoFull: {
     width: '100%',
-    aspectRatio: 16 / 9, // Maintain full visibility
+    aspectRatio: 16 / 9,
     borderRadius: 12,
-    backgroundColor: '#000',
+    backgroundColor: Colors.shadow,
   },
   questionRow: {
     flexDirection: 'row',
@@ -892,24 +899,24 @@ const styles = StyleSheet.create({
     width: 350,
     height: 200,
     borderRadius: 12,
-    backgroundColor: '#000',
+    backgroundColor: Colors.shadow,
   },
 
   question: {
     fontWeight: '600',
     fontSize: 15,
-    color: '#333',
+    color: Colors.textBody,
     flex: 1,
   },
   icon: {
     fontSize: 16,
-    color: '#888',
+    color: Colors.tabInactive,
     marginLeft: 8,
   },
   answer: {
     marginTop: 6,
     fontSize: 14,
-    color: '#666',
+    color: Colors.textSecondary,
     lineHeight: 20,
   },
   welcomeContainer: {
@@ -917,7 +924,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     padding: 16,
-    backgroundColor: '#E6F9FB',
+    backgroundColor: Colors.primaryBg,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
@@ -942,30 +949,30 @@ const styles = StyleSheet.create({
   helloText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#00788D',
+    color: Colors.teal,
   },
 
   subText: {
     fontSize: 14,
-    color: '#444',
+    color: Colors.textSecondary,
     marginBottom: 10,
   },
 
   coordinatorButton: {
-    backgroundColor: '#E84850',
+    backgroundColor: Colors.brandRed,
     padding: 10,
     borderRadius: 12,
     maxWidth: 300,
   },
 
   buttonText: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     fontSize: 14,
     fontWeight: '600',
   },
 
   timeText: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     fontSize: 12,
     marginTop: 4,
   },
@@ -974,11 +981,11 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   sectionCard: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 1 },
     shadowRadius: 6,
@@ -1011,13 +1018,13 @@ const styles = StyleSheet.create({
   },
 
   filledCircle: {
-    backgroundColor: '#00AEEF',
+    backgroundColor: Colors.info,
   },
 
   hollowCircle: {
     borderWidth: 2,
-    borderColor: '#00AEEF',
-    backgroundColor: '#fff',
+    borderColor: Colors.info,
+    backgroundColor: Colors.cardBg,
   },
 
   verticalLine: {
@@ -1026,14 +1033,14 @@ const styles = StyleSheet.create({
     left: 4,
     height: '100%',
     width: 2,
-    backgroundColor: '#00AEEF',
+    backgroundColor: Colors.info,
     zIndex: 0,
   },
 
   stepTextWrapper: {
     flex: 1,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    borderBottomColor: Colors.border,
     paddingBottom: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -1041,7 +1048,7 @@ const styles = StyleSheet.create({
   },
 
   stepTitle: {
-    color: '#00AEEF',
+    color: Colors.info,
     fontSize: 13,
     fontWeight: '500',
     flex: 1,
@@ -1049,17 +1056,17 @@ const styles = StyleSheet.create({
 
   stepSession: {
     fontSize: 13,
-    color: '#333',
+    color: Colors.textBody,
     fontWeight: '500',
     marginLeft: 10,
   },
   bellIcon: {
     width: 24,
     height: 24,
-    tintColor: '#00788D',
+    tintColor: Colors.teal,
   },
   welcomeSection: {
-    backgroundColor: '#e5f8ff',
+    backgroundColor: Colors.primaryBg,
     padding: 20,
     borderRadius: 12,
     marginBottom: 16,
@@ -1072,7 +1079,7 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     fontSize: 14,
-    color: '#00AEEF',
+    color: Colors.info,
     fontWeight: '600',
   },
 
@@ -1085,10 +1092,10 @@ const styles = StyleSheet.create({
   },
   programText: {
     fontSize: 15,
-    color: '#444',
+    color: Colors.textSecondary,
   },
   sessionText: {
-    color: '#00A67E',
+    color: Colors.successAlt,
     fontWeight: '600',
   },
   expertsContainer: {
@@ -1104,14 +1111,14 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 24,
     marginBottom: 6,
-    backgroundColor: '#ddd',
+    backgroundColor: Colors.border,
   },
   expertName: {
     fontSize: 13,
-    color: '#333',
+    color: Colors.textBody,
   },
   scheduleItem: {
-    backgroundColor: '#eaf7ff',
+    backgroundColor: Colors.primaryBg,
     padding: 12,
     borderRadius: 10,
     marginBottom: 12,
@@ -1122,21 +1129,21 @@ const styles = StyleSheet.create({
   scheduleDoctor: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: Colors.textBody,
   },
   scheduleInfo: {
     fontSize: 14,
-    color: '#666',
+    color: Colors.textSecondary,
   },
   scheduleTime: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#00AEEF',
+    color: Colors.info,
     textAlign: 'right',
   },
   scheduleDate: {
     fontSize: 14,
-    color: '#666',
+    color: Colors.textSecondary,
     textAlign: 'right',
   },
   productRow: {
@@ -1146,7 +1153,7 @@ const styles = StyleSheet.create({
   },
   productCard: {
     width: '48%',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: Colors.skeletonBg,
     borderRadius: 10,
     padding: 10,
     alignItems: 'center',
@@ -1160,26 +1167,26 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: Colors.textBody,
     textAlign: 'center',
   },
   productPrice: {
     fontSize: 14,
-    color: '#666',
+    color: Colors.textSecondary,
     marginTop: 4,
   },
   faqText: {
     fontSize: 14,
-    color: '#555',
+    color: Colors.textSecondary,
     marginBottom: 8,
   },
   todayAppointmentCard: {
     padding: 20,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: Colors.skeletonBg,
     marginHorizontal: 16,
     borderRadius: 12,
     marginBottom: 16,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 1 },
     shadowRadius: 6,
@@ -1188,12 +1195,12 @@ const styles = StyleSheet.create({
   todayTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#333',
+    color: Colors.textBody,
     marginBottom: 4,
   },
   appointmentId: {
     fontSize: 12,
-    color: '#666',
+    color: Colors.textSecondary,
     marginBottom: 8,
   },
   doctorInfo: {
@@ -1203,19 +1210,19 @@ const styles = StyleSheet.create({
   doctorName: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#00AEEF',
+    color: Colors.info,
   },
   doctorSpeciality: {
     fontSize: 13,
-    color: '#555',
+    color: Colors.textSecondary,
     marginTop: 2,
   },
   ratingStars: {
-    color: '#4CAF50',
+    color: Colors.successDark,
     marginTop: 2,
   },
   completedLine: {
-    backgroundColor: '#4CAF50', // Green for completed connectors
+    backgroundColor: Colors.successDark,
   },
   completedText: {
     fontWeight: 'bold',
@@ -1230,24 +1237,24 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   joinButton: {
-    backgroundColor: '#00A67E',
+    backgroundColor: Colors.successAlt,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 6,
   },
   joinButtonText: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     fontWeight: '600',
   },
   rescheduleButton: {
-    borderColor: '#00AEEF',
+    borderColor: Colors.info,
     borderWidth: 1,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 6,
   },
   rescheduleText: {
-    color: '#00AEEF',
+    color: Colors.info,
     fontWeight: '600',
   },
   uploadRow: {
@@ -1258,15 +1265,15 @@ const styles = StyleSheet.create({
   },
   uploadText: {
     fontSize: 14,
-    color: '#00AEEF',
+    color: Colors.info,
   },
   viewText: {
     fontSize: 14,
-    color: '#00AEEF',
+    color: Colors.info,
     fontWeight: '600',
   },
   footerContainer: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: Colors.skeletonBg,
     padding: 20,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
@@ -1276,7 +1283,7 @@ const styles = StyleSheet.create({
   footerHeading: {
     fontWeight: 'bold',
     fontSize: 16,
-    color: '#333',
+    color: Colors.textBody,
     marginBottom: 10,
   },
   linkColumns: {
@@ -1289,18 +1296,18 @@ const styles = StyleSheet.create({
   },
   linkText: {
     fontSize: 14,
-    color: '#555',
+    color: Colors.textSecondary,
     marginBottom: 6,
   },
   footerNote: {
     marginTop: 16,
     fontSize: 12,
-    color: '#777',
+    color: Colors.textMuted,
     lineHeight: 18,
   },
   separator: {
     height: 1,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: Colors.border,
     marginVertical: 8,
   },
   whatsappIcon: {
@@ -1321,18 +1328,18 @@ const styles = StyleSheet.create({
   },
   noAppointmentText: {
     fontSize: 16,
-    color: '#FF0000',
+    color: Colors.error,
     marginBottom: 20,
     textAlign: 'center',
   },
   bookButton: {
-    backgroundColor: '#E84850',
+    backgroundColor: Colors.brandRed,
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
   },
   bookButtonText: {
-    color: 'white',
+    color: Colors.textOnBrand,
     fontWeight: 'bold',
   },
 
@@ -1343,7 +1350,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   uploadButtonText: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     fontSize: 16,
   },
   reportImage: {

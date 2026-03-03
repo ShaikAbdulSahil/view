@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getCoins } from '../api/coins-api';
+import { Colors } from '../constants/Colors';
 
 interface CoinsProps {
   coins: number;
@@ -26,10 +27,10 @@ const MyDentCoinsScreen = () => {
 
   const formattedDate = coins?.createdAt
     ? new Date(coins.createdAt).toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      })
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    })
     : '';
 
   const coinDetails = [
@@ -73,7 +74,7 @@ const MyDentCoinsScreen = () => {
 
       {/* Coin Balance Card */}
       <View style={styles.balanceCard}>
-        <Ionicons name="wallet" size={32} color="#fff" />
+        <Ionicons name="wallet" size={32} color={Colors.textOnPrimary} />
         <Text style={styles.coinAmount}>{coins?.coins ?? 0} Coins</Text>
         <Text style={styles.coinLabel}>Available Balance</Text>
       </View>
@@ -97,7 +98,7 @@ const MyDentCoinsScreen = () => {
             <Text
               style={[
                 styles.historyAmount,
-                { color: item.amount.startsWith('+') ? '#28a745' : '#dc3545' },
+                { color: item.amount.startsWith('+') ? Colors.success : Colors.error },
               ]}
             >
               {item.amount}
@@ -123,17 +124,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f9fafa',
+    backgroundColor: Colors.screenBg,
     paddingBottom: 120,
   },
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
-    color: '#222',
+    color: Colors.textPrimary,
   },
   balanceCard: {
-    backgroundColor: '#007bff',
+    backgroundColor: Colors.primaryLight,
     borderRadius: 12,
     padding: 24,
     alignItems: 'center',
@@ -142,23 +143,23 @@ const styles = StyleSheet.create({
   coinAmount: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#fff',
+    color: Colors.textOnPrimary,
     marginTop: 8,
   },
   coinLabel: {
     fontSize: 16,
-    color: '#e6e6e6',
+    color: Colors.border,
     marginTop: 4,
   },
   redeemButton: {
-    backgroundColor: '#ffc107',
+    backgroundColor: Colors.warning,
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 24,
   },
   redeemButtonText: {
-    color: '#333',
+    color: Colors.textBody,
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -166,12 +167,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#444',
+    color: Colors.textSecondary,
   },
   historyItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     padding: 14,
     borderRadius: 10,
     marginBottom: 10,
@@ -180,11 +181,11 @@ const styles = StyleSheet.create({
   historyTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: Colors.textBody,
   },
   historyDate: {
     fontSize: 12,
-    color: '#999',
+    color: Colors.textMuted,
   },
   historyAmount: {
     fontSize: 16,
@@ -193,18 +194,18 @@ const styles = StyleSheet.create({
   infoCard: {
     marginTop: 30,
     padding: 16,
-    backgroundColor: '#eef6ff',
+    backgroundColor: Colors.sectionHeaderBg,
     borderRadius: 10,
   },
   infoTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#007bff',
+    color: Colors.primaryLight,
   },
   infoText: {
     fontSize: 14,
-    color: '#555',
+    color: Colors.textSecondary,
     marginBottom: 4,
   },
 });

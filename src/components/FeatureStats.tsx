@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Image, StyleSheet, Dimensions } from 'react-native';
 import FOOTER_IMAGE from '../../assets/static_assets/FOOTER_IMAGE.jpg';
+import { Colors } from '../constants/Colors';
 
 
 const screenWidth = Dimensions.get('window').width;
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginBottom: 120,
     overflow: 'hidden',
-    backgroundColor: '#E9F9FA',
+    backgroundColor: Colors.primaryBg,
   },
   image: {
     width: screenWidth - 32,

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useUser } from '../contexts/UserContext';
 import { AuthContext } from '../contexts/AuthContext';
@@ -10,16 +10,18 @@ import {
   DrawerActions,
 } from '@react-navigation/native';
 import { navigateToScreen } from '../utils/navigationHelpers';
-// Removed react-native-paper Menu due to inconsistent anchor behavior; implementing a lightweight dropdown
+import { useRequireAuth } from '../hooks/useRequireAuth';
 import LOGO_PNG_PREVIEW from '../../assets/static_assets/LOGO_PNG_PREVIEW.png';
+import { Colors } from '../constants/Colors';
 
 export default function Navbar() {
   const { user } = useUser();
   const navigation = useNavigation<NavigationProp<any>>();
-  const { logout } = useContext(AuthContext);
+  const { logout, isGuest } = useContext(AuthContext);
   const [menuVisible, setMenuVisible] = useState(false);
   const { itemsCount } = useCart();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const { requireAuth } = useRequireAuth();
 
   const openMenu = () => setShowProfileMenu(true);
   const closeMenu = () => setShowProfileMenu(false);
@@ -29,13 +31,14 @@ export default function Navbar() {
     navigateToScreen(navigation, 'EditProfile');
   };
 
+  const handleLogin = () => {
+    closeMenu();
+    logout(); // clears guest mode → navigates to AuthScreen (Login)
+  };
+
   const handleLogout = () => {
     closeMenu();
     logout();
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'LoginScreen' }],
-    });
   };
 
   return (
@@ -44,7 +47,7 @@ export default function Navbar() {
       {/* Header Section */}
       <View style={styles.headerContainer}>
         <View>
-          <Text style={styles.greeting}>Hi, {user?.firstName}</Text>
+          <Text style={styles.greeting}>Hi, {isGuest ? 'Guest' : (user?.firstName || 'there')}</Text>
           <TouchableOpacity onPress={() => navigateToScreen(navigation, 'ClinicMap')}>
             <Text style={styles.location}>Add location ▼</Text>
           </TouchableOpacity>
@@ -54,21 +57,26 @@ export default function Navbar() {
           <Ionicons
             name="heart-outline"
             size={22}
-            color="#333"
+            color={Colors.textBody}
             style={styles.icon}
-            onPress={() => navigateToScreen(navigation, 'FavProductScreen')}
+            onPress={() => {
+              requireAuth(
+                () => navigateToScreen(navigation, 'FavProductScreen'),
+                'Please log in to view your favorites',
+              );
+            }}
           />
           <Ionicons
             name="notifications-outline"
             size={22}
-            color="#333"
+            color={Colors.textBody}
             style={styles.icon}
           />
           <TouchableOpacity
             onPress={() => setShowProfileMenu((v) => !v)}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Ionicons name="person-circle-outline" size={26} color="#333" />
+            <Ionicons name="person-circle-outline" size={26} color={Colors.textBody} />
           </TouchableOpacity>
         </View>
       </View>
@@ -76,13 +84,34 @@ export default function Navbar() {
       {showProfileMenu && (
         <TouchableOpacity style={styles.menuOverlay} activeOpacity={1} onPress={closeMenu}>
           <View style={styles.dropdownMenu}>
-            <TouchableOpacity style={styles.menuItem} onPress={handleProfile}>
-              <Text style={styles.menuItemText}>My Profile</Text>
-            </TouchableOpacity>
-            <View style={styles.menuDivider} />
-            <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
-              <Text style={styles.menuItemText}>Logout</Text>
-            </TouchableOpacity>
+            {isGuest ? (
+              <>
+                <TouchableOpacity style={styles.menuItem} onPress={handleLogin}>
+                  <View style={styles.menuItemRow}>
+                    <Ionicons name="log-in-outline" size={18} color={Colors.primary} />
+                    <Text style={[styles.menuItemText, { color: Colors.primary, fontWeight: '600' }]}>
+                      Login / Sign Up
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                <TouchableOpacity style={styles.menuItem} onPress={handleProfile}>
+                  <View style={styles.menuItemRow}>
+                    <Ionicons name="person-outline" size={18} color={Colors.textPrimary} />
+                    <Text style={styles.menuItemText}>My Profile</Text>
+                  </View>
+                </TouchableOpacity>
+                <View style={styles.menuDivider} />
+                <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+                  <View style={styles.menuItemRow}>
+                    <Ionicons name="log-out-outline" size={18} color={Colors.favorite} />
+                    <Text style={[styles.menuItemText, { color: Colors.favorite }]}>Logout</Text>
+                  </View>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         </TouchableOpacity>
       )}
@@ -96,15 +125,20 @@ export default function Navbar() {
           <MaterialCommunityIcons
             name="filter-variant"
             size={24}
-            color="#00BCD4"
+            color={Colors.info}
           />
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.iconButton, { position: 'relative' }]}
-          onPress={() => navigateToScreen(navigation, 'CartScreen')}
+          onPress={() => {
+            requireAuth(
+              () => navigateToScreen(navigation, 'CartScreen'),
+              'Please log in to view your cart',
+            );
+          }}
         >
-          <Ionicons name="cart-outline" size={22} color="#FD343E" />
+          <Ionicons name="cart-outline" size={22} color={Colors.brandRed} />
           {itemsCount > 0 && (
             <View style={styles.cartBadge}>
               <Text style={styles.cartBadgeText} numberOfLines={1}>
@@ -131,7 +165,7 @@ export default function Navbar() {
 
 const styles = StyleSheet.create({
   navbarWrapper: {
-    backgroundColor: '#E9F9FA',
+    backgroundColor: Colors.primaryBg,
     zIndex: 1000,
     elevation: 10,
   },
@@ -149,7 +183,7 @@ const styles = StyleSheet.create({
   },
   location: {
     fontSize: 11,
-    color: '#1e90ff',
+    color: Colors.link,
   },
   icons: {
     flexDirection: 'row',
@@ -170,17 +204,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 52,
     right: 12,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 8,
     elevation: 8,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.15,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
     paddingVertical: 6,
     minWidth: 160,
     borderWidth: 1,
-    borderColor: '#eee',
+    borderColor: Colors.borderLight,
   },
   menuItem: {
     paddingVertical: 10,
@@ -188,12 +222,17 @@ const styles = StyleSheet.create({
   },
   menuItemText: {
     fontSize: 14,
-    color: '#222',
+    color: Colors.textPrimary,
   },
   menuDivider: {
     height: 1,
-    backgroundColor: '#eee',
+    backgroundColor: Colors.borderLight,
     marginVertical: 4,
+  },
+  menuItemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
   },
   icon: {
     marginHorizontal: 4,
@@ -206,7 +245,7 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: Colors.border,
     borderRadius: 8,
     padding: 6,
   },
@@ -218,13 +257,13 @@ const styles = StyleSheet.create({
     height: 18,
     paddingHorizontal: 4,
     borderRadius: 9,
-    backgroundColor: '#FD343E',
+    backgroundColor: Colors.brandRed,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,
   },
   cartBadgeText: {
-    color: '#fff',
+    color: Colors.textOnPrimary,
     fontSize: 11,
     fontWeight: '700',
   },

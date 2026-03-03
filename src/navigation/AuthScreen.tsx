@@ -1,22 +1,24 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import { useFocusEffect } from '@react-navigation/native';
 import SignupScreen from '../screens/Signup';
 import LoginScreen from '../screens/Login';
 import ForgotPasswordScreen from '../screens/ForgotPassword';
 import ResetPasswordScreen from '../screens/ResetPassword';
 import TermsWebViewScreen from '../screens/TermsWebViewScreen';
 import PrivacyWebViewScreen from '../screens/PrivacyWebViewScreen';
+import { Colors } from '../constants/Colors';
 
 const Stack = createNativeStackNavigator();
 
 const AuthScreen = () => {
-  // Status bar is controlled via expo-status-bar element below
   return (
     <>
       <Stack.Navigator
         screenOptions={{
-          contentStyle: { backgroundColor: '#ffffff' },
+          contentStyle: { backgroundColor: Colors.cardBg },
+          statusBarBackgroundColor: Colors.cardBg,
+          statusBarStyle: 'dark',
+          statusBarTranslucent: false,
         }}
       >
         <Stack.Screen

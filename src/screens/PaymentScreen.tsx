@@ -17,6 +17,7 @@ import { showPaymentSuccessAlert, showPaymentFailureAlert } from '../utils/error
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import type { ComponentProps } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Colors } from '../constants/Colors';
 
 type IconName = ComponentProps<typeof MaterialCommunityIcons>['name'];
 
@@ -64,7 +65,7 @@ const PaymentScreen = () => {
         method: {
           upi: true,
         },
-        theme: { color: '#F7D449' },
+        theme: { color: Colors.ratingBadge },
       };
 
       if (selectedUpiApp) {
@@ -120,13 +121,13 @@ const PaymentScreen = () => {
   }) => (
     <View style={styles.methodCard}>
       <View style={styles.methodIconPlaceholder}>
-        <MaterialCommunityIcons name={iconName} size={24} color="#555" />
+        <MaterialCommunityIcons name={iconName} size={24} color={Colors.textSecondary} />
       </View>
       <View style={styles.methodTextContainer}>
         <Text style={styles.methodLabel}>{label}</Text>
         {offer && <Text style={styles.methodOffer}>{offer}</Text>}
       </View>
-      <MaterialCommunityIcons name="chevron-right" size={22} color="#999" />
+      <MaterialCommunityIcons name="chevron-right" size={22} color={Colors.textMuted} />
     </View>
   );
 
@@ -191,23 +192,23 @@ export default PaymentScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.screenBg,
   },
   header: {
     fontSize: 20,
     fontWeight: 'bold',
     marginTop: 20,
     paddingHorizontal: 16,
-    color: '#000',
+    color: Colors.textPrimary,
   },
   methodCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 12,
     padding: 12,
     marginBottom: 10,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
@@ -217,7 +218,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 8,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: Colors.screenBg,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -228,15 +229,15 @@ const styles = StyleSheet.create({
   methodLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: Colors.textBody,
   },
   methodOffer: {
     fontSize: 12,
-    color: '#888',
+    color: Colors.tabInactive,
     marginTop: 2,
   },
   section: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     margin: 16,
     borderRadius: 12,
     padding: 16,
@@ -257,12 +258,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 10,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: Colors.skeletonBg,
     marginBottom: 10,
     width: '48%',
   },
   selectedUpiApp: {
-    backgroundColor: '#F7D449',
+    backgroundColor: Colors.warning,
   },
   upiAppText: {
     textAlign: 'center',
@@ -270,17 +271,17 @@ const styles = StyleSheet.create({
   },
   arrow: {
     fontSize: 20,
-    color: '#aaa',
+    color: Colors.textMuted,
   },
   footer: {
     bottom: 0,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderTopColor: '#eee',
+    borderTopColor: Colors.borderLight,
     borderTopWidth: 1,
     paddingBottom: 140,
   },
@@ -289,13 +290,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   payButton: {
-    backgroundColor: '#F7D449',
+    backgroundColor: Colors.warning,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 12,
   },
   payButtonText: {
     fontWeight: 'bold',
-    color: '#000',
+    color: Colors.textPrimary,
   },
 });

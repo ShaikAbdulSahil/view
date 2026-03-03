@@ -12,6 +12,7 @@ import BOOK_ICON from '../../assets/static_assets/BOOK_ICON.png';
 import SERVICE_CARD_BOOK_2 from '../../assets/static_assets/SERVICE_CARD_BOOK_2.png';
 import SERVICE_CARD_BOOK_4 from '../../assets/static_assets/SERVICE_CARD_BOOK_4.png';
 import SERVICE_CARD_MY_DENT_AI from '../../assets/static_assets/SERVICE_CARD_MY_DENT_AI.jpg';
+import { Colors } from '../constants/Colors';
 
 
 const services = [
@@ -62,7 +63,7 @@ export default function ServiceCards({ navigation }: any) {
           {/* <Image source={item.image} style={styles.image} />
            */}
           <View style={{ flex: 1 }} collapsable={false}>
-            <Image source={item.image} style={styles.image} fadeDuration={0} resizeMethod='resize'/>
+            <Image source={item.image} style={styles.image} fadeDuration={0} resizeMethod='resize' />
           </View>
         </TouchableOpacity>
       ))}
@@ -83,9 +84,9 @@ const styles = StyleSheet.create({
     height: CARD_WIDTH * 1.1,
     borderRadius: 16,
     overflow: 'hidden',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     marginBottom: 10,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.08,
     shadowRadius: 2,

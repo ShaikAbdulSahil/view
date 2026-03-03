@@ -10,6 +10,7 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
+import { Colors } from '../constants/Colors';
 
 const timeSlots = [
   '10:40 AM',
@@ -63,7 +64,7 @@ export default function BookingScreen({ navigation }: any) {
             <Text
               style={[
                 styles.dateTextBottom,
-                selectedDate === item.date && { color: '#fff' },
+                selectedDate === item.date && { color: Colors.textOnBrand },
               ]}
             >
               {item.label}
@@ -87,7 +88,7 @@ export default function BookingScreen({ navigation }: any) {
             <Text
               style={[
                 styles.timeButtonText,
-                selectedTime === time && { color: '#d43f3f' },
+                selectedTime === time && { color: Colors.brandRed },
               ]}
             >
               {time}
@@ -116,12 +117,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fdfdfd',
-    // paddingBottom: 120,
+    backgroundColor: Colors.screenBg,
   },
   header: {
     fontSize: 16,
-    color: '#444',
+    color: Colors.textSecondary,
     fontWeight: '500',
     marginBottom: 16,
   },
@@ -131,29 +131,29 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   datePill: {
-    backgroundColor: '#f2f2f2',
+    backgroundColor: Colors.skeletonBg,
     padding: 12,
     borderRadius: 10,
     alignItems: 'center',
     width: '30%',
   },
   selectedDatePill: {
-    backgroundColor: '#d43f3f',
+    backgroundColor: Colors.brandRed,
   },
   dateTextTop: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#2e2e2e',
+    color: Colors.textPrimary,
   },
   dateTextBottom: {
     fontSize: 12,
-    color: '#555',
+    color: Colors.textSecondary,
   },
   selectTimeLabel: {
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 12,
-    color: '#444',
+    color: Colors.textSecondary,
   },
   timeGrid: {
     flexDirection: 'row',
@@ -165,31 +165,31 @@ const styles = StyleSheet.create({
     width: '48%',
     paddingVertical: 14,
     borderRadius: 8,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: Colors.skeletonBg,
     marginBottom: 12,
     alignItems: 'center',
   },
   selectedTimeButton: {
     borderWidth: 2,
-    borderColor: '#d43f3f',
-    backgroundColor: '#fff',
+    borderColor: Colors.brandRed,
+    backgroundColor: Colors.cardBg,
   },
   timeButtonText: {
-    color: '#333',
+    color: Colors.textBody,
     fontSize: 15,
   },
   proceedButton: {
     position: 'absolute',
     bottom: 20,
     alignSelf: 'center',
-    backgroundColor: '#d43f3f',
+    backgroundColor: Colors.brandRed,
     paddingVertical: 14,
     paddingHorizontal: 40,
     borderRadius: 30,
     marginBottom: 120,
   },
   proceedButtonText: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     fontSize: 16,
     fontWeight: 'bold',
     textTransform: 'uppercase',

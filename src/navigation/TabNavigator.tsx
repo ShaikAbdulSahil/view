@@ -19,6 +19,7 @@ import MYDENTTAB from '../../assets/static_assets/MYDENTTAB.jpg';
 import WHATS_APP_IMAGE_2025_06_16_AT_11_36_57_AM from '../../assets/static_assets/WHATS_APP_IMAGE_2025_06_16_AT_11_36_57_AM.jpg';
 import SHOP from '../../assets/static_assets/SHOP.jpg';
 import CONTACT from '../../assets/static_assets/CONTACT.jpg';
+import { Colors } from '../constants/Colors';
 
 
 const Tab = createBottomTabNavigator();
@@ -45,7 +46,7 @@ export default function BottomTabNavigator() {
       }}
     >
       <Tab.Screen
-        name="Home"
+        name="HomeMain"
         component={HomeStack}
         options={{
           tabBarButton: () => null,
@@ -84,7 +85,7 @@ export default function BottomTabNavigator() {
                   height: 28,
                   resizeMode: 'contain',
                   borderWidth: focused ? 2 : 0,
-                  borderColor: focused ? '#0077b6' : 'transparent',
+                  borderColor: focused ? Colors.tabActive : Colors.transparent,
                   borderRadius: 8,
                 }}
                 fadeDuration={0}
@@ -93,7 +94,7 @@ export default function BottomTabNavigator() {
               <Text
                 style={{
                   fontSize: 8,
-                  color: focused ? '#0077b6' : '#444',
+                  color: focused ? Colors.tabActive : Colors.tabInactive,
                 }}
               >
                 Home
@@ -141,7 +142,7 @@ export default function BottomTabNavigator() {
                   height: 28,
                   resizeMode: 'contain',
                   borderWidth: focused ? 2 : 0,
-                  borderColor: focused ? '#0077b6' : 'transparent',
+                  borderColor: focused ? Colors.tabActive : Colors.transparent,
                   borderRadius: 8,
                 }}
                 fadeDuration={0}
@@ -150,7 +151,7 @@ export default function BottomTabNavigator() {
               <Text
                 style={{
                   fontSize: 8,
-                  color: focused ? '#0077b6' : '#444',
+                  color: focused ? Colors.tabActive : Colors.tabInactive,
                 }}
               >
                 Mydent
@@ -187,7 +188,7 @@ export default function BottomTabNavigator() {
                   height: 22,
                   resizeMode: 'contain',
                   borderWidth: focused ? 2 : 0,
-                  borderColor: focused ? '#0077b6' : 'transparent',
+                  borderColor: focused ? Colors.tabActive : Colors.transparent,
                   borderRadius: 8,
                 }}
                 resizeMode="contain"
@@ -197,7 +198,7 @@ export default function BottomTabNavigator() {
               <Text
                 style={{
                   fontSize: 8,
-                  color: focused ? '#0077b6' : '#444',
+                  color: focused ? Colors.tabActive : Colors.tabInactive,
                 }}
               >
                 Centers
@@ -233,7 +234,7 @@ export default function BottomTabNavigator() {
                   height: 28,
                   resizeMode: 'contain',
                   borderWidth: focused ? 2 : 0,
-                  borderColor: focused ? '#0077b6' : 'transparent',
+                  borderColor: focused ? Colors.tabActive : Colors.transparent,
                   borderRadius: 8,
                 }}
                 fadeDuration={0}
@@ -242,7 +243,7 @@ export default function BottomTabNavigator() {
               <Text
                 style={{
                   fontSize: 8,
-                  color: focused ? '#0077b6' : '#444',
+                  color: focused ? Colors.tabActive : Colors.tabInactive,
                 }}
               >
                 Shop
@@ -278,7 +279,7 @@ export default function BottomTabNavigator() {
                   height: 28,
                   resizeMode: 'contain',
                   borderWidth: focused ? 2 : 0,
-                  borderColor: focused ? '#0077b6' : 'transparent',
+                  borderColor: focused ? Colors.tabActive : Colors.transparent,
                   borderRadius: 8,
                 }}
                 fadeDuration={0}
@@ -287,7 +288,7 @@ export default function BottomTabNavigator() {
               <Text
                 style={{
                   fontSize: 8,
-                  color: focused ? '#0077b6' : '#444',
+                  color: focused ? Colors.tabActive : Colors.tabInactive,
                 }}
               >
                 Contact

@@ -3,6 +3,7 @@ import { subscribe } from '../utils/successToast';
 import { Animated, Text, View, StyleSheet, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import { Colors } from '../constants/Colors';
 
 export default function SuccessToast() {
     const [message, setMessage] = useState<string | null>(null);
@@ -60,7 +61,7 @@ export default function SuccessToast() {
             ]}
         >
             <View style={styles.inner}>
-                <Ionicons name="thumbs-up" size={22} color="#0bbd57" />
+                <Ionicons name="thumbs-up" size={22} color={Colors.success} />
                 <Text style={styles.text}>{message}</Text>
             </View>
         </Animated.View>
@@ -79,13 +80,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     inner: {
-        backgroundColor: '#f0fff4',
+        backgroundColor: Colors.successBg,
         borderRadius: 12,
         paddingVertical: 12,
         paddingHorizontal: 16,
         flexDirection: 'row',
         alignItems: 'center',
-        shadowColor: '#000',
+        shadowColor: Colors.shadow,
         shadowOpacity: 0.14,
         shadowOffset: { width: 0, height: 4 },
         shadowRadius: 8,
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(11,189,87,0.15)',
     },
     text: {
-        color: '#0bbd57',
+        color: Colors.success,
         marginLeft: 12,
         fontWeight: '700',
         fontSize: 16,

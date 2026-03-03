@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { useFavorites } from '../contexts/FavContext';
 import { useCart } from '../contexts/CartContext';
+import { useRequireAuth } from '../hooks/useRequireAuth';
+import { Colors } from '../constants/Colors';
 
 const ProductCard = ({ item, onAddToCart, onToggleFavorite, style }: any) => {
   const [isAdded, setIsAdded] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const { favorites, toggleFavorite } = useFavorites();
   const { cartProductIds } = useCart();
+  const { requireAuth } = useRequireAuth();
 
   useEffect(() => {
     // React instantly to context changes without extra API call
@@ -27,8 +30,12 @@ const ProductCard = ({ item, onAddToCart, onToggleFavorite, style }: any) => {
       : 0;
 
   const handleAdd = () => {
-    setIsAdded(true);
-    onAddToCart(item, quantity);
+    if (!requireAuth(() => {
+      setIsAdded(true);
+      onAddToCart(item, quantity);
+    }, 'Please log in to add items to your cart')) {
+      return;
+    }
   };
 
   const increment = () => {
@@ -45,9 +52,13 @@ const ProductCard = ({ item, onAddToCart, onToggleFavorite, style }: any) => {
   };
 
   const handleFavoriteToggle = () => {
-    toggleFavorite(item._id, !isFavorite);
-    if (onToggleFavorite) {
-      onToggleFavorite(item._id, !isFavorite);
+    if (!requireAuth(() => {
+      toggleFavorite(item._id, !isFavorite);
+      if (onToggleFavorite) {
+        onToggleFavorite(item._id, !isFavorite);
+      }
+    }, 'Please log in to save favorites')) {
+      return;
     }
   };
 
@@ -67,7 +78,7 @@ const ProductCard = ({ item, onAddToCart, onToggleFavorite, style }: any) => {
         <IconButton
           icon={isFavorite ? 'heart' : 'heart-outline'}
           size={24}
-          iconColor={isFavorite ? '#e53935' : '#555'}
+          iconColor={isFavorite ? Colors.favorite : Colors.favoriteInactive}
         />
       </TouchableOpacity>
 
@@ -120,10 +131,10 @@ const styles = StyleSheet.create({
   // ... keep your existing styles ...
   card: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: Colors.border,
     borderRadius: 10,
     padding: 10,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     elevation: 2,
     position: 'relative',
   },
@@ -147,7 +158,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 5,
     left: 5,
-    backgroundColor: '#FFD700',
+    backgroundColor: Colors.ratingBadge,
     paddingHorizontal: 6,
     paddingVertical: 6,
     borderRadius: 4,
@@ -155,7 +166,7 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 10,
     fontWeight: 'bold',
-    color: '#000',
+    color: Colors.textPrimary,
   },
   cardName: {
     marginTop: 6,
@@ -176,35 +187,35 @@ const styles = StyleSheet.create({
   cardPrice: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#000',
+    color: Colors.textPrimary,
   },
   originalPrice: {
     fontSize: 12,
     textDecorationLine: 'line-through',
-    color: '#999',
+    color: Colors.textMuted,
     marginLeft: 6,
   },
   discount: {
     fontSize: 12,
-    color: '#0a9f0a',
+    color: Colors.discount,
     marginLeft: 6,
   },
   addButton: {
     marginTop: 10,
-    backgroundColor: '#E84850',
+    backgroundColor: Colors.brandRed,
     borderRadius: 6,
     paddingVertical: 6,
     alignItems: 'center',
   },
   addText: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     fontWeight: 'bold',
   },
   addedButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: Colors.success,
   },
   addedText: {
-    color: '#fff',
+    color: Colors.textOnPrimary,
     fontWeight: 'bold',
   },
 });

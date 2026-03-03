@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Platform, TouchableOpacity, Linking } from 'react-native';
 import Skeleton from '../components/Skeleton';
+import { Colors } from '../constants/Colors';
 
 // Load react-native-maps once per module to avoid duplicate native view registrations (AIRMap)
 let MapViewComp: any = null;
@@ -194,18 +195,18 @@ const styles = StyleSheet.create({
   mapPlaceholder: { width: '100%', height: 300, justifyContent: 'center', alignItems: 'center' },
   mapOverlay: { position: 'absolute', top: 0, left: 0, right: 0, height: 300, justifyContent: 'center', alignItems: 'center' },
   addressTitle: { fontSize: 16, fontWeight: '600', margin: 12 },
-  addressText: { fontSize: 14, marginHorizontal: 12, color: '#555' },
+  addressText: { fontSize: 14, marginHorizontal: 12, color: Colors.textSecondary },
   errorOverlay: { position: 'absolute', top: 0, left: 0, right: 0, height: 300, justifyContent: 'center', alignItems: 'center' },
   errorPanel: { backgroundColor: 'rgba(255,255,255,0.95)', padding: 16, borderRadius: 8, alignItems: 'center', width: '88%' },
   errorTitle: { fontSize: 16, fontWeight: '700', marginBottom: 8 },
-  errorMessage: { fontSize: 14, color: '#666', textAlign: 'center', marginBottom: 12 },
-  retryButton: { backgroundColor: '#0077b6', paddingVertical: 8, paddingHorizontal: 16, borderRadius: 6 },
-  retryText: { color: 'white', fontWeight: '600' },
+  errorMessage: { fontSize: 14, color: Colors.textSecondary, textAlign: 'center', marginBottom: 12 },
+  retryButton: { backgroundColor: Colors.primaryLight, paddingVertical: 8, paddingHorizontal: 16, borderRadius: 6 },
+  retryText: { color: Colors.textOnBrand, fontWeight: '600' },
   errorInline: { marginTop: 8, paddingHorizontal: 12 },
-  hintText: { fontSize: 13, color: '#666', textAlign: 'center', marginBottom: 12, paddingHorizontal: 8 },
+  hintText: { fontSize: 13, color: Colors.textSecondary, textAlign: 'center', marginBottom: 12, paddingHorizontal: 8 },
   buttonRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
-  openButton: { backgroundColor: '#28a745', paddingVertical: 10, paddingHorizontal: 14, borderRadius: 6, marginRight: 8 },
-  openText: { color: 'white', fontWeight: '600' },
+  openButton: { backgroundColor: Colors.success, paddingVertical: 10, paddingHorizontal: 14, borderRadius: 6, marginRight: 8 },
+  openText: { color: Colors.textOnBrand, fontWeight: '600' },
   attribution: { position: 'absolute', right: 8, bottom: 6, backgroundColor: 'rgba(255,255,255,0.9)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
-  attribText: { fontSize: 10, color: '#333' },
+  attribText: { fontSize: 10, color: Colors.textBody },
 });

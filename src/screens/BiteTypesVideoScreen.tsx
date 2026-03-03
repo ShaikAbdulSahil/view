@@ -23,6 +23,7 @@ import { getCarousels } from '../api/carousel-api';
 import { normalizeScreenName } from '../utils/navigationHelpers';
 import Carousel from '../components/Carousel';
 import Skeleton from '../components/Skeleton';
+import { Colors } from '../constants/Colors';
 import { CarouselItem } from './Home';
 
 export default function BiteTypeVideosScreen() {
@@ -259,19 +260,19 @@ const styles = StyleSheet.create({
   },
   error: {
     fontSize: 18,
-    color: '#FF0000',
+    color: Colors.error,
     fontWeight: '600',
   },
   videoFull: {
     width: '100%',
     aspectRatio: 16 / 9,
     borderRadius: 12,
-    backgroundColor: '#000',
+    backgroundColor: Colors.shadow,
     marginTop: 12,
   },
   noVideoBox: {
     width: '100%',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: Colors.skeletonBg,
     borderRadius: 12,
     paddingVertical: 40,
     alignItems: 'center',
@@ -279,7 +280,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   noVideoText: {
-    color: '#666',
+    color: Colors.textSecondary,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -287,7 +288,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: Colors.overlayBg,
     padding: 6,
     borderRadius: 18,
     zIndex: 10,

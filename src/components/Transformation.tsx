@@ -15,6 +15,7 @@ import {
   ScrollView,
 } from 'react-native';
 import Skeleton from './Skeleton';
+import { Colors } from '../constants/Colors';
 import { getAllBlogs } from '../api/transformation-api';
 
 
@@ -108,7 +109,7 @@ export default function Transformation({ navigation }: any) {
                   resizeMethod="resize"
                 />
               ) : (
-                <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+                <View style={[styles.image, { backgroundColor: Colors.skeletonBg }]} />
               )}
             </TouchableOpacity>
           ))}
@@ -126,12 +127,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#e53935',
+    color: Colors.favorite,
     marginBottom: 4,
   },
   sectionSubtitle: {
     fontSize: 14,
-    color: '#333',
+    color: Colors.textBody,
     marginBottom: 8,
   },
   headerRight: {
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
   },
   viewAll: {
     fontSize: 13,
-    color: '#1e90ff',
+    color: Colors.primaryLight,
     fontWeight: '500',
   },
   scrollRow: {
@@ -152,9 +153,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
     marginRight: 12,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -166,11 +167,11 @@ const styles = StyleSheet.create({
   cardFooter: {
     paddingVertical: 8,
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
   },
   footerText: {
     fontSize: 12,
-    color: '#444',
+    color: Colors.textSecondary,
     fontWeight: '500',
   },
   headerRow: {

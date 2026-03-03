@@ -10,6 +10,7 @@ import DOCTOR_4 from '../../assets/static_assets/DOCTOR_4.png';
 import DOCTOR_5 from '../../assets/static_assets/DOCTOR_5.png';
 import Doctor_6 from '../../assets/static_assets/DOCTOR6.png';
 import SkeletonImage from './Skeleton';
+import { Colors } from '../constants/Colors';
 const doctors = [
   { img: DOCTOR_5 }, // index 0
   { img: DOCTOR_2 }, // index 1
@@ -56,9 +57,9 @@ export default function TopProducts({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 12, backgroundColor: '#fff0f0' },
+  container: { padding: 12, backgroundColor: Colors.errorBg },
   title: { fontSize: 16, fontWeight: '600' },
-  viewAll: { color: '#1e90ff' },
+  viewAll: { color: Colors.primaryLight },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginBottom: 12,
     elevation: 2,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
   },
   image: {
     width: '100%',

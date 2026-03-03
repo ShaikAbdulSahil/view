@@ -10,6 +10,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import IMAGES_MEET from '../../assets/static_assets/IMAGES_MEET.png';
+import { Colors } from '../constants/Colors';
 
 interface MeetModalProps {
   visible: boolean;
@@ -54,11 +55,11 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: Colors.overlayBg,
     padding: 20,
   },
   modal: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.cardBg,
     padding: 24,
     borderRadius: 12,
     alignItems: 'center',
@@ -75,18 +76,18 @@ const styles = StyleSheet.create({
   },
   link: {
     fontSize: 16,
-    color: '#1a73e8',
+    color: Colors.primaryLight,
     textDecorationLine: 'underline',
     marginBottom: 20,
   },
   closeBtn: {
     paddingHorizontal: 20,
     paddingVertical: 8,
-    backgroundColor: '#eee',
+    backgroundColor: Colors.borderLight,
     borderRadius: 8,
   },
   closeText: {
     fontSize: 14,
-    color: '#555',
+    color: Colors.textSecondary,
   },
 });

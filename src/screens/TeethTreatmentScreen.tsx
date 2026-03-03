@@ -12,6 +12,7 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import IMG_12 from '../../assets/static_assets/IMG_12.png';
 import Skeleton from '../components/Skeleton';
+import { Colors } from '../constants/Colors';
 
 const LazyImage = ({
   source,
@@ -32,7 +33,7 @@ const LazyImage = ({
   const uri = source?.uri;
   // If no uri, render plain grey box with the same style
   if (!uri) {
-    return <View style={[style, { backgroundColor: '#f0f0f0' }]} />;
+    return <View style={[style, { backgroundColor: Colors.skeletonBg }]} />;
   }
 
   // Ensure we preserve the original style/layout by applying it to the wrapper
@@ -162,7 +163,7 @@ export default function TeethTreatmentScreen() {
                       : 'chevron-down-outline'
                   }
                   size={20}
-                  color="#888"
+                  color={Colors.tabInactive}
                 />
               </View>
             </TouchableOpacity>
@@ -179,7 +180,7 @@ export default function TeethTreatmentScreen() {
       </Section>
 
       {/* Gallery */}
-      <View style={{ marginTop: -20 , marginBottom:120}}>
+      <View style={{ marginTop: -20, marginBottom: 120 }}>
         <Image
           source={IMG_12}
           style={styles.galleryImage}
@@ -209,7 +210,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     paddingBottom: 100,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.cardBg,
   },
   title: {
     fontSize: 26,
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
   faqAnswer: {
     marginTop: 6,
     fontSize: 14,
-    color: '#666',
+    color: Colors.textSecondary,
     lineHeight: 20,
   },
   illustration: {
@@ -250,10 +251,10 @@ const styles = StyleSheet.create({
     marginVertical: 12,
   },
   galleryImage: {
-    width: 350, // Increased width
-    height: 300, // Increased height
+    width: 350,
+    height: 300,
     marginRight: 10,
-    borderRadius: 15, // Optional: make corners rounder
+    borderRadius: 15,
   },
   faqRow: {
     flexDirection: 'row',
@@ -262,16 +263,16 @@ const styles = StyleSheet.create({
   },
   faqQuestion: {
     fontSize: 16,
-    flex: 1, // 🧩 Makes question take remaining space
-    paddingRight: 10, // 🧩 Adds spacing before arrow
+    flex: 1,
+    paddingRight: 10,
   },
   divider: {
     height: 1,
-    backgroundColor: '#ccc',
+    backgroundColor: Colors.borderInput,
     marginVertical: 8,
   },
   faqIcon: {
     fontSize: 16,
-    color: '#1e90ff',
+    color: Colors.link,
   },
 });

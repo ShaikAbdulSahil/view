@@ -10,6 +10,7 @@ import CROSSBITE from '../../assets/static_assets/CROSSBITE.png';
 import OPEN_BITE from '../../assets/static_assets/OPEN_BITE.png';
 import OVERBITE from '../../assets/static_assets/OVERBITE.png';
 import UNDERBITE from '../../assets/static_assets/UNDERBITE.png';
+import { Colors } from '../constants/Colors';
 
 
 
@@ -72,7 +73,7 @@ export default function TeethAlignmentProblems({ navigation }: any) {
 
 const styles = StyleSheet.create({
   bgColor: {
-    backgroundColor: '#E7FAFC',
+    backgroundColor: Colors.primaryBg,
     padding: 12,
   },
   title: {
@@ -95,6 +96,6 @@ const styles = StyleSheet.create({
     height: 130,
     aspectRatio: 0.75,
     borderRadius: 8,
-    backgroundColor: '#eee',
+    backgroundColor: Colors.borderLight,
   },
 });

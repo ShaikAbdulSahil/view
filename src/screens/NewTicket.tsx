@@ -18,6 +18,7 @@ import {
 import { showSuccess } from '../utils/successToast';
 import { Ionicons } from '@expo/vector-icons';
 import { uploadTicketImage } from '../api/tickets-api';
+import { Colors } from '../constants/Colors';
 
 const NewTicketScreen = () => {
   const [title, setTitle] = useState('');
@@ -100,7 +101,7 @@ const NewTicketScreen = () => {
       <Text style={styles.label}>Category</Text>
       <TouchableOpacity style={styles.dropdown}>
         <Text style={styles.dropdownText}>{category}</Text>
-        <Ionicons name="chevron-down" size={18} color="#555" />
+        <Ionicons name="chevron-down" size={18} color={Colors.textSecondary} />
       </TouchableOpacity>
 
       <Text style={styles.label}>Message</Text>
@@ -114,7 +115,7 @@ const NewTicketScreen = () => {
       />
 
       <TouchableOpacity style={styles.attachment} onPress={handleUpload}>
-        <Ionicons name="attach" size={20} color="#007bff" />
+        <Ionicons name="attach" size={20} color={Colors.primaryLight} />
         <Text style={styles.attachText}>
           {selectedFile ? selectedFile.name : 'Attach File (optional)'}
         </Text>
@@ -133,27 +134,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f2f4f8',
+    backgroundColor: Colors.screenBg,
   },
   heading: {
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#222',
+    color: Colors.textPrimary,
   },
   label: {
     fontSize: 14,
-    color: '#444',
+    color: Colors.textSecondary,
     marginBottom: 6,
     marginTop: 10,
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 14,
-    borderColor: '#ccc',
+    borderColor: Colors.borderInput,
     borderWidth: 1,
   },
   textarea: {
@@ -161,18 +162,18 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   dropdown: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 8,
     padding: 12,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: Colors.borderInput,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   dropdownText: {
     fontSize: 14,
-    color: '#333',
+    color: Colors.textBody,
   },
   attachment: {
     flexDirection: 'row',
@@ -181,19 +182,19 @@ const styles = StyleSheet.create({
   },
   attachText: {
     marginLeft: 8,
-    color: '#007bff',
+    color: Colors.primaryLight,
     fontSize: 14,
     textDecorationLine: 'underline',
   },
   submitButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: Colors.primaryLight,
     borderRadius: 8,
     paddingVertical: 14,
     alignItems: 'center',
     marginTop: 24,
   },
   submitText: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     fontSize: 16,
     fontWeight: 'bold',
   },

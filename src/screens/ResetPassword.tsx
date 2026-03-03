@@ -1,141 +1,34 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+/**
+ * ResetPassword screen is now handled by the ForgotPassword 3-step flow.
+ * This screen redirects to ForgotPassword for backwards compatibility.
+ */
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { Colors } from '../constants/Colors';
 
-import React, { useMemo, useState } from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
-import { Platform } from 'react-native';
-import { showSuccess } from '../utils/successToast';
-import { showError } from '../utils/errorAlert';
-import { resetPassword } from '../api/auth-api';
+const ResetPasswordScreen = ({ navigation }: any) => {
+    useEffect(() => {
+        navigation.replace('ForgotPassword');
+    }, [navigation]);
 
-const ResetPasswordScreen = ({ route, navigation }: any) => {
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const token: string | null = useMemo(() => {
-    if (route?.params?.token) return String(route.params.token);
-    if (Platform.OS === 'web' && typeof window !== 'undefined') {
-      try {
-        return new URL(window.location.href).searchParams.get('token');
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  }, [route?.params?.token]);
-
-  const handleReset = async () => {
-    if (!newPassword || !confirmPassword) {
-      showError('Please fill in both fields');
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      showError('Passwords do not match');
-      return;
-    }
-
-    try {
-      if (!token) {
-        showError('Invalid or missing reset token');
-        return;
-      }
-      setLoading(true);
-      await resetPassword(token, newPassword);
-      showSuccess('Password has been reset');
-      navigation.navigate('Login');
-    } catch (error) {
-      showError('Something went wrong. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.innerContainer}
-        keyboardShouldPersistTaps="handled"
-      >
-        <Text style={styles.title}>Reset Password</Text>
-
-        <TextInput
-          style={styles.input}
-          placeholder="New Password"
-          secureTextEntry
-          value={newPassword}
-          onChangeText={setNewPassword}
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm New Password"
-          secureTextEntry
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-        />
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleReset}
-          disabled={loading}
-        >
-          <Text style={styles.buttonText}>
-            {loading ? 'Resetting...' : 'Reset Password'}
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
-  );
+    return (
+        <View style={styles.container}>
+            <Text style={styles.text}>Redirecting...</Text>
+        </View>
+    );
 };
 
 export default ResetPasswordScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f9fafe',
-  },
-  innerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 24,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  input: {
-    backgroundColor: '#fff',
-    padding: 12,
-    borderRadius: 8,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginBottom: 15,
-  },
-  button: {
-    backgroundColor: '#1e90ff',
-    padding: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: Colors.screenBg,
+    },
+    text: {
+        color: Colors.textSecondary,
+        fontSize: 16,
+    },
 });

@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Dimensions,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import Skeleton from '../components/Skeleton';
 import ProductCard from '../components/ProductCard';
@@ -16,6 +17,8 @@ import { getFavorites } from '../api/fav-api';
 import { useCart } from '../contexts/CartContext';
 import { addToCart } from '../api/cart-api';
 import { showError, showSuccess } from '../utils/errorAlert';
+import { useRequireAuth } from '../hooks/useRequireAuth';
+import { Colors } from '../constants/Colors';
 
 type FavoriteItem = {
   _id: string;
@@ -42,6 +45,25 @@ const removeDuplicateProducts = (items: FavoriteItem[]): FavoriteItem[] => {
 const FavProductScreen = () => {
   const [favoriteProducts, setFavoriteProducts] = useState<FavoriteItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const { requireAuth, isAuthenticated } = useRequireAuth();
+
+  // Show login prompt if guest tries to access favorites
+  if (!isAuthenticated) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.screenBg, padding: 24 }}>
+        <Text style={{ fontSize: 20, fontWeight: '600', color: Colors.textBody, marginBottom: 12 }}>Login Required</Text>
+        <Text style={{ fontSize: 14, color: Colors.textSecondary, textAlign: 'center', marginBottom: 24 }}>
+          Please log in to view your favorites
+        </Text>
+        <TouchableOpacity
+          style={{ backgroundColor: Colors.primaryLight, paddingHorizontal: 32, paddingVertical: 14, borderRadius: 8 }}
+          onPress={() => requireAuth(() => { }, 'Please log in to view your favorites')}
+        >
+          <Text style={{ color: Colors.textOnPrimary, fontWeight: '600', fontSize: 16 }}>Login</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   useEffect(() => {
     const fetchFavorites = async () => {
@@ -66,18 +88,22 @@ const FavProductScreen = () => {
     product: FavoriteItem['product'],
     quantity: number,
   ) => {
-    try {
-      await addToCart(product._id, quantity);
-      addItems(quantity);
-      addProductId(product._id);
-      showSuccess('Added to cart');
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || '';
-      if (typeof msg === 'string' && msg.toLowerCase().includes('out of stock')) {
-        showError('This product is out of stock');
-      } else {
-        showError('Failed to add to cart');
+    if (!requireAuth(async () => {
+      try {
+        await addToCart(product._id, quantity);
+        addItems(quantity);
+        addProductId(product._id);
+        showSuccess('Added to cart');
+      } catch (err: any) {
+        const msg = err?.response?.data?.message || err?.message || '';
+        if (typeof msg === 'string' && msg.toLowerCase().includes('out of stock')) {
+          showError('This product is out of stock');
+        } else {
+          showError('Failed to add to cart');
+        }
       }
+    }, 'Please log in to add items to your cart')) {
+      return;
     }
   };
 
@@ -94,7 +120,7 @@ const FavProductScreen = () => {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, padding: 12, backgroundColor: '#fafafa' }}>
+      <View style={{ flex: 1, padding: 12, backgroundColor: Colors.screenBg }}>
         <Skeleton width={'50%'} height={28} radius={6} style={{ marginBottom: 12 }} />
 
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
@@ -146,14 +172,14 @@ export default FavProductScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
+    backgroundColor: Colors.screenBg,
     paddingHorizontal: 8,
   },
   header: {
     fontSize: 20,
     fontWeight: 'bold',
     padding: 12,
-    color: '#333',
+    color: Colors.textBody,
   },
   list: {
     paddingBottom: 120,
@@ -170,6 +196,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: '#999',
+    color: Colors.textMuted,
   },
 });

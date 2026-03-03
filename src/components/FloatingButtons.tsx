@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import BOOK_SCAN_IMAGE from '../../assets/static_assets/BOOK_SCAN_IMAGE.jpg';
 import CONSULT_IMAGE from '../../assets/static_assets/CONSULT_IMAGE.jpg';
 import WA_IMAGE from '../../assets/static_assets/WA_IMAGE.jpg';
+import { Colors } from '../constants/Colors';
 
 const { width } = Dimensions.get('window');
 
@@ -89,11 +90,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageWrapper: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     padding: 6,
     borderRadius: 25,
     elevation: 8,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.3,
     shadowRadius: 5,
     marginLeft: -4,
@@ -114,12 +115,12 @@ const styles = StyleSheet.create({
   },
   centerWrapper: {
     bottom: -22,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     padding: 6,
     borderRadius: 30,
     zIndex: 50,
     elevation: 10,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.3,
     shadowRadius: 5,
   },

@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
 import Skeleton from '../components/Skeleton';
+import { Colors } from '../constants/Colors';
 
 const BlogScreen = ({ route }: any) => {
   const { blog } = route.params || {};
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 14,
-    color: 'gray',
+    color: Colors.tabInactive,
     marginVertical: 4,
   },
   category: {

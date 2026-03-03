@@ -18,6 +18,7 @@ import { getCarousels } from '../api/carousel-api';
 import { normalizeScreenName } from '../utils/navigationHelpers';
 import Carousel from '../components/Carousel';
 import Skeleton from '../components/Skeleton';
+import { Colors } from '../constants/Colors';
 import { CarouselItem } from './Home';
 import VIDEO_1 from '../../assets/static_assets/VIDEO_1.png';
 import VIDEO_2 from '../../assets/static_assets/VIDEO_2.png';
@@ -145,7 +146,7 @@ export default function FindBiteTypeScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     paddingHorizontal: 12,
     paddingBottom: 120,
   },

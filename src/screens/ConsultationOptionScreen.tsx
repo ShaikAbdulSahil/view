@@ -3,11 +3,19 @@
 
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { useRequireAuth } from '../hooks/useRequireAuth';
+import { Colors } from '../constants/Colors';
 import WHATSAPP_06_13_1AM from '../../assets/static_assets/WHATSAPP_06_13_1AM.jpg';
 
 export default function ConsultationOptionScreen({ navigation }: any) {
+  const { requireAuth } = useRequireAuth();
+
   const handleContinue = () => {
-    navigation.navigate('AgeSelection');
+    if (!requireAuth(() => {
+      navigation.navigate('AgeSelection');
+    }, 'Please log in to book a consultation')) {
+      return;
+    }
   };
 
   return (
@@ -39,13 +47,13 @@ export default function ConsultationOptionScreen({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F1F8FC', padding: 16 },
-  header: { fontSize: 16, color: '#D43F3F', marginBottom: 16 },
+  container: { flex: 1, backgroundColor: Colors.screenBg, padding: 16 },
+  header: { fontSize: 16, color: Colors.brandRed, marginBottom: 16 },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 12,
     padding: 16,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 3,
@@ -63,18 +71,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 8,
   },
-  desc: { fontSize: 14, color: '#555', textAlign: 'center', marginBottom: 16 },
+  desc: { fontSize: 14, color: Colors.textSecondary, textAlign: 'center', marginBottom: 16 },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  price: { fontSize: 18, color: '#D43F3F', fontWeight: 'bold' },
+  price: { fontSize: 18, color: Colors.brandRed, fontWeight: 'bold' },
   button: {
-    backgroundColor: '#D43F3F',
+    backgroundColor: Colors.brandRed,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
   },
-  buttonText: { color: '#fff', fontWeight: '600' },
+  buttonText: { color: Colors.textOnBrand, fontWeight: '600' },
 });

@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { getLatestBlogs } from '../api/blogs-api';
 import Skeleton from './Skeleton';
+import { Colors } from '../constants/Colors';
 
 
 export default function Blogs({ navigation }: any) {
@@ -87,7 +88,7 @@ export default function Blogs({ navigation }: any) {
               {blog.images && blog.images[0] ? (
                 <Image source={{ uri: blog.images[0] }} style={styles.image} fadeDuration={0} resizeMethod="resize" />
               ) : (
-                <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+                <View style={[styles.image, { backgroundColor: Colors.skeletonBg }]} />
               )}
               <Text style={styles.title} numberOfLines={3}>
                 {blog.title}
@@ -108,12 +109,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#e53935',
+    color: Colors.favorite,
     marginBottom: 4,
   },
   sectionSubtitle: {
     fontSize: 14,
-    color: '#333',
+    color: Colors.textBody,
     marginBottom: 12,
   },
   scrollContainer: {
@@ -123,11 +124,11 @@ const styles = StyleSheet.create({
     width: 200,
     height: 180,
     marginRight: 12,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 12,
     overflow: 'hidden',
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
   title: {
     padding: 8,
     fontSize: 13,
-    color: '#444',
+    color: Colors.textSecondary,
     fontWeight: '500',
   },
   headerRow: {
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
   },
   viewAll: {
     fontSize: 13,
-    color: '#1e90ff',
+    color: Colors.primaryLight,
     fontWeight: 'bold',
   },
 });

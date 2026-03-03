@@ -11,6 +11,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { navigateToScreen } from '../utils/navigationHelpers';
+import { Colors } from '../constants/Colors';
 import CONSULTANT_IMAGE from '../../assets/static_assets/CONSULTANT_IMAGE.jpg';
 
 export default function CheckoutSummaryScreen({ navigation }: any) {
@@ -50,7 +51,7 @@ export default function CheckoutSummaryScreen({ navigation }: any) {
         </View>
         <View style={styles.priceRow}>
           <Text style={styles.label}>Discount on MRP</Text>
-          <Text style={[styles.value, { color: 'green' }]}>–₹ 200</Text>
+          <Text style={[styles.value, { color: Colors.success }]}>–₹ 200</Text>
         </View>
         <View style={[styles.priceRow, styles.totalRow]}>
           <Text style={styles.totalLabel}>Payable Amount</Text>
@@ -72,13 +73,13 @@ export default function CheckoutSummaryScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e6f7ff',
+    backgroundColor: Colors.primaryBg,
     padding: 20,
     paddingBottom: 120,
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 16,
     padding: 16,
     marginBottom: 20,
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   subtitle: {
-    color: '#6c757d',
+    color: Colors.tabInactive,
     marginVertical: 4,
   },
   price: {
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   promoBox: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     padding: 16,
     borderRadius: 12,
     flexDirection: 'row',
@@ -121,10 +122,10 @@ const styles = StyleSheet.create({
   },
   arrow: {
     fontSize: 24,
-    color: '#d43f3f',
+    color: Colors.brandRed,
   },
   priceBox: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 12,
     padding: 16,
   },
@@ -135,16 +136,16 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 15,
-    color: '#333',
+    color: Colors.textBody,
   },
   value: {
     fontSize: 15,
-    color: '#333',
+    color: Colors.textBody,
   },
   totalRow: {
     marginTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#ccc',
+    borderTopColor: Colors.borderInput,
     paddingTop: 8,
   },
   totalLabel: {
@@ -157,18 +158,18 @@ const styles = StyleSheet.create({
   },
   savings: {
     textAlign: 'center',
-    color: 'green',
+    color: Colors.success,
     marginVertical: 16,
     fontSize: 14,
   },
   payButton: {
-    backgroundColor: '#d43f3f',
+    backgroundColor: Colors.brandRed,
     borderRadius: 24,
     paddingVertical: 16,
     alignItems: 'center',
   },
   payButtonText: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     fontWeight: 'bold',
     fontSize: 16,
   },

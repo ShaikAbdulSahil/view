@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { Colors } from '../constants/Colors';
 import EditProfileForm from '../components/EditUserDetails';
 
 export default function EditProfileScreen() {
@@ -13,6 +14,6 @@ export default function EditProfileScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.cardBg,
     },
 });

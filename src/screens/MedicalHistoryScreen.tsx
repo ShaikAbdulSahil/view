@@ -12,6 +12,7 @@ import {
   Alert,
 } from 'react-native';
 import { updateUser } from '../api/user-api';
+import { Colors } from '../constants/Colors';
 
 const options = [
   'Allergy',
@@ -99,7 +100,7 @@ export default function MedicalHistoryScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     paddingBottom: 110,
   },
   content: {
@@ -119,25 +120,25 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderWidth: 2,
-    borderColor: '#3d4b52',
+    borderColor: Colors.primary,
     borderRadius: 4,
     marginRight: 12,
   },
   checkboxChecked: {
-    backgroundColor: '#3d4b52',
+    backgroundColor: Colors.primary,
   },
   checkboxLabel: {
     fontSize: 16,
-    color: '#333',
+    color: Colors.textBody,
   },
   footer: {
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderTopWidth: 1,
-    borderColor: '#e6e6e6',
+    borderColor: Colors.border,
   },
   stepText: {
-    color: '#6c757d',
+    color: Colors.tabInactive,
     fontSize: 14,
   },
   stepCounter: {
@@ -146,14 +147,14 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   nextButton: {
-    backgroundColor: '#D43F3F',
+    backgroundColor: Colors.brandRed,
     borderRadius: 24,
     paddingVertical: 14,
     alignItems: 'center',
     marginTop: 8,
   },
   nextButtonText: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     fontWeight: 'bold',
     fontSize: 16,
   },

@@ -1,8 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { useContext } from 'react';
-import { View } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar, View } from 'react-native';
 import { AuthContext } from '../contexts/AuthContext';
+import { Colors } from '../constants/Colors';
 
 import AuthScreen from './AuthScreen';
 import DrawerNavigator from './DrawerNavigation';
@@ -25,30 +25,28 @@ const linking = {
 };
 
 export default function AppNavigator() {
-  const { token, loading } = useContext(AuthContext);
+  const { token, isGuest, loading } = useContext(AuthContext);
 
   // Don't render navigation until auth state is resolved to avoid
   // flickering between Auth and App stacks when a token exists.
   if (loading) return null;
 
+  // Allow access to app if user has token OR is in guest mode
+  const hasAccess = token || isGuest;
+
   return (
     <NavigationContainer linking={linking}>
-      {token ? (
-        <View style={{ flex: 1, backgroundColor: '#E9F9FA' }}>
-          <StatusBar
-            style="dark"
-            backgroundColor="#E9F9FA"
-            translucent={false}
-          />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={hasAccess ? Colors.primaryBg : Colors.cardBg}
+        translucent={false}
+      />
+      {hasAccess ? (
+        <View style={{ flex: 1, backgroundColor: Colors.primaryBg }}>
           <DrawerNavigator />
         </View>
       ) : (
-        <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
-          <StatusBar
-            style="dark"
-            backgroundColor="#ffffff"
-            translucent={false}
-          />
+        <View style={{ flex: 1, backgroundColor: Colors.cardBg }}>
           <AuthScreen />
         </View>
       )}

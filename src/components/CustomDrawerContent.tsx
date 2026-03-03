@@ -17,16 +17,18 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useUser } from '../contexts/UserContext';
+import { AuthContext } from '../contexts/AuthContext';
 import EditProfileForm from './EditUserDetails';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CommonActions } from '@react-navigation/native';
 import MYDENT_LOGO from '../../assets/static_assets/LOGO_PNG_PREVIEW.png';
 import CONSULTANT_IMAGE from '../../assets/static_assets/CONSULTANT_IMAGE.jpg';
+import { Colors } from '../constants/Colors';
 
 export default function CustomDrawerContent(props: any) {
   const { user, setUser } = useUser();
+  const { isGuest, logout } = React.useContext(AuthContext);
 
-  const iconColor = '#FD343E';
+  const iconColor = Colors.brandRed;
 
   return (
     <DrawerContentScrollView
@@ -49,20 +51,36 @@ export default function CustomDrawerContent(props: any) {
           resizeMethod="resize"
         />
         <View style={styles.profileTextContainer}>
-          <Text style={styles.name}>{user?.firstName ?? 'John Doe'}</Text>
-          <Text style={styles.email}>{user?.email ?? 'email@example.com'}</Text>
-          <TouchableOpacity
-            onPress={() =>
-              props.navigation.navigate('HomeTabs', {
-                screen: 'Home',
-                params: { screen: 'EditProfile' },
-              })
-            }
-            style={styles.editButton}
-          >
-            <Ionicons name="create-outline" size={16} color="#007AFF" />
-            <Text style={styles.editText}>Edit</Text>
-          </TouchableOpacity>
+          {isGuest ? (
+            <>
+              <Text style={styles.name}>Guest User</Text>
+              <Text style={styles.email}>Browse our products</Text>
+              <TouchableOpacity
+                onPress={() => logout()}
+                style={styles.loginButton}
+              >
+                <Ionicons name="log-in-outline" size={16} color={Colors.textOnPrimary} />
+                <Text style={styles.loginText}>Login / Sign Up</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <Text style={styles.name}>{user?.firstName ?? 'John Doe'}</Text>
+              <Text style={styles.email}>{user?.email ?? 'email@example.com'}</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  props.navigation.navigate('HomeTabs', {
+                    screen: 'Home',
+                    params: { screen: 'EditProfile' },
+                  })
+                }
+                style={styles.editButton}
+              >
+                <Ionicons name="create-outline" size={16} color={Colors.primaryLight} />
+                <Text style={styles.editText}>Edit</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </View>
 
@@ -183,36 +201,27 @@ export default function CustomDrawerContent(props: any) {
           )}
         />
         <DrawerItem
-          label="Logout"
+          label={isGuest ? 'Login' : 'Logout'}
           onPress={async () => {
             try {
-              // 1. Clear auth token and any other stored data
-              await AsyncStorage.clear(); // or use your clearToken() if more selective
-
-              // 2. Optionally reset user state if using context
-              setUser(null);
-
-              // 3. Reset navigation stack to login screen (ensure route name exists)
-              const resetAction = CommonActions.reset({
-                index: 0,
-                routes: [{ name: 'LoginScreen' }],
-              });
-              try {
-                props.navigation.dispatch(resetAction);
-              } catch (e) {
-                // Fallback: try legacy name if LoginScreen not registered here
-                const legacyReset = CommonActions.reset({
-                  index: 0,
-                  routes: [{ name: 'Login' }],
-                });
-                props.navigation.dispatch(legacyReset);
+              if (isGuest) {
+                // Clear guest mode → app shows AuthScreen (Login)
+                await logout();
+              } else {
+                // Logout authenticated user
+                await logout();
+                setUser(null);
               }
             } catch (err) {
-              console.error('Logout error:', err);
+              console.error('Logout/Login error:', err);
             }
           }}
           icon={({ size }) => (
-            <Ionicons name="log-out-outline" size={size} color={iconColor} />
+            <Ionicons
+              name={isGuest ? 'log-in-outline' : 'log-out-outline'}
+              size={size}
+              color={iconColor}
+            />
           )}
         />
       </View>
@@ -231,9 +240,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#E9F9FA',
+    backgroundColor: Colors.primaryBg,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: Colors.border,
     borderTopRightRadius: 18,
     height: 100,
     paddingHorizontal: 10,
@@ -248,9 +257,9 @@ const styles = StyleSheet.create({
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E9F9FA',
+    backgroundColor: Colors.primaryBg,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: Colors.border,
   },
   avatar: {
     width: 64,
@@ -267,7 +276,7 @@ const styles = StyleSheet.create({
   },
   email: {
     fontSize: 14,
-    color: '#555',
+    color: Colors.textSecondary,
     marginTop: 4,
   },
   editButton: {
@@ -276,9 +285,25 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   editText: {
-    color: '#007AFF',
+    color: Colors.primaryLight,
     marginLeft: 4,
     fontSize: 14,
+  },
+  loginButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    backgroundColor: Colors.primaryLight,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+  },
+  loginText: {
+    color: Colors.textOnPrimary,
+    marginLeft: 4,
+    fontSize: 14,
+    fontWeight: '600',
   },
   menuItems: {
     marginTop: 8,
@@ -286,7 +311,7 @@ const styles = StyleSheet.create({
   bottomSection: {
     marginTop: 'auto',
     borderTopWidth: 1,
-    borderTopColor: '#ddd',
+    borderTopColor: Colors.border,
     paddingTop: 8,
     paddingBottom: 16,
   },

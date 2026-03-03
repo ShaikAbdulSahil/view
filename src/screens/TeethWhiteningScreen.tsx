@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, Text, Image, View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Colors } from '../constants/Colors';
 import TEETH_WHITENING from '../../assets/static_assets/TEETH_WHITENING.png';
 import NO_SMOKING_ICON from '../../assets/static_assets/NO_SMOKING_ICON.png';
 
@@ -38,13 +39,13 @@ const TeethWhiteningScreen = () => {
 
   return (
     <ScrollView
-      style={{ padding: 16, backgroundColor: '#fff', paddingBottom: 120 }}
+      style={{ padding: 16, backgroundColor: Colors.cardBg, paddingBottom: 120 }}
     >
-      <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#333' }}>
+      <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.textBody }}>
         🦷 Teeth Whitening: Brighten Your Smile!
       </Text>
 
-      <Text style={{ marginTop: 12, fontWeight: 'bold', color: '#007acc' }}>
+      <Text style={{ marginTop: 12, fontWeight: 'bold', color: Colors.primaryLight }}>
         💡 What Is Teeth Whitening?
       </Text>
       <Text style={{ marginTop: 4 }}>
@@ -53,7 +54,7 @@ const TeethWhiteningScreen = () => {
         popular and affordable ways to improve your smile.
       </Text>
 
-      <Text style={{ marginTop: 12, fontWeight: 'bold', color: '#007acc' }}>
+      <Text style={{ marginTop: 12, fontWeight: 'bold', color: Colors.primaryLight }}>
         🔍 Why Do Teeth Get Discolored?
       </Text>
       <Text style={{ marginTop: 4 }}>
@@ -78,7 +79,7 @@ const TeethWhiteningScreen = () => {
         resizeMethod="resize"
       />
 
-      <Text style={{ marginTop: 12, fontWeight: 'bold', color: '#007f00' }}>
+      <Text style={{ marginTop: 12, fontWeight: 'bold', color: Colors.success }}>
         ✅ Types of Teeth Whitening
       </Text>
       <Text>
@@ -98,7 +99,7 @@ const TeethWhiteningScreen = () => {
         damage.
       </Text>
 
-      <Text style={{ marginTop: 12, fontWeight: 'bold', color: '#e67300' }}>
+      <Text style={{ marginTop: 12, fontWeight: 'bold', color: Colors.warning }}>
         ⚠️ Is Teeth Whitening Safe?
       </Text>
       <Text>
@@ -106,7 +107,7 @@ const TeethWhiteningScreen = () => {
         sensitivity is common. Overuse can damage enamel.
       </Text>
 
-      <Text style={{ marginTop: 12, fontWeight: 'bold', color: '#007acc' }}>
+      <Text style={{ marginTop: 12, fontWeight: 'bold', color: Colors.primaryLight }}>
         🛡️ How to Maintain a White Smile
       </Text>
       <Text>• Brush and floss daily</Text>
@@ -128,7 +129,7 @@ const TeethWhiteningScreen = () => {
         resizeMethod="resize"
       />
 
-      <Text style={{ fontWeight: 'bold', color: '#cc0000' }}>
+      <Text style={{ fontWeight: 'bold', color: Colors.error }}>
         🗓️ How Long Do Results Last?
       </Text>
       <Text>
@@ -141,7 +142,7 @@ const TeethWhiteningScreen = () => {
         style={{
           padding: 20,
           borderRadius: 12,
-          backgroundColor: '#fff',
+          backgroundColor: Colors.cardBg,
           margin: 16,
         }}
       >
@@ -149,7 +150,7 @@ const TeethWhiteningScreen = () => {
           style={{
             fontSize: 18,
             fontWeight: 'bold',
-            color: '#e53935',
+            color: Colors.favorite,
             marginBottom: 16,
           }}
         >
@@ -169,7 +170,7 @@ const TeethWhiteningScreen = () => {
                   alignItems: 'center',
                 }}
               >
-                <Text style={{ fontSize: 15, color: '#333', flex: 1 }}>
+                <Text style={{ fontSize: 15, color: Colors.textBody, flex: 1 }}>
                   {faq.question}
                 </Text>
                 <Ionicons
@@ -179,13 +180,13 @@ const TeethWhiteningScreen = () => {
                       : 'chevron-down-outline'
                   }
                   size={18}
-                  color="#999"
+                  color={Colors.textMuted}
                 />
               </View>
             </TouchableOpacity>
 
             {activeIndex === index && (
-              <Text style={{ marginTop: 6, color: '#666', lineHeight: 18 }}>
+              <Text style={{ marginTop: 6, color: Colors.textSecondary, lineHeight: 18 }}>
                 {faq.answer}
               </Text>
             )}
@@ -193,7 +194,7 @@ const TeethWhiteningScreen = () => {
             <View
               style={{
                 height: 1,
-                backgroundColor: '#eee',
+                backgroundColor: Colors.borderLight,
                 marginTop: 12,
               }}
             />

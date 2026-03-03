@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import HOSPITAL_ICON from '../../assets/static_assets/HOSPITAL_ICON.png';
+import { Colors } from '../constants/Colors';
 
 
 interface Props {
@@ -32,17 +33,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     padding: 12,
     borderRadius: 12,
-    elevation: 3, // Android shadow
-    shadowColor: '#000', // iOS shadow
+    elevation: 3,
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.1,
     shadowRadius: 4,
     margin: 12,
   },
   row: { flexDirection: 'row', alignItems: 'center' },
   icon: { width: 32, height: 32, marginRight: 8 },
-  text: { fontSize: 16, fontWeight: '600', color: '#0097a7' },
-  arrow: { fontSize: 24, color: '#0097a7' },
+  text: { fontSize: 16, fontWeight: '600', color: Colors.tealLight },
+  arrow: { fontSize: 24, color: Colors.tealLight },
 });

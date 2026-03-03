@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
+import { Colors } from '../constants/Colors';
 
 export default function ConsultationBookedScreen({ navigation, route }: any) {
   const { slotDate = 'Fri 16 May 25', slotTime = '1:20 PM to 1:35 PM' } =
@@ -70,14 +71,14 @@ export default function ConsultationBookedScreen({ navigation, route }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e6f7ff',
+    backgroundColor: Colors.primaryBg,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
     paddingBottom: 120,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 16,
     padding: 24,
     alignItems: 'center',
@@ -93,16 +94,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     marginBottom: 12,
-    color: '#222',
+    color: Colors.textPrimary,
   },
   description: {
     fontSize: 14,
     textAlign: 'center',
-    color: '#666',
+    color: Colors.textSecondary,
     marginBottom: 24,
   },
   appointmentBox: {
-    backgroundColor: '#f1f5f9',
+    backgroundColor: Colors.screenBg,
     borderRadius: 12,
     padding: 16,
     width: '100%',
@@ -120,17 +121,17 @@ const styles = StyleSheet.create({
   },
   slotText: {
     fontSize: 15,
-    color: '#333',
+    color: Colors.textBody,
   },
   detailsButton: {
     borderWidth: 1,
-    borderColor: '#d43f3f',
+    borderColor: Colors.brandRed,
     borderRadius: 24,
     paddingVertical: 12,
     paddingHorizontal: 24,
   },
   detailsButtonText: {
-    color: '#d43f3f',
+    color: Colors.brandRed,
     fontWeight: 'bold',
     fontSize: 16,
   },

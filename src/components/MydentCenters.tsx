@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import Skeleton from './Skeleton';
 import { getCenters } from '../api/centers-api';
+import { Colors } from '../constants/Colors';
 
 
 export default function MydentCenters({ navigation }: any) {
@@ -104,7 +105,7 @@ export default function MydentCenters({ navigation }: any) {
                   resizeMethod="resize"
                 />
               ) : (
-                <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+                <View style={[styles.image, { backgroundColor: Colors.skeletonBg }]} />
               )}
               <Text style={{ marginTop: 4 }}>{center.cityName}</Text>
             </TouchableOpacity>
@@ -118,7 +119,7 @@ export default function MydentCenters({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     padding: 12,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
   },
   header: {
     flexDirection: 'row',
@@ -143,11 +144,11 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 35,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: Colors.skeletonBg,
   },
   viewAll: {
     fontSize: 14,
-    color: '#007AFF',
+    color: Colors.primaryLight,
     fontWeight: '500',
   },
 });

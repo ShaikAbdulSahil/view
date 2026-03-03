@@ -14,6 +14,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { navigateToScreen } from '../utils/navigationHelpers';
+import { Colors } from '../constants/Colors';
 import WHATSAPP_06_13_1AM from '../../assets/static_assets/WHATSAPP_06_13_1AM.jpg';
 
 export default function ConsultationDetailsScreen({ navigation }: any) {
@@ -110,7 +111,7 @@ export default function ConsultationDetailsScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e6f7ff',
+    backgroundColor: Colors.primaryBg,
     paddingBottom: 120,
   },
   scroll: {
@@ -119,11 +120,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#222',
+    color: Colors.textPrimary,
   },
   statusBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#d1e7dd',
+    backgroundColor: Colors.successBg,
     borderRadius: 12,
     paddingVertical: 4,
     paddingHorizontal: 10,
@@ -131,17 +132,17 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   statusText: {
-    color: '#0f5132',
+    color: Colors.successText,
     fontSize: 12,
     fontWeight: '600',
   },
   concern: {
     fontSize: 15,
-    color: '#555',
+    color: Colors.textSecondary,
     marginBottom: 20,
   },
   detailsBox: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     padding: 16,
     borderRadius: 12,
     marginBottom: 20,
@@ -154,14 +155,14 @@ const styles = StyleSheet.create({
   detailLabel: {
     fontSize: 15,
     fontWeight: '500',
-    color: '#444',
+    color: Colors.textSecondary,
   },
   viewLink: {
-    color: '#d43f3f',
+    color: Colors.brandRed,
     fontWeight: '600',
   },
   reschedule: {
-    color: '#d43f3f',
+    color: Colors.brandRed,
     fontWeight: '600',
   },
   doctorRow: {
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   doctorDesc: {
-    color: '#6c757d',
+    color: Colors.tabInactive,
   },
   appointmentInfo: {
     flexDirection: 'row',
@@ -194,40 +195,40 @@ const styles = StyleSheet.create({
   },
   appointmentText: {
     fontSize: 14,
-    color: '#333',
+    color: Colors.textBody,
   },
   noticeBox: {
-    backgroundColor: '#e7f3ff',
+    backgroundColor: Colors.noticeBg,
     padding: 14,
     borderRadius: 12,
     marginBottom: 20,
   },
   noticeText: {
     textAlign: 'center',
-    color: '#003366',
+    color: Colors.noticeText,
     fontSize: 13,
   },
   ctaBox: {
-    backgroundColor: '#ffe5e5',
+    backgroundColor: Colors.dangerBg,
     padding: 16,
     borderRadius: 16,
     alignItems: 'center',
   },
   ctaText: {
     textAlign: 'center',
-    color: '#7a0000',
+    color: Colors.dangerText,
     marginBottom: 12,
     fontSize: 14,
   },
   ctaButton: {
     borderWidth: 1,
-    borderColor: '#d43f3f',
+    borderColor: Colors.brandRed,
     borderRadius: 24,
     paddingVertical: 12,
     paddingHorizontal: 28,
   },
   ctaButtonText: {
-    color: '#d43f3f',
+    color: Colors.brandRed,
     fontWeight: 'bold',
     fontSize: 15,
   },

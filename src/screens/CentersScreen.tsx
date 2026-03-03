@@ -26,6 +26,7 @@ import { getCenters } from '../api/centers-api';
 import { getCarousels } from '../api/carousel-api';
 import { normalizeScreenName } from '../utils/navigationHelpers';
 import { CarouselItem } from './Home';
+import { Colors } from '../constants/Colors';
 
 type RootStackParamList = {
   Centers: { selectedCity?: string };
@@ -180,7 +181,7 @@ export default function Centers() {
       ref={scrollRef}
       style={{
         flex: 1,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: Colors.screenBg,
       }}
     >
       {(carouselLoading || !carouselImagesLoaded) ? (
@@ -256,7 +257,7 @@ export default function Centers() {
                   resizeMethod="resize"
                 />
               ) : (
-                <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+                <View style={[styles.image, { backgroundColor: Colors.skeletonBg }]} />
               )}
               <View style={styles.infoContainer}>
                 <Text style={styles.name}>{clinic.clinicName}</Text>
@@ -264,7 +265,7 @@ export default function Centers() {
                 <View style={styles.row}>
                   <MaterialCommunityIcons
                     name="map-marker"
-                    color="#ff4d4d"
+                    color={Colors.brandRed}
                     size={18}
                   />
                   <Text style={styles.address}>{clinic.address}</Text>
@@ -273,7 +274,7 @@ export default function Centers() {
                 <View style={styles.row}>
                   <MaterialCommunityIcons
                     name="clock"
-                    color="#ff4d4d"
+                    color={Colors.brandRed}
                     size={18}
                   />
                   <Text style={styles.time}>
@@ -284,7 +285,7 @@ export default function Centers() {
                 <View style={styles.row}>
                   <MaterialCommunityIcons
                     name="phone"
-                    color="#ff4d4d"
+                    color={Colors.brandRed}
                     size={18}
                   />
                   <Text
@@ -312,14 +313,14 @@ export default function Centers() {
                     }
                   }}
                 >
-                  <MaterialCommunityIcons name="map" color="#fff" size={18} />
+                  <MaterialCommunityIcons name="map" color={Colors.textOnPrimary} size={18} />
                   <Text style={styles.directionText}>Directions</Text>
                 </TouchableOpacity>
               </View>
             </View>
           ))
         ) : (
-          <Text style={{ padding: 16, color: '#888' }}>
+          <Text style={{ padding: 16, color: Colors.tabInactive }}>
             No clinics available in this city.
           </Text>
         )}
@@ -346,7 +347,7 @@ export default function Centers() {
               </View>
             ))
           ) : (
-            <Text style={{ padding: 8, color: '#999' }}>
+            <Text style={{ padding: 8, color: Colors.textMuted }}>
               {selectedCity === 'All'
                 ? 'Select a city to view services.'
                 : 'No services available for this city.'}
@@ -367,13 +368,13 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#e53935',
+    color: Colors.brandRed,
     textAlign: 'center',
     marginBottom: 6,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#555',
+    color: Colors.textSecondary,
     textAlign: 'center',
   },
   cityTabs: {
@@ -384,26 +385,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     marginRight: 10,
-    backgroundColor: '#eaeaea',
+    backgroundColor: Colors.skeletonBg,
     borderRadius: 20,
   },
   activeCityButton: {
-    backgroundColor: '#ff4d4d',
+    backgroundColor: Colors.brandRed,
   },
   cityButtonText: {
-    color: '#333',
+    color: Colors.textBody,
     fontWeight: '500',
   },
   activeCityButtonText: {
-    color: '#fff',
+    color: Colors.textOnBrand,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 16,
     overflow: 'hidden',
     marginBottom: 20,
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.1,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
@@ -419,7 +420,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#333',
+    color: Colors.textBody,
   },
   row: {
     flexDirection: 'row',
@@ -429,24 +430,24 @@ const styles = StyleSheet.create({
   address: {
     marginLeft: 6,
     flex: 1,
-    color: '#555',
+    color: Colors.textSecondary,
     fontSize: 14,
   },
   time: {
     marginLeft: 6,
-    color: '#555',
+    color: Colors.textSecondary,
     fontSize: 14,
   },
   phone: {
     marginLeft: 6,
-    color: '#555',
+    color: Colors.textSecondary,
     fontSize: 14,
     textDecorationLine: 'underline',
   },
   directionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ff4d4d',
+    backgroundColor: Colors.brandRed,
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -454,7 +455,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   directionText: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     marginLeft: 6,
     fontSize: 14,
     fontWeight: '600',
@@ -462,22 +463,22 @@ const styles = StyleSheet.create({
   servicesTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#e53935',
+    color: Colors.brandRed,
     marginBottom: 4,
   },
   servicesSubtitle: {
     fontSize: 14,
-    color: '#333',
+    color: Colors.textBody,
     marginBottom: 12,
   },
   serviceCard: {
     width: 220,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 12,
     overflow: 'hidden',
     marginRight: 12,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
@@ -489,10 +490,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 4,
-    color: '#333',
+    color: Colors.textBody,
   },
   serviceDescription: {
     fontSize: 12,
-    color: '#666',
+    color: Colors.textSecondary,
   },
 });

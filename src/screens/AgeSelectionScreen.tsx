@@ -12,6 +12,7 @@ import {
   Alert,
 } from 'react-native';
 import { updateUser } from '../api/user-api'; // adjust the path if needed
+import { Colors } from '../constants/Colors';
 
 const AGE_OPTIONS = [
   'below 10 yrs',
@@ -108,41 +109,40 @@ export default function AgeSelectionScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F1F8FC',
+    backgroundColor: Colors.screenBg,
     padding: 16,
     paddingBottom: 120,
   },
   header: { fontSize: 20, fontWeight: 'bold', marginBottom: 4 },
-  subText: { color: '#555', marginBottom: 16 },
+  subText: { color: Colors.textSecondary, marginBottom: 16 },
   grid: { justifyContent: 'space-between' },
 
   option: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: Colors.borderInput,
     padding: 12,
     borderRadius: 8,
     margin: 4,
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
   },
   optionSelected: {
-    backgroundColor: '#D43F3F',
-    borderColor: '#D43F3F',
+    backgroundColor: Colors.brandRed,
+    borderColor: Colors.brandRed,
   },
-  optionText: { color: '#333' },
-  optionTextSelected: { color: '#fff', fontWeight: 'bold' },
+  optionText: { color: Colors.textBody },
+  optionTextSelected: { color: Colors.textOnBrand, fontWeight: 'bold' },
 
-  // Bottom Progress Section
   progressSection: {
     marginTop: 'auto',
     paddingVertical: 16,
     paddingHorizontal: 12,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
   },
   progressBarBackground: {
     height: 4,
-    backgroundColor: '#e0f0f7',
+    backgroundColor: Colors.primaryBg,
     borderRadius: 4,
     overflow: 'hidden',
     marginBottom: 12,
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   progressBarFill: {
     width: '12.5%',
     height: 4,
-    backgroundColor: '#3EC6FF',
+    backgroundColor: Colors.info,
   },
   progressContent: {
     flexDirection: 'row',
@@ -158,25 +158,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   progressSmallText: {
-    color: '#6c757d',
+    color: Colors.tabInactive,
     fontSize: 12,
   },
   progressTitle: {
     fontWeight: 'bold',
     fontSize: 16,
-    color: '#000',
+    color: Colors.textPrimary,
   },
   nextButtonAlt: {
-    backgroundColor: '#D43F3F',
+    backgroundColor: Colors.brandRed,
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 24,
   },
   nextButtonDisabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: Colors.borderInput,
   },
   nextButtonTextAlt: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     fontWeight: '600',
   },
 });

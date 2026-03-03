@@ -12,6 +12,7 @@ import {
   Alert,
 } from 'react-native';
 import { updateUser } from '../api/user-api';
+import { Colors } from '../constants/Colors';
 
 export default function ProblemDetailScreen({ navigation }: any) {
   const [problemText, setProblemText] = useState('');
@@ -43,7 +44,7 @@ export default function ProblemDetailScreen({ navigation }: any) {
       <TextInput
         style={styles.textBox}
         placeholder="start typing here..."
-        placeholderTextColor="#999"
+        placeholderTextColor={Colors.textMuted}
         multiline
         numberOfLines={6}
         value={problemText}
@@ -74,7 +75,7 @@ export default function ProblemDetailScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     padding: 20,
     paddingBottom: 110,
   },
@@ -85,12 +86,12 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
   subText: {
-    color: '#6c757d',
+    color: Colors.tabInactive,
     marginBottom: 16,
   },
   textBox: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: Colors.borderInput,
     borderRadius: 8,
     padding: 12,
     textAlignVertical: 'top',
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   stepText: {
-    color: '#6c757d',
+    color: Colors.tabInactive,
     fontSize: 14,
   },
   stepCounter: {
@@ -110,14 +111,14 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   nextButton: {
-    backgroundColor: '#D43F3F',
+    backgroundColor: Colors.brandRed,
     borderRadius: 24,
     paddingVertical: 14,
     alignItems: 'center',
     marginTop: 8,
   },
   nextButtonText: {
-    color: '#fff',
+    color: Colors.textOnBrand,
     fontWeight: 'bold',
     fontSize: 16,
   },

@@ -44,12 +44,20 @@ import WelcomeVideoScreen from '../screens/WelcomeScreen';
 import FormExampleScreen from '../screens/FormExampleScreen';
 import AppConfigScreen from '../screens/AppConfigScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
+import { Colors } from '../constants/Colors';
 
 const Stack = createNativeStackNavigator();
 
 export default function HomeStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        statusBarBackgroundColor: Colors.primaryBg,
+        statusBarStyle: 'dark',
+        statusBarTranslucent: false,
+      }}
+    >
       {/* <Stack.Screen name="WelcomeVideoScreen" component={WelcomeVideoScreen} /> */}
       <Stack.Screen name="Home" component={withAppShell(HomeScreen)} />
       <Stack.Screen

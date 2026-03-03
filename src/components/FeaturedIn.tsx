@@ -12,6 +12,7 @@ import NEWS_2 from '../../assets/static_assets/NEWS_2.png';
 import NEWS_3 from '../../assets/static_assets/NEWS_3.png';
 import NEWS_4 from '../../assets/static_assets/NEWS_4.png';
 import SkeletonImage from './Skeleton';
+import { Colors } from '../constants/Colors';
 
 
 const screenWidth = Dimensions.get('window').width;
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
   },
   fullWidthBg: {
     width: screenWidth,
-    backgroundColor: '#00A29B',
+    backgroundColor: Colors.featuredBg,
     paddingVertical: 12,
   },
   scrollContent: {
@@ -64,15 +65,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderRadius: 10,
     padding: 16,
     marginRight: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden', // ensures zoomed image is clipped inside rounded corners
+    overflow: 'hidden',
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,

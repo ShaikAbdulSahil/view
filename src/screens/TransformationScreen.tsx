@@ -15,6 +15,7 @@ import {
   ScrollView,
 } from 'react-native';
 import Skeleton from '../components/Skeleton';
+import { Colors } from '../constants/Colors';
 import { getAllBlogs } from '../api/transformation-api';
 
 export default function TransformationScreen({ navigation }: any) {
@@ -86,7 +87,7 @@ export default function TransformationScreen({ navigation }: any) {
 
       {blogs.length === 0 ? (
         <View style={{ padding: 16 }}>
-          <Text style={{ color: '#666' }}>No transformations available.</Text>
+          <Text style={{ color: Colors.textSecondary }}>No transformations available.</Text>
         </View>
       ) : (
         <View style={styles.grid}>
@@ -109,7 +110,7 @@ export default function TransformationScreen({ navigation }: any) {
                   resizeMethod="resize"
                 />
               ) : (
-                <View style={[styles.image, { backgroundColor: '#f0f0f0' }]} />
+                <View style={[styles.image, { backgroundColor: Colors.skeletonBg }]} />
               )}
             </TouchableOpacity>
           ))}
@@ -122,7 +123,7 @@ export default function TransformationScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     paddingBottom: 130,
   },
   content: { padding: 12 },
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
     marginBottom: 12,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     elevation: 2,
   },
   image: {

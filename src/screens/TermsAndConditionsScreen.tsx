@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { Colors } from '../constants/Colors';
 
 export default function TermsAndConditionsScreen() {
   return (
@@ -139,32 +140,32 @@ const sections = [
     content: [
       "By availing Mydent's clear aligner services directly as a customer (D2C model), you acknowledge and agree to the following additional terms:",
       '\n**a. Diagnosis & Planning**\n' +
-        'The treatment plan will be created based on the 3D scans, X-rays, and photos submitted or captured at our scanning centers.\n' +
-        'Treatment plans are approved or modified by registered orthodontists/dentists before fabrication.\n' +
-        'Customers must provide truthful and accurate medical/dental history. Failure to disclose may impact treatment results and Mydent holds no liability in such cases.',
+      'The treatment plan will be created based on the 3D scans, X-rays, and photos submitted or captured at our scanning centers.\n' +
+      'Treatment plans are approved or modified by registered orthodontists/dentists before fabrication.\n' +
+      'Customers must provide truthful and accurate medical/dental history. Failure to disclose may impact treatment results and Mydent holds no liability in such cases.',
       '\n**b. Eligibility for Treatment**\n' +
-        'Not all customers are eligible for aligner treatment. After diagnosis, if you are found unsuitable (e.g. complex skeletal cases, untreated caries, periodontal disease), you will be notified and refunded accordingly.',
+      'Not all customers are eligible for aligner treatment. After diagnosis, if you are found unsuitable (e.g. complex skeletal cases, untreated caries, periodontal disease), you will be notified and refunded accordingly.',
       '\n**c. Aligner Delivery and Use**\n' +
-        'Aligners are custom-manufactured and shipped in batches to the registered delivery address.\n' +
-        'Users must strictly follow the prescribed wear schedule and care instructions provided by Mydent.\n' +
-        'Delays in treatment progress due to non-compliance, breakage, or skipping wear time will not be the responsibility of Mydent.',
+      'Aligners are custom-manufactured and shipped in batches to the registered delivery address.\n' +
+      'Users must strictly follow the prescribed wear schedule and care instructions provided by Mydent.\n' +
+      'Delays in treatment progress due to non-compliance, breakage, or skipping wear time will not be the responsibility of Mydent.',
       '\n**d. Remote Monitoring and Support**\n' +
-        'Virtual follow-ups may be scheduled using video consultation tools (e.g., Google Meet).\n' +
-        'Progress tracking will be aided through periodic photo submissions or in-app features.\n' +
-        'In-person follow-up may be required in certain cases, and additional visits will be chargeable.',
+      'Virtual follow-ups may be scheduled using video consultation tools (e.g., Google Meet).\n' +
+      'Progress tracking will be aided through periodic photo submissions or in-app features.\n' +
+      'In-person follow-up may be required in certain cases, and additional visits will be chargeable.',
       '\n**e. Replacements and Refinements**\n' +
-        'Aligner replacements due to damage or loss will incur additional charges.\n' +
-        'One refinement (minor correction) may be offered at no additional cost if clinically justified and requested within 30 days of final aligner usage.\n' +
-        'Further refinements or re-treatment will be chargeable.',
+      'Aligner replacements due to damage or loss will incur additional charges.\n' +
+      'One refinement (minor correction) may be offered at no additional cost if clinically justified and requested within 30 days of final aligner usage.\n' +
+      'Further refinements or re-treatment will be chargeable.',
       '\n**f. Results & Guarantees**\n' +
-        'Results vary based on compliance and biological response. Mydent does not guarantee 100% outcome as seen in digital simulations.\n' +
-        'Mydent is not liable for relapse or dissatisfaction arising from non-compliance or lack of post-treatment retention (retainers).',
+      'Results vary based on compliance and biological response. Mydent does not guarantee 100% outcome as seen in digital simulations.\n' +
+      'Mydent is not liable for relapse or dissatisfaction arising from non-compliance or lack of post-treatment retention (retainers).',
       '\n**g. Retainers**\n' +
-        'Retainers are not included unless explicitly stated in the treatment plan package.\n' +
-        'It is the customer’s responsibility to use retainers post-treatment to maintain alignment.',
+      'Retainers are not included unless explicitly stated in the treatment plan package.\n' +
+      'It is the customer’s responsibility to use retainers post-treatment to maintain alignment.',
       '\n**h. Refund & Cancellation (Aligner Orders)**\n' +
-        'Once the treatment plan is approved and aligner fabrication begins, cancellation is not permitted.\n' +
-        'No refund will be processed for partial usage or dissatisfaction unless a manufacturing defect is proven.',
+      'Once the treatment plan is approved and aligner fabrication begins, cancellation is not permitted.\n' +
+      'No refund will be processed for partial usage or dissatisfaction unless a manufacturing defect is proven.',
     ],
   },
 ];
@@ -172,7 +173,7 @@ const sections = [
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: Colors.screenBg,
     paddingBottom: 120,
   },
   scroll: {
@@ -183,29 +184,29 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 6,
-    color: '#2A2A2A',
+    color: Colors.textPrimary,
   },
   subtitle: {
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 14,
-    color: '#555',
+    color: Colors.textSecondary,
   },
   heading: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#D43F3F',
+    color: Colors.brandRed,
     marginTop: 24,
     marginBottom: 8,
   },
   paragraph: {
     fontSize: 15,
-    color: '#333',
+    color: Colors.textBody,
     lineHeight: 22,
   },
   bullet: {
     fontSize: 15,
-    color: '#444',
+    color: Colors.textSecondary,
     paddingLeft: 12,
     lineHeight: 22,
     marginBottom: 4,
@@ -215,6 +216,6 @@ const styles = StyleSheet.create({
   },
   bold: {
     fontWeight: 'bold',
-    color: '#222',
+    color: Colors.textPrimary,
   },
 });

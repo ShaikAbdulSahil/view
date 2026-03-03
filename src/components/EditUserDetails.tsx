@@ -5,6 +5,7 @@ import { View, TextInput, Button, StyleSheet, Text, ActivityIndicator } from 're
 import { useUser } from '../contexts/UserContext';
 import { updateUser, getUserDetails } from '../api/user-api';
 import { useNavigation } from '@react-navigation/native';
+import { Colors } from '../constants/Colors';
 
 export default function EditProfileForm({ onClose }: { onClose?: () => void }) {
   const { user, setUser } = useUser();
@@ -73,7 +74,7 @@ export default function EditProfileForm({ onClose }: { onClose?: () => void }) {
       <Text style={styles.heading}>Edit Profile</Text>
       {initialLoading ? (
         <View style={styles.loadingRow}>
-          <ActivityIndicator size="small" color="#1e90ff" />
+          <ActivityIndicator size="small" color={Colors.primaryLight} />
           <Text style={styles.loadingText}>Loading your details…</Text>
         </View>
       ) : null}
@@ -92,7 +93,7 @@ export default function EditProfileForm({ onClose }: { onClose?: () => void }) {
         style={styles.input}
         keyboardType="email-address"
         editable={false}
-        placeholderTextColor="#888"
+        placeholderTextColor={Colors.tabInactive}
       />
       <Text style={styles.label}>Mobile</Text>
       <TextInput
@@ -117,7 +118,7 @@ export default function EditProfileForm({ onClose }: { onClose?: () => void }) {
         <View style={styles.buttonCol}>
           <Button
             title="Cancel"
-            color="red"
+            color={Colors.error}
             onPress={() => {
               if (onClose) onClose();
               else {
@@ -136,16 +137,16 @@ export default function EditProfileForm({ onClose }: { onClose?: () => void }) {
 const styles = StyleSheet.create({
   container: { padding: 16 },
   heading: { fontSize: 18, fontWeight: 'bold', marginBottom: 12 },
-  label: { fontSize: 13, color: '#555', marginBottom: 6, marginTop: 6 },
+  label: { fontSize: 13, color: Colors.textSecondary, marginBottom: 6, marginTop: 6 },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: Colors.borderInput,
     borderRadius: 6,
     padding: 8,
     marginBottom: 12,
   },
   error: {
-    color: 'red',
+    color: Colors.error,
     marginBottom: 8,
   },
   multiline: {
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginLeft: 8,
-    color: '#444',
+    color: Colors.textSecondary,
   },
   buttonRow: {
     flexDirection: 'row',

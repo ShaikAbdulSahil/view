@@ -25,6 +25,8 @@ import {
   updateCartItem,
 } from '../api/cart-api';
 import { useCart } from '../contexts/CartContext';
+import { useRequireAuth } from '../hooks/useRequireAuth';
+import { Colors } from '../constants/Colors';
 
 type CartItem = {
   _id: string;
@@ -41,6 +43,25 @@ export default function CartScreen({ navigation }: any) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
   const { totalAmount, setTotalAmount, addItems, removeItem, removeItems, removeProductId, clearProductIds, itemsCount } = useCart();
+  const { requireAuth, isAuthenticated } = useRequireAuth();
+
+  // Show login prompt if guest tries to access cart
+  if (!isAuthenticated) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.screenBg, padding: 24 }}>
+        <Text style={{ fontSize: 20, fontWeight: '600', color: Colors.textBody, marginBottom: 12 }}>Login Required</Text>
+        <Text style={{ fontSize: 14, color: Colors.textSecondary, textAlign: 'center', marginBottom: 24 }}>
+          Please log in to view your cart
+        </Text>
+        <TouchableOpacity
+          style={{ backgroundColor: Colors.primaryLight, paddingHorizontal: 32, paddingVertical: 14, borderRadius: 8 }}
+          onPress={() => requireAuth(() => { }, 'Please log in to view your cart')}
+        >
+          <Text style={{ color: Colors.textOnPrimary, fontWeight: '600', fontSize: 16 }}>Login</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   const fetchCart = async () => {
     setLoading(true);
@@ -157,7 +178,7 @@ export default function CartScreen({ navigation }: any) {
 
   if (loading)
     return (
-      <View style={{ flex: 1, padding: 16, backgroundColor: '#f7f7f7' }}>
+      <View style={{ flex: 1, padding: 16, backgroundColor: Colors.screenBg }}>
         <Skeleton width={'60%'} height={28} radius={6} style={{ marginBottom: 16 }} />
 
         {Array.from({ length: 3 }).map((_, i) => (
@@ -249,23 +270,23 @@ export default function CartScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: Colors.screenBg,
   },
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: Colors.borderLight,
   },
   itemContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: Colors.borderLight,
     alignItems: 'center',
   },
   itemInfo: {
@@ -278,7 +299,7 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     fontSize: 14,
-    color: '#555',
+    color: Colors.textSecondary,
     marginBottom: 8,
   },
   quantityRow: {
@@ -289,12 +310,12 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.cardBg,
     borderWidth: 1,
-    borderColor: '#007bff',
+    borderColor: Colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
@@ -302,7 +323,7 @@ const styles = StyleSheet.create({
   qtyButtonText: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#007bff',
+    color: Colors.primaryLight,
     lineHeight: 20,
   },
   disabledButton: {
@@ -312,18 +333,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginHorizontal: 12,
     fontWeight: '700',
-    color: '#333',
+    color: Colors.textBody,
   },
   remove: {
-    color: '#ff3b30',
+    color: Colors.error,
     fontSize: 14,
   },
   summaryContainer: {
     padding: 16,
     marginTop: 16,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.cardBg,
     borderTopWidth: 1,
-    borderTopColor: '#ddd',
+    borderTopColor: Colors.border,
   },
   summaryRow: {
     flexDirection: 'row',
@@ -337,28 +358,28 @@ const styles = StyleSheet.create({
   totalValue: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#007bff',
+    color: Colors.primaryLight,
   },
   clearButton: {
-    backgroundColor: '#ff3b30',
+    backgroundColor: Colors.error,
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 10,
   },
   clearText: {
-    color: '#fff',
+    color: Colors.textOnPrimary,
     fontWeight: 'bold',
     fontSize: 16,
   },
   checkoutButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: Colors.success,
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
   },
   checkoutText: {
-    color: '#fff',
+    color: Colors.textOnPrimary,
     fontWeight: 'bold',
     fontSize: 16,
   },
@@ -369,6 +390,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
-    color: '#888',
+    color: Colors.tabInactive,
   },
 });
